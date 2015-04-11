@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 rel. 3 (http://www.altova.com) by MESMERiZE (MSM) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="clientSetting">
+		<xs:annotation>
+			<xs:documentation>根节点</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="useCache" type="xs:boolean"/>
+				<xs:element name="autoCache" type="xs:boolean" default="true">
+					<xs:annotation>
+						<xs:documentation>是否需要较验序列存在,必选</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="seqIgnoreCase" type="xs:boolean" default="true" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>序列名称是否大小写敏感，可选，默认true</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="defaultCacheSize" type="xs:long" default="1000" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>序列的默认缓存值，可选，默认1000</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="defaultLoadFactor" type="xs:double" default="0.5" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>默认的预取阈值，可选，默认值0.5</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="cacheInfos">
+					<xs:annotation>
+						<xs:documentation>序列信息</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="cacheInfo" type="cacheInfo"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="fetchType" type="xs:string" default="local" minOccurs="0"/>
+				<xs:element name="address" type="xs:string" default="127.0.0.1" minOccurs="0"/>
+				<xs:element name="monitorAddress" type="xs:string" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="cacheInfo">
+		<xs:annotation>
+			<xs:documentation>序列信息</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="seqName" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>序列名称</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="cacheSize" type="xs:long" use="required">
+			<xs:annotation>
+				<xs:documentation>步长值</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="loadFactor" type="xs:double" default="0.5">
+			<xs:annotation>
+				<xs:documentation>预取阈值，可选，默认0.5</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

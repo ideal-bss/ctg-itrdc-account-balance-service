@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="ctg-itrdc-account-balance-service2"
+  id="myeclipse.1428717706234"
+  context-root="/ctg"
+  j2ee-spec="6.0"
+  archive="ctg-itrdc-account-balance-service2.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

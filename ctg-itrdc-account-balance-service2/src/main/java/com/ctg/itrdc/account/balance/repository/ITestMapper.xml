@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.ITestMapper" >
+   <update id="updateTest" parameterType="map">
+       UPDATE ACCT_ITEM SET ORI_ACCT_ITEM_ID=1 WHERE ACCT_ITEM_ID=1 AND SLICE_KEY=176455891
+   </update>
+   <select id="selectTest" resultType="java.lang.Integer">
+       SELECT ITEM_SOURCE_ID FROM ACCT_ITEM  WHERE ACCT_ITEM_ID=1 AND SLICE_KEY=176455891
+   </select>
+   
+   <select id="selectSequence" resultType="java.lang.String">
+   select seq_test.nextval
+   </select>
+</mapper>

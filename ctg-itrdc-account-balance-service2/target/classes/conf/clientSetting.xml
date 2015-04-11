@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clientSetting xsi:noNamespaceSchemaLocation="clientSetting.xsd">
+	<useCache>true</useCache>
+	<autoCache>true</autoCache>
+	<seqIgnoreCase>true</seqIgnoreCase>
+	<defaultCacheSize>10000</defaultCacheSize>
+	<defaultLoadFactor>0.5</defaultLoadFactor>
+	<cacheInfos>
+		<cacheInfo seqName="SEQ_TEST" cacheSize="1000" loadFactor="0.8"/>
+	</cacheInfos>
+	<fetchType>http</fetchType>
+	<address>http://10.128.96.36:9000/services/seqService</address>
+	<monitorAddress>http://10.128.96.36:9000/services/allMonitorQuery</monitorAddress>
+</clientSetting>
