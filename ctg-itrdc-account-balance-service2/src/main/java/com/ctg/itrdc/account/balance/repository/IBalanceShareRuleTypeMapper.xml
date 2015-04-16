@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalanceShareRuleTypeMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.BalanceShareRuleTypeModel" >
+    <id column="SHARE_RULE_TYPE_ID" property="shareRuleTypeId" jdbcType="BIGINT" />
+    <result column="SHARE_RULE_TYPE_NAME" property="shareRuleTypeName" jdbcType="VARCHAR" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="CREATE_STAFF" property="createStaff" jdbcType="VARCHAR" />
+    <result column="UPDATE_STAFF" property="updateStaff" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <sql id="Base_Column_List" >
+    SHARE_RULE_TYPE_ID, SHARE_RULE_TYPE_NAME, STATUS_CD, CREATE_STAFF, UPDATE_STAFF, 
+    CREATE_DATE, STATUS_DATE, UPDATE_DATE
+  </sql>
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from balance_share_rule_type_mod
+    where SHARE_RULE_TYPE_ID = #{shareRuleTypeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from balance_share_rule_type_mod
+    where SHARE_RULE_TYPE_ID = #{shareRuleTypeId,jdbcType=BIGINT}
+  </delete>
+   
+   <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleTypeModel" >
+    insert into balance_share_rule_type_mod (SHARE_RULE_TYPE_ID, SHARE_RULE_TYPE_NAME, 
+      STATUS_CD, CREATE_STAFF, UPDATE_STAFF, 
+      CREATE_DATE, STATUS_DATE, UPDATE_DATE
+      )
+    values (#{shareRuleTypeId,jdbcType=BIGINT}, #{shareRuleTypeName,jdbcType=VARCHAR}, 
+      #{statusCd,jdbcType=VARCHAR}, #{createStaff,jdbcType=VARCHAR}, #{updateStaff,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{statusDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleTypeModel" >
+    insert into balance_share_rule_type_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shareRuleTypeId != null" >
+        SHARE_RULE_TYPE_ID,
+      </if>
+      <if test="shareRuleTypeName != null" >
+        SHARE_RULE_TYPE_NAME,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF,
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shareRuleTypeId != null" >
+        #{shareRuleTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="shareRuleTypeName != null" >
+        #{shareRuleTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleTypeModel" >
+    update balance_share_rule_type_mod
+    <set >
+      <if test="shareRuleTypeName != null" >
+        SHARE_RULE_TYPE_NAME = #{shareRuleTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where SHARE_RULE_TYPE_ID = #{shareRuleTypeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleTypeModel" >
+    update balance_share_rule_type_mod
+    set SHARE_RULE_TYPE_NAME = #{shareRuleTypeName,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where SHARE_RULE_TYPE_ID = #{shareRuleTypeId,jdbcType=BIGINT}
+  </update>
+</mapper>

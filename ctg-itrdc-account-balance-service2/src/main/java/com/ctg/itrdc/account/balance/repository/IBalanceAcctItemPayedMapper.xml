@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalanceAcctItemPayedMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel">
+    <id column="OPER_PAYOUT_ID" jdbcType="BIGINT" property="operPayoutId" />
+    <result column="ACCT_ITEM_ID" jdbcType="BIGINT" property="acctItemId" />
+    <result column="BALANCE" jdbcType="BIGINT" property="balance" />
+    <result column="STATUS_CD" jdbcType="VARCHAR" property="statusCd" />
+    <result column="STATUS_DATE" jdbcType="TIMESTAMP" property="statusDate" />
+    <result column="SLICE_KEY" jdbcType="BIGINT" property="sliceKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    OPER_PAYOUT_ID, ACCT_ITEM_ID, BALANCE, STATUS_CD, STATUS_DATE, SLICE_KEY
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from balance_acct_item_payed_mod
+    where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from balance_acct_item_payed_mod
+    where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel">
+    insert into balance_acct_item_payed_mod (OPER_PAYOUT_ID, ACCT_ITEM_ID, BALANCE, 
+      STATUS_CD, STATUS_DATE, SLICE_KEY
+      )
+    values (#{operPayoutId,jdbcType=BIGINT}, #{acctItemId,jdbcType=BIGINT}, #{balance,jdbcType=BIGINT}, 
+      #{statusCd,jdbcType=VARCHAR}, #{statusDate,jdbcType=TIMESTAMP}, #{sliceKey,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel">
+    insert into balance_acct_item_payed_mod
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="operPayoutId != null">
+        OPER_PAYOUT_ID,
+      </if>
+      <if test="acctItemId != null">
+        ACCT_ITEM_ID,
+      </if>
+      <if test="balance != null">
+        BALANCE,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="statusDate != null">
+        STATUS_DATE,
+      </if>
+      <if test="sliceKey != null">
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="operPayoutId != null">
+        #{operPayoutId,jdbcType=BIGINT},
+      </if>
+      <if test="acctItemId != null">
+        #{acctItemId,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sliceKey != null">
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel">
+    update balance_acct_item_payed_mod
+    <set>
+      <if test="acctItemId != null">
+        ACCT_ITEM_ID = #{acctItemId,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null">
+        BALANCE = #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sliceKey != null">
+        SLICE_KEY = #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </set>
+    where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel">
+    update balance_acct_item_payed_mod
+    set ACCT_ITEM_ID = #{acctItemId,jdbcType=BIGINT},
+      BALANCE = #{balance,jdbcType=BIGINT},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+  </update>
+</mapper>

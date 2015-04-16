@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="special" namespace="/special" extends="struts-default">
+ 
+        <action name="specialQueryGo" class="com.ctg.itrdc.account.balance.action.SpecialPaymentAction" method="specialQueryGo">
+            <result name="success">/view/special/specialPaymentQuery.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <action name="specialQuery" class="com.ctg.itrdc.account.balance.action.SpecialPaymentAction" method="specialQuery">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        
+ 
+    </package>
+</struts>

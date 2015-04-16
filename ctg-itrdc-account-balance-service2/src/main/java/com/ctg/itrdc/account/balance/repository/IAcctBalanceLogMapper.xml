@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IAcctBalanceLogMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.AcctBalanceLogModel" >
+    <id column="BALANCE_LOG_ID" property="balanceLogId" jdbcType="BIGINT" />
+    <result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT" />
+    <result column="OPER_INCOME_ID" property="operIncomeId" jdbcType="BIGINT" />
+    <result column="SRC_AMOUNT" property="srcAmount" jdbcType="BIGINT" />
+    <result column="OPER_PAYOUT_ID" property="operPayoutId" jdbcType="BIGINT" />
+    <result column="PAYOUT_AMOUNT" property="payoutAmount" jdbcType="BIGINT" />
+    <result column="BILLING_CYCLE_ID" property="billingCycleId" jdbcType="BIGINT" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BALANCE_LOG_ID, ACCT_BALANCE_ID, OPER_INCOME_ID, SRC_AMOUNT, OPER_PAYOUT_ID, PAYOUT_AMOUNT, 
+    BILLING_CYCLE_ID, STATUS_CD, STATUS_DATE, SLICE_KEY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from acct_balance_log_mod
+    where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from acct_balance_log_mod
+    where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceLogModel" >
+    insert into acct_balance_log_mod (BALANCE_LOG_ID, ACCT_BALANCE_ID, OPER_INCOME_ID, 
+      SRC_AMOUNT, OPER_PAYOUT_ID, PAYOUT_AMOUNT, 
+      BILLING_CYCLE_ID, STATUS_CD, STATUS_DATE, 
+      SLICE_KEY)
+    values (#{balanceLogId,jdbcType=BIGINT}, #{acctBalanceId,jdbcType=BIGINT}, #{operIncomeId,jdbcType=BIGINT}, 
+      #{srcAmount,jdbcType=BIGINT}, #{operPayoutId,jdbcType=BIGINT}, #{payoutAmount,jdbcType=BIGINT}, 
+      #{billingCycleId,jdbcType=BIGINT}, #{statusCd,jdbcType=VARCHAR}, #{statusDate,jdbcType=TIMESTAMP}, 
+      #{sliceKey,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceLogModel" >
+    insert into acct_balance_log_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="balanceLogId != null" >
+        BALANCE_LOG_ID,
+      </if>
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID,
+      </if>
+      <if test="operIncomeId != null" >
+        OPER_INCOME_ID,
+      </if>
+      <if test="srcAmount != null" >
+        SRC_AMOUNT,
+      </if>
+      <if test="operPayoutId != null" >
+        OPER_PAYOUT_ID,
+      </if>
+      <if test="payoutAmount != null" >
+        PAYOUT_AMOUNT,
+      </if>
+      <if test="billingCycleId != null" >
+        BILLING_CYCLE_ID,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="balanceLogId != null" >
+        #{balanceLogId,jdbcType=BIGINT},
+      </if>
+      <if test="acctBalanceId != null" >
+        #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="operIncomeId != null" >
+        #{operIncomeId,jdbcType=BIGINT},
+      </if>
+      <if test="srcAmount != null" >
+        #{srcAmount,jdbcType=BIGINT},
+      </if>
+      <if test="operPayoutId != null" >
+        #{operPayoutId,jdbcType=BIGINT},
+      </if>
+      <if test="payoutAmount != null" >
+        #{payoutAmount,jdbcType=BIGINT},
+      </if>
+      <if test="billingCycleId != null" >
+        #{billingCycleId,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sliceKey != null" >
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceLogModel" >
+    update acct_balance_log_mod
+    <set >
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="operIncomeId != null" >
+        OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT},
+      </if>
+      <if test="srcAmount != null" >
+        SRC_AMOUNT = #{srcAmount,jdbcType=BIGINT},
+      </if>
+      <if test="operPayoutId != null" >
+        OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT},
+      </if>
+      <if test="payoutAmount != null" >
+        PAYOUT_AMOUNT = #{payoutAmount,jdbcType=BIGINT},
+      </if>
+      <if test="billingCycleId != null" >
+        BILLING_CYCLE_ID = #{billingCycleId,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY = #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </set>
+    where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceLogModel" >
+    update acct_balance_log_mod
+    set ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT},
+      OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT},
+      SRC_AMOUNT = #{srcAmount,jdbcType=BIGINT},
+      OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT},
+      PAYOUT_AMOUNT = #{payoutAmount,jdbcType=BIGINT},
+      BILLING_CYCLE_ID = #{billingCycleId,jdbcType=BIGINT},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
+  </update>
+</mapper>

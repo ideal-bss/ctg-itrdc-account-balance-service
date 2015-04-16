@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IIndexTableMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+    <id column="INDEX_TABLE_ID" property="indexTableId" jdbcType="BIGINT" />
+    <result column="BALANCE_LOG_ID" property="balanceLogId" jdbcType="BIGINT" />
+    <result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT" />
+    <result column="OPER_PAYOUT_ID" property="operPayoutId" jdbcType="BIGINT" />
+    <result column="BALANCE_RELATION_ID" property="balanceRelationId" jdbcType="BIGINT" />
+    <result column="BALANCE_RESERVE_ID" property="balanceReserveId" jdbcType="BIGINT" />
+    <result column="SHARE_RULE_ID" property="shareRuleId" jdbcType="BIGINT" />
+    <result column="OPER_INCOME_ID" property="operIncomeId" jdbcType="BIGINT" />
+    <result column="SLICE_KEY_ID" property="sliceKeyId" jdbcType="BIGINT" />
+    <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    INDEX_TABLE_ID, BALANCE_LOG_ID, ACCT_BALANCE_ID, OPER_PAYOUT_ID, BALANCE_RELATION_ID, 
+    BALANCE_RESERVE_ID, SHARE_RULE_ID, OPER_INCOME_ID, SLICE_KEY_ID, SLICE_KEY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from index_table_mod
+    where INDEX_TABLE_ID = #{indexTableId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from index_table_mod
+    where INDEX_TABLE_ID = #{indexTableId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+    insert into index_table_mod (INDEX_TABLE_ID, BALANCE_LOG_ID, ACCT_BALANCE_ID, 
+      OPER_PAYOUT_ID, BALANCE_RELATION_ID, BALANCE_RESERVE_ID, 
+      SHARE_RULE_ID, OPER_INCOME_ID, SLICE_KEY_ID, 
+      SLICE_KEY)
+    values (#{indexTableId,jdbcType=BIGINT}, #{balanceLogId,jdbcType=BIGINT}, #{acctBalanceId,jdbcType=BIGINT}, 
+      #{operPayoutId,jdbcType=BIGINT}, #{balanceRelationId,jdbcType=BIGINT}, #{balanceReserveId,jdbcType=BIGINT}, 
+      #{shareRuleId,jdbcType=BIGINT}, #{operIncomeId,jdbcType=BIGINT}, #{sliceKeyId,jdbcType=BIGINT}, 
+      #{sliceKey,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+    insert into index_table_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="indexTableId != null" >
+        INDEX_TABLE_ID,
+      </if>
+      <if test="balanceLogId != null" >
+        BALANCE_LOG_ID,
+      </if>
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID,
+      </if>
+      <if test="operPayoutId != null" >
+        OPER_PAYOUT_ID,
+      </if>
+      <if test="balanceRelationId != null" >
+        BALANCE_RELATION_ID,
+      </if>
+      <if test="balanceReserveId != null" >
+        BALANCE_RESERVE_ID,
+      </if>
+      <if test="shareRuleId != null" >
+        SHARE_RULE_ID,
+      </if>
+      <if test="operIncomeId != null" >
+        OPER_INCOME_ID,
+      </if>
+      <if test="sliceKeyId != null" >
+        SLICE_KEY_ID,
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="indexTableId != null" >
+        #{indexTableId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceLogId != null" >
+        #{balanceLogId,jdbcType=BIGINT},
+      </if>
+      <if test="acctBalanceId != null" >
+        #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="operPayoutId != null" >
+        #{operPayoutId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceRelationId != null" >
+        #{balanceRelationId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceReserveId != null" >
+        #{balanceReserveId,jdbcType=BIGINT},
+      </if>
+      <if test="shareRuleId != null" >
+        #{shareRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="operIncomeId != null" >
+        #{operIncomeId,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKeyId != null" >
+        #{sliceKeyId,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKey != null" >
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+    update index_table_mod
+    <set >
+      <if test="balanceLogId != null" >
+        BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT},
+      </if>
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="operPayoutId != null" >
+        OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceRelationId != null" >
+        BALANCE_RELATION_ID = #{balanceRelationId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceReserveId != null" >
+        BALANCE_RESERVE_ID = #{balanceReserveId,jdbcType=BIGINT},
+      </if>
+      <if test="shareRuleId != null" >
+        SHARE_RULE_ID = #{shareRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="operIncomeId != null" >
+        OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKeyId != null" >
+        SLICE_KEY_ID = #{sliceKeyId,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY = #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </set>
+    where INDEX_TABLE_ID = #{indexTableId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+    update index_table_mod
+    set BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT},
+      ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT},
+      OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT},
+      BALANCE_RELATION_ID = #{balanceRelationId,jdbcType=BIGINT},
+      BALANCE_RESERVE_ID = #{balanceReserveId,jdbcType=BIGINT},
+      SHARE_RULE_ID = #{shareRuleId,jdbcType=BIGINT},
+      OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT},
+      SLICE_KEY_ID = #{sliceKeyId,jdbcType=BIGINT},
+      SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    where INDEX_TABLE_ID = #{indexTableId,jdbcType=BIGINT}
+  </update>
+  <select id="selectbyBalanceId" parameterType="java.lang.Long" resultType="map">
+  	select ACCT_BALANCE_ID,SLICE_KEY_ID from index_table_mod 
+  	where ACCT_BALANCE_ID=#{acctBalanceId,jdbcType=BIGINT}
+  	and SLICE_KEY= 1
+  </select>
+  <select id="selectCountByBalanceId" parameterType="map">
+  	select count(*) from acct_balance_mod 
+  	where ACCT_BALANCE_ID=#{acctBalanceId,jdbcType=BIGINT} 
+  	and ACCT_ID=#{acctId,jdbcType=BIGINT} 
+  	and SLICE_KEY= #{sliceKey,jdbcType=BIGINT}
+  </select>
+</mapper>

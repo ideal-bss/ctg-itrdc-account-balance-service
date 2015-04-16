@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.ISpecialPaymentMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.SpecialPaymentModel" >
+    <id column="SPE_PAYMENT_ID" property="spePaymentId" jdbcType="BIGINT" />
+    <result column="PARTNER_ID" property="partnerId" jdbcType="BIGINT" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="BIGINT" />
+    <result column="ACCT_ITEM_GROUP_ID" property="acctItemGroupId" jdbcType="BIGINT" />
+    <result column="ACCT_ITEM_PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="CREATE_STAFF" property="createStaff" jdbcType="VARCHAR" />
+    <result column="UPDATE_STAFF" property="updateStaff" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <sql id="Base_Column_List" >
+    SPE_PAYMENT_ID, PARTNER_ID, PRODUCT_ID, ACCT_ITEM_GROUP_ID, ACCT_ITEM_PAYMENT_TYPE, 
+    STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE
+  </sql>
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from balance_special_payment_mod
+    where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from balance_special_payment_mod
+    where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.SpecialPaymentModel" >
+    insert into balance_special_payment_mod (SPE_PAYMENT_ID, PARTNER_ID, PRODUCT_ID, 
+      ACCT_ITEM_GROUP_ID, ACCT_ITEM_PAYMENT_TYPE, STATUS_CD, 
+      CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, 
+      STATUS_DATE, UPDATE_DATE)
+    values (#{spePaymentId,jdbcType=BIGINT}, #{partnerId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
+      #{acctItemGroupId,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR}, #{statusCd,jdbcType=VARCHAR}, 
+      #{createStaff,jdbcType=VARCHAR}, #{updateStaff,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{statusDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.SpecialPaymentModel" >
+    insert into balance_special_payment_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="spePaymentId != null" >
+        SPE_PAYMENT_ID,
+      </if>
+      <if test="partnerId != null" >
+        PARTNER_ID,
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="acctItemGroupId != null" >
+        ACCT_ITEM_GROUP_ID,
+      </if>
+      <if test="paymentType != null" >
+        ACCT_ITEM_PAYMENT_TYPE,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF,
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="spePaymentId != null" >
+        #{spePaymentId,jdbcType=BIGINT},
+      </if>
+      <if test="partnerId != null" >
+        #{partnerId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="acctItemGroupId != null" >
+        #{acctItemGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentType != null" >
+        #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.SpecialPaymentModel" >
+    update balance_special_payment_mod
+    <set >
+      <if test="partnerId != null" >
+        PARTNER_ID = #{partnerId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="acctItemGroupId != null" >
+        ACCT_ITEM_GROUP_ID = #{acctItemGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentType != null" >
+        ACCT_ITEM_PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.SpecialPaymentModel" >
+    update balance_special_payment_mod
+    set PARTNER_ID = #{partnerId,jdbcType=BIGINT},
+      PRODUCT_ID = #{productId,jdbcType=BIGINT},
+      ACCT_ITEM_GROUP_ID = #{acctItemGroupId,jdbcType=BIGINT},
+      ACCT_ITEM_PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+  </update>
+</mapper>

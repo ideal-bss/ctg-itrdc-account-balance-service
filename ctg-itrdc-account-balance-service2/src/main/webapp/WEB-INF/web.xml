@@ -32,6 +32,6 @@
 </context-param>
   <display-name></display-name>	
   <welcome-file-list>
-    <welcome-file>/view/test/test.jsp</welcome-file>
+    <welcome-file>/view/test/main.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

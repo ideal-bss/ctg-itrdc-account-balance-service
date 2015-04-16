@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IAcctBalanceMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+    <id column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT" />
+    <result column="BALANCE_TYPE_ID" property="balanceTypeId" jdbcType="BIGINT" />
+    <result column="PAYMENT_RULE_ID" property="paymentRuleId" jdbcType="BIGINT" />
+    <result column="SUB_ACCT_ID" property="subAcctId" jdbcType="BIGINT" />
+    <result column="ACCT_ID" property="acctId" jdbcType="BIGINT" />
+    <result column="EFF_DATE" property="effDate" jdbcType="TIMESTAMP" />
+    <result column="EXP_DATE" property="expDate" jdbcType="TIMESTAMP" />
+    <result column="BALANCE" property="balance" jdbcType="BIGINT" />
+    <result column="RESERVE_BALANCE" property="reserveBalance" jdbcType="BIGINT" />
+    <result column="CYCLE_UPPER" property="cycleUpper" jdbcType="BIGINT" />
+    <result column="CYCLE_LOWER" property="cycleLower" jdbcType="BIGINT" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="CYCLE_TYPE" property="cycleType" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="NEED_INVOICE_AMOUNT" property="needInvoiceAmount" jdbcType="BIGINT" />
+    <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
+  </resultMap>
+   
+   <sql id="Base_Column_List" >
+    ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, SUB_ACCT_ID, ACCT_ID, EFF_DATE, 
+    EXP_DATE, BALANCE, RESERVE_BALANCE, CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, STATUS_CD, 
+    STATUS_DATE, CYCLE_TYPE, REMARK, NEED_INVOICE_AMOUNT, SLICE_KEY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from acct_balance_mod
+    where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+  </select>
+   <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+    insert into acct_balance_mod (ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, 
+      SUB_ACCT_ID, ACCT_ID, EFF_DATE, 
+      EXP_DATE, BALANCE, RESERVE_BALANCE, 
+      CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, 
+      STATUS_CD, STATUS_DATE, CYCLE_TYPE, 
+      REMARK, NEED_INVOICE_AMOUNT, SLICE_KEY
+      )
+    values (#{acctBalanceId,jdbcType=BIGINT}, #{balanceTypeId,jdbcType=BIGINT}, #{paymentRuleId,jdbcType=BIGINT}, 
+      #{subAcctId,jdbcType=BIGINT}, #{acctId,jdbcType=BIGINT}, #{effDate,jdbcType=TIMESTAMP}, 
+      #{expDate,jdbcType=TIMESTAMP}, #{balance,jdbcType=BIGINT}, #{reserveBalance,jdbcType=BIGINT}, 
+      #{cycleUpper,jdbcType=BIGINT}, #{cycleLower,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{statusCd,jdbcType=VARCHAR}, #{statusDate,jdbcType=TIMESTAMP}, #{cycleType,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{needInvoiceAmount,jdbcType=BIGINT}, #{sliceKey,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+    insert into acct_balance_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID,
+      </if>
+      <if test="balanceTypeId != null" >
+        BALANCE_TYPE_ID,
+      </if>
+      <if test="paymentRuleId != null" >
+        PAYMENT_RULE_ID,
+      </if>
+      <if test="subAcctId != null" >
+        SUB_ACCT_ID,
+      </if>
+      <if test="acctId != null" >
+        ACCT_ID,
+      </if>
+      <if test="effDate != null" >
+        EFF_DATE,
+      </if>
+      <if test="expDate != null" >
+        EXP_DATE,
+      </if>
+      <if test="balance != null" >
+        BALANCE,
+      </if>
+      <if test="reserveBalance != null" >
+        RESERVE_BALANCE,
+      </if>
+      <if test="cycleUpper != null" >
+        CYCLE_UPPER,
+      </if>
+      <if test="cycleLower != null" >
+        CYCLE_LOWER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="cycleType != null" >
+        CYCLE_TYPE,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="needInvoiceAmount != null" >
+        NEED_INVOICE_AMOUNT,
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="acctBalanceId != null" >
+        #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceTypeId != null" >
+        #{balanceTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentRuleId != null" >
+        #{paymentRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="subAcctId != null" >
+        #{subAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="acctId != null" >
+        #{acctId,jdbcType=BIGINT},
+      </if>
+      <if test="effDate != null" >
+        #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null" >
+        #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="reserveBalance != null" >
+        #{reserveBalance,jdbcType=BIGINT},
+      </if>
+      <if test="cycleUpper != null" >
+        #{cycleUpper,jdbcType=BIGINT},
+      </if>
+      <if test="cycleLower != null" >
+        #{cycleLower,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cycleType != null" >
+        #{cycleType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="needInvoiceAmount != null" >
+        #{needInvoiceAmount,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKey != null" >
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+   
+   <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+    update acct_balance_mod
+    <set >
+      <if test="balanceTypeId != null" >
+        BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentRuleId != null" >
+        PAYMENT_RULE_ID = #{paymentRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="subAcctId != null" >
+        SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT},
+      </if>
+      <!-- <if test="acctId != null" >
+        ACCT_ID = #{acctId,jdbcType=BIGINT},
+      </if> -->
+      <if test="effDate != null" >
+        EFF_DATE = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null" >
+        EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balance != null" >
+        BALANCE = #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="reserveBalance != null" >
+        RESERVE_BALANCE = #{reserveBalance,jdbcType=BIGINT},
+      </if>
+      <if test="cycleUpper != null" >
+        CYCLE_UPPER = #{cycleUpper,jdbcType=BIGINT},
+      </if>
+      <if test="cycleLower != null" >
+        CYCLE_LOWER = #{cycleLower,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cycleType != null" >
+        CYCLE_TYPE = #{cycleType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="needInvoiceAmount != null" >
+        NEED_INVOICE_AMOUNT = #{needInvoiceAmount,jdbcType=BIGINT},
+      </if>
+      <!-- <if test="sliceKey != null" >
+        SLICE_KEY = #{sliceKey,jdbcType=BIGINT},
+      </if> -->
+    </set>
+    where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+    and ACCT_ID=#{acctId,jdbcType=BIGINT}
+    AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+    update acct_balance_mod
+    set BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT},
+      PAYMENT_RULE_ID = #{paymentRuleId,jdbcType=BIGINT},
+      SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT},
+      ACCT_ID = #{acctId,jdbcType=BIGINT},
+      EFF_DATE = #{effDate,jdbcType=TIMESTAMP},
+      EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+      BALANCE = #{balance,jdbcType=BIGINT},
+      RESERVE_BALANCE = #{reserveBalance,jdbcType=BIGINT},
+      CYCLE_UPPER = #{cycleUpper,jdbcType=BIGINT},
+      CYCLE_LOWER = #{cycleLower,jdbcType=BIGINT},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      CYCLE_TYPE = #{cycleType,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      NEED_INVOICE_AMOUNT = #{needInvoiceAmount,jdbcType=BIGINT},
+      SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+  </update>
+   <select id="selectAcctBalance" parameterType="map">
+   	select count(*) FROM ACCT_BALANCE WHERE ACCT_BALANCE_ID=#{ACCT_BALANCE_ID,jdbcType=DECIMAL} 
+   	AND SLICE_KEY=#{ACCT_BALANCE_ID,jdbcType=DECIMAL} 
+   </select>
+   <update id="updateBalance" parameterType="map">
+   	update acct_balance_mod 
+   	set BALANCE = BALANCE+#{balance,jdbcType=BIGINT}
+   	where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+   </update>
+</mapper>

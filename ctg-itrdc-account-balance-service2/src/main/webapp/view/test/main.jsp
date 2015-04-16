@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%
+	String rootPath = request.getContextPath();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,26 +13,33 @@
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/demo.css">
 	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
+	
 </head>
  <body class="easyui-layout">
 	<div data-options="region:'north'" style="height:50px"></div>
-		<div data-options="region:'south',split:true" style="height:50px;"></div>
-		<div data-options="region:'east',split:true" title="East" style="width:100px;"></div>
-		<div data-options="region:'west',split:true" title="West" style="width:100px;"></div>
-		<div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
-			<table class="easyui-datagrid"
-					data-options="url:'datagrid_data1.json',method:'get',border:false,singleSelect:true,fit:true,fitColumns:true">
-				<thead>
-					<tr>
-						<th data-options="field:'itemid'" width="80">Item ID</th>
-						<th data-options="field:'productid'" width="100">Product ID</th>
-						<th data-options="field:'listprice',align:'right'" width="80">List Price</th>
-						<th data-options="field:'unitcost',align:'right'" width="80">Unit Cost</th>
-						<th data-options="field:'attr1'" width="150">Attribute</th>
-						<th data-options="field:'status',align:'center'" width="60">Status</th>
-					</tr>
-				</thead>
-			</table>
+		<div data-options="region:'center',title:'Main Title',iconCls:'icon-ok',header:'false'">
+			<div class="easyui-tabs">
+				<div title="余额管理"  id="menuSearch" data-options="href:'<%=rootPath%>/test/showBalance.action',closable:false,cache:true" style="padding:10px;height: 100%;">
+					<!-- <div class="easyui-layout" style="padding:10px;height: 550px;">
+						<div data-options="region:'west',split:true" style="width: 20%;">
+							<div class="easyui-accordion"  id="query">
+								<div title="余额账本查询" style="">
+									<ul type="none" style="font-size: 16px;">
+										<li>查询</li>
+										<li>查询</li>
+										<li>查询</li>
+									</ul>
+								</div>
+								<div title="专款专用配置"></div>
+								<div title="余额类型管理"></div>
+							</div>
+						</div>
+						<div data-options="region:'center',split:true" style="" >
+							<div class=""></div>
+						</div>
+					</div> -->
+				</div>
+			</div>
 		</div>
 </body>
 

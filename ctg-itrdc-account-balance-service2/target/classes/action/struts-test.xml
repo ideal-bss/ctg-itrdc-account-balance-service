@@ -5,8 +5,17 @@
 <struts>
 	<package name="basicstruts2" namespace="/test" extends="struts-default">
  
-        <action name="index" class="com.ctg.itrdc.account.balance.action.TestAction" method="toTest">
-            <result name="success">/view/test/test.jsp</result>
+        <action name="toTest" class="com.ctg.itrdc.account.balance.action.TestAction" method="toTest">
+            <result name="success">/view/test/main.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        
+        <action name="showBalance" class="com.ctg.itrdc.account.balance.action.TestAction" method="showBalance">
+            <result name="success">/view/test/balanceManage.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <action name="queryBalance" class="com.ctg.itrdc.account.balance.action.TestAction" method="queryBalance">
+            <result name="success">/view/test/queryBalance.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
  
