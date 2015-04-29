@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalanceTypeMapper" >
+   <resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    <id column="BALANCE_TYPE_ID" property="balanceTypeId" jdbcType="BIGINT" />
+    <result column="PRIORITY" property="priority" jdbcType="BIGINT" />
+    <result column="SPE_PAYMENT_ID" property="spePaymentId" jdbcType="BIGINT" />
+    <result column="MEASURE_METHOD_ID" property="measureMethodId" jdbcType="BIGINT" />
+    <result column="BALANCE_TYPE_NAME" property="balanceTypeName" jdbcType="VARCHAR" />
+    <result column="ALLOW_DRAW" property="allowDraw" jdbcType="CHAR" />
+    <result column="INV_OFFER" property="invOffer" jdbcType="CHAR" />
+    <result column="IF_EARNING" property="ifEarning" jdbcType="CHAR" />
+    <result column="IF_PAYOLD" property="ifPayold" jdbcType="CHAR" />
+    <result column="IF_SAVEBACK" property="ifSaveback" jdbcType="CHAR" />
+    <result column="IF_PRINCIPAL" property="ifPrincipal" jdbcType="CHAR" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="CREATE_STAFF" property="createStaff" jdbcType="VARCHAR" />
+    <result column="UPDATE_STAFF" property="updateStaff" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BALANCE_TYPE_ID, PRIORITY, SPE_PAYMENT_ID, MEASURE_METHOD_ID, BALANCE_TYPE_NAME, 
+    ALLOW_DRAW, INV_OFFER, IF_EARNING, IF_PAYOLD, IF_SAVEBACK, IF_PRINCIPAL, STATUS_CD, 
+    CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from balance_type_mod
+    where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from balance_type_mod
+    where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    insert into balance_type_mod (BALANCE_TYPE_ID, PRIORITY, SPE_PAYMENT_ID, 
+      MEASURE_METHOD_ID, BALANCE_TYPE_NAME, ALLOW_DRAW, 
+      INV_OFFER, IF_EARNING, IF_PAYOLD, 
+      IF_SAVEBACK, IF_PRINCIPAL, STATUS_CD, 
+      CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, 
+      STATUS_DATE, UPDATE_DATE)
+    values (#{balanceTypeId,jdbcType=BIGINT}, #{priority,jdbcType=BIGINT}, #{spePaymentId,jdbcType=BIGINT}, 
+      #{measureMethodId,jdbcType=BIGINT}, #{balanceTypeName,jdbcType=VARCHAR}, #{allowDraw,jdbcType=CHAR}, 
+      #{invOffer,jdbcType=CHAR}, #{ifEarning,jdbcType=CHAR}, #{ifPayold,jdbcType=CHAR}, 
+      #{ifSaveback,jdbcType=CHAR}, #{ifPrincipal,jdbcType=CHAR}, #{statusCd,jdbcType=VARCHAR}, 
+      #{createStaff,jdbcType=VARCHAR}, #{updateStaff,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{statusDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    insert into balance_type_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="balanceTypeId != null" >
+        BALANCE_TYPE_ID,
+      </if>
+      <if test="priority != null" >
+        PRIORITY,
+      </if>
+      <if test="spePaymentId != null" >
+        SPE_PAYMENT_ID,
+      </if>
+      <if test="measureMethodId != null" >
+        MEASURE_METHOD_ID,
+      </if>
+      <if test="balanceTypeName != null" >
+        BALANCE_TYPE_NAME,
+      </if>
+      <if test="allowDraw != null" >
+        ALLOW_DRAW,
+      </if>
+      <if test="invOffer != null" >
+        INV_OFFER,
+      </if>
+      <if test="ifEarning != null" >
+        IF_EARNING,
+      </if>
+      <if test="ifPayold != null" >
+        IF_PAYOLD,
+      </if>
+      <if test="ifSaveback != null" >
+        IF_SAVEBACK,
+      </if>
+      <if test="ifPrincipal != null" >
+        IF_PRINCIPAL,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF,
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="balanceTypeId != null" >
+        #{balanceTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=BIGINT},
+      </if>
+      <if test="spePaymentId != null" >
+        #{spePaymentId,jdbcType=BIGINT},
+      </if>
+      <if test="measureMethodId != null" >
+        #{measureMethodId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceTypeName != null" >
+        #{balanceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="allowDraw != null" >
+        #{allowDraw,jdbcType=CHAR},
+      </if>
+      <if test="invOffer != null" >
+        #{invOffer,jdbcType=CHAR},
+      </if>
+      <if test="ifEarning != null" >
+        #{ifEarning,jdbcType=CHAR},
+      </if>
+      <if test="ifPayold != null" >
+        #{ifPayold,jdbcType=CHAR},
+      </if>
+      <if test="ifSaveback != null" >
+        #{ifSaveback,jdbcType=CHAR},
+      </if>
+      <if test="ifPrincipal != null" >
+        #{ifPrincipal,jdbcType=CHAR},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    update balance_type_mod
+    <set >
+      <if test="priority != null" >
+        PRIORITY = #{priority,jdbcType=BIGINT},
+      </if>
+      <if test="spePaymentId != null" >
+        SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
+      </if>
+      <if test="measureMethodId != null" >
+        MEASURE_METHOD_ID = #{measureMethodId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceTypeName != null" >
+        BALANCE_TYPE_NAME = #{balanceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="allowDraw != null" >
+        ALLOW_DRAW = #{allowDraw,jdbcType=CHAR},
+      </if>
+      <if test="invOffer != null" >
+        INV_OFFER = #{invOffer,jdbcType=CHAR},
+      </if>
+      <if test="ifEarning != null" >
+        IF_EARNING = #{ifEarning,jdbcType=CHAR},
+      </if>
+      <if test="ifPayold != null" >
+        IF_PAYOLD = #{ifPayold,jdbcType=CHAR},
+      </if>
+      <if test="ifSaveback != null" >
+        IF_SAVEBACK = #{ifSaveback,jdbcType=CHAR},
+      </if>
+      <if test="ifPrincipal != null" >
+        IF_PRINCIPAL = #{ifPrincipal,jdbcType=CHAR},
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null" >
+        CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="updateStaff != null" >
+        UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    update balance_type_mod
+    set PRIORITY = #{priority,jdbcType=BIGINT},
+      SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
+      MEASURE_METHOD_ID = #{measureMethodId,jdbcType=BIGINT},
+      BALANCE_TYPE_NAME = #{balanceTypeName,jdbcType=VARCHAR},
+      ALLOW_DRAW = #{allowDraw,jdbcType=CHAR},
+      INV_OFFER = #{invOffer,jdbcType=CHAR},
+      IF_EARNING = #{ifEarning,jdbcType=CHAR},
+      IF_PAYOLD = #{ifPayold,jdbcType=CHAR},
+      IF_SAVEBACK = #{ifSaveback,jdbcType=CHAR},
+      IF_PRINCIPAL = #{ifPrincipal,jdbcType=CHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      CREATE_STAFF = #{createStaff,jdbcType=VARCHAR},
+      UPDATE_STAFF = #{updateStaff,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+  </update>
+</mapper>

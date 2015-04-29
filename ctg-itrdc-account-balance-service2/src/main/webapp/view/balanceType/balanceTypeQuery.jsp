@@ -9,16 +9,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/gray/easyui.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/demo.css">
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
-	
 </head>
 
  <body>
  <script type="text/javascript">
+ (function($) {  
+    function load(context) {  
+        var nodeName = context.nodeName;  
+        var href = $(context).attr("href");  
+        console.log("nodeName=>" + nodeName + "; href=>" + href);  
+        if (nodeName != "a" && nodeName != "A" && href != "") {  
+            $(context).load(href);  
+        }  
+    }  
+  
+    $(".page").each(function() {  
+        //load content  
+        load(this);  
+        //auto reload content when href changed  
+        var self = this;  
+        $(self).bind("hrefChange", function() {  
+            load(self);  
+        });  
+    });  
+})(jQuery);  
  function submit_form(){
  	$.ajax({  
         async:false,  
@@ -28,12 +42,72 @@
         cache: false,
         data:$('#form_select').serialize(),  
         success:function(data){
-        	$.messager.alert("提示", "查询成功!");
+        	//$.messager.alert("提示", "查询成功!");
+        	$('#balanceTypeQueryResult').datagrid({
+    				striped : true,
+    				height:200,
+    				singleSelect : true,
+    				fitColumns : true,
+    				loadMsg : '数据加载中请稍后……',
+    				rownumbers : true,
+    				columns : [ [
+						{
+							field : 'priority',
+							title : '余额类型优先级',
+							align : 'left'
+						},{
+							field : 'spePaymentId',
+							title : '专款专用标识',
+							align : 'left'
+						},{
+							field : 'measureMethodId',
+							title : '度量方法标识',
+							align : 'left'
+						},{
+							field : 'balanceTypeName',
+							title : '余额类型名称',
+							align : 'left'
+						},
+						{
+							field : 'allowDraw',
+							title : '允许提取标志',
+							align : 'left'
+						},{
+							field : 'invOffer',
+							title : '提供发票标志',
+							align : 'left'
+						},{
+							field : 'ifEarning',
+							title : '是否抵收入',
+							align : 'left'
+						},{
+							field : 'ifPayold',
+							title : '是否抵旧欠',
+							align : 'left'
+						},{
+							field : 'ifSaveback',
+							title : '是否滚存',
+							align : 'left'
+						},{
+							field : 'ifPrincipal',
+							title : '是否本金',
+							align : 'left'
+						},{
+							field : 'statusCd',
+							title : '状态',
+							align : 'left'
+						},{
+							field : 'statusDate',
+							title : '状态时间',
+							align : 'left'
+						}
+					] ]
+				}); 
         }
     }); 
  }
  </script>
-<div  align="center" > 
+<div> 
 		<form id="form_select" >
 		<table style="padding: 10px;">
 			<tr>
@@ -65,6 +139,7 @@
 			</tr>
 		</table>
 		</form>
+		<div id="balanceTypeQueryResult" ></div>
 		</div>
 </body>
 </html>
