@@ -41,8 +41,12 @@ public class BalanceTypeAction extends ActionSupport{
 	public String balanceTypeQueryGo()throws Exception{
 		return SUCCESS;
 	}
-	
-	
+	public String balanceTypeAdd()throws Exception{
+		return SUCCESS;
+	}
+	public String balanceTypeAddGo()throws Exception{
+		return SUCCESS;
+	}
 	public String getBalanceTypeId() {
 		return balanceTypeId;
 	}

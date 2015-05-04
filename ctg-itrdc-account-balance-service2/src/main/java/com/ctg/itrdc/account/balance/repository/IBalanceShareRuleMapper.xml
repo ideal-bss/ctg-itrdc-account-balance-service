@@ -232,7 +232,7 @@
       SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
     where SHARE_RULE_ID = #{shareRuleId,jdbcType=BIGINT}
   </update>
-  <select id="selectRuleByObjectId" parameterType="java.lang.Long">
+  <select id="selectRuleByObjectId" parameterType="java.lang.Long" resultType="java.lang.Integer">
   	select count(*) from balance_share_rule_mod
   	where
   	OBJECT_ID=#{objectId,jdbcType=BIGINT}
@@ -240,7 +240,7 @@
   <select id="selectRuleType" parameterType="map" resultType="map">
   	select ACCT_BALANCE_ID from balance_share_rule_mod
   	where 
-  		OBJECT_ID=#{objectId,jdbcType=BIGINT}
-  	and OBJECT_TYPE = #{objectType,jdbcType=VARCHAR}
+  		OBJECT_ID=#{OBJECT_ID,jdbcType=BIGINT}
+  	and OBJECT_TYPE = #{OBJECT_TYPE,jdbcType=VARCHAR}
   </select>
 </mapper>

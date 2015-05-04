@@ -251,7 +251,8 @@
    </select>
    <update id="updateBalance" parameterType="map">
    	update acct_balance_mod 
-   	set BALANCE = BALANCE+#{balance,jdbcType=BIGINT}
-   	where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+   	set BALANCE = BALANCE+#{BALANCE,jdbcType=BIGINT}
+   	where ACCT_BALANCE_ID = #{ACCT_BALANCE_ID,jdbcType=BIGINT}
+   	and SLICE_KEY = #{SLICE_KEY,jdbcType=BIGINT}
    </update>
 </mapper>

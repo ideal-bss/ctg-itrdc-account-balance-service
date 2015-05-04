@@ -136,6 +136,7 @@
 			</tr>
 			<tr>
 				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
+				<!-- <td><a href="#" class="easyui-linkbutton" onclick="balanceTypeAddGo('');" style="width:65px">新增</a></td> -->
 			</tr>
 		</table>
 		</form>

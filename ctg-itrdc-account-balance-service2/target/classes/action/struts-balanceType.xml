@@ -13,7 +13,14 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
-        
+        <action name="balanceTypeAddGo" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="balanceTypeAddGo">
+            <result name="success">/view/balanceType/balanceTypeAdd.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <action name="balanceTypeAdd" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="balanceTypeAdd">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
  
     </package>
 </struts>

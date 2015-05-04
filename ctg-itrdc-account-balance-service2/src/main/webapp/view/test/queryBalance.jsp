@@ -18,7 +18,26 @@
 </head>
 
  <body>
-<div  align="center" > 
+<script type="text/javascript">
+$(function(){
+$('#effDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	}); 
+ 	$('#expDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	});
+ 	$('#statusDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	});
+});
+</script>
+<div> 
 		<form id="form_select" >
 		<table style="padding: 10px;">
 			<tr>
@@ -30,9 +49,37 @@
 				<td width="20%">
 					<input id="" name="" value="" class="easyui-combo" >
 				</td>
-				<td width="10%">&nbsp;拥有账户标识:</td>
+				<td width="10%">&nbsp;账户标识:</td>
 				<td width="20%">
 					<input id="" name="" value="" class="easyui-textbox" >
+				</td>
+			</tr>
+			<tr>
+				<td width="10%">拥有子账户标识</td>
+				<td width="20%">
+					<input id="" name="" value="" class="easyui-textbox" >
+					</td>
+				<td width="10%">&nbsp;状态:</td>
+				<td width="20%">
+					<input id="" name="" value="" class="easyui-combo" >
+				</td>
+				<td width="10%">&nbsp;限额类型:</td>
+				<td width="20%">
+					<input id="" name="" value="" class="easyui-combo" >
+				</td>
+			</tr>
+			<tr>
+				<td width="10%">生效时间</td>
+				<td width="20%">
+					<input id="effDate" name="effDate" value="" class="easyui-datebox" >
+					</td>
+				<td width="10%">&nbsp;失效时间:</td>
+				<td width="20%">
+					<input id="expDate" name="" value="" class="easyui-datebox" >
+				</td>
+				<td width="10%">&nbsp;状态时间:</td>
+				<td width="20%">
+					<input id="statusDate" name="statusDate" value="" class="easyui-datebox" >
 				</td>
 			</tr>
 			<tr>

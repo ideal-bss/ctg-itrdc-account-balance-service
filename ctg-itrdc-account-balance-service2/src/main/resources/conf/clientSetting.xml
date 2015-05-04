@@ -9,6 +9,6 @@
 		<cacheInfo seqName="SEQ_TEST" cacheSize="1000" loadFactor="0.8"/>
 	</cacheInfos>
 	<fetchType>http</fetchType>
-	<address>http://10.128.96.36:9000/services/seqService</address>
-	<monitorAddress>http://10.128.96.36:9000/services/allMonitorQuery</monitorAddress>
+	<address>http://10.142.90.17:9000/services/seqService</address>
+	<monitorAddress>http://10.142.90.17:9000/services/allMonitorQuery</monitorAddress>
 </clientSetting>

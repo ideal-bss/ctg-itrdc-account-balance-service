@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringUtil {
-	private static ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:/conf/applicationContext*.xml");
+	private static ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:/conf/mybatisDatasource*.xml");
 
 	  public static <T> T getBean(String beanId)
 	  {

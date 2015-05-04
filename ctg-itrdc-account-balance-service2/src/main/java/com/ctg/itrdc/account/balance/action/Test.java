@@ -99,7 +99,7 @@ public class Test {
 //		testimpl.testInsert();
 //		testimpl.testMyibatis();
 //		testimpl.testSelectMybatis();
-		testimpl.selectSequence();
+//		testimpl.selectSequence();
 		System.out.println("ok");
 	}
 	public static void main(String[] args) throws Exception {

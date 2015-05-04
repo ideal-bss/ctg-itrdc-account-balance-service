@@ -39,6 +39,9 @@ public class SpecialPaymentAction extends ActionSupport{
 	public String specialQueryGo()throws Exception{
 		return SUCCESS;
 	}
+	public String specialAddGo()throws Exception{
+		return SUCCESS;
+	}
 	public String getSpePaymentId() {
 		return spePaymentId;
 	}

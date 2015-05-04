@@ -17,6 +17,36 @@
     INDEX_TABLE_ID, BALANCE_LOG_ID, ACCT_BALANCE_ID, OPER_PAYOUT_ID, BALANCE_RELATION_ID, 
     BALANCE_RESERVE_ID, SHARE_RULE_ID, OPER_INCOME_ID, SLICE_KEY_ID, SLICE_KEY
   </sql>
+  <select id="selectSliceKeyID" parameterType="map" resultType="java.lang.String">
+  	select 
+    	SLICE_KEY_ID
+    from index_table_mod
+    where 1=1
+    	<if test="balanceLogId != null" >
+       AND BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
+      </if>
+      <if test="acctBalanceId != null" >
+       AND ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+      </if>
+      <if test="operPayoutId != null" >
+       AND OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+      </if>
+      <if test="balanceRelationId != null" >
+       AND BALANCE_RELATION_ID = #{balanceRelationId,jdbcType=BIGINT}
+      </if>
+      <if test="balanceReserveId != null" >
+       AND BALANCE_RESERVE_ID = #{balanceReserveId,jdbcType=BIGINT}
+      </if>
+      <if test="shareRuleId != null" >
+       AND SHARE_RULE_ID = #{shareRuleId,jdbcType=BIGINT}
+      </if>
+      <if test="operIncomeId != null" >
+       AND OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT}
+      </if>
+      <if test="sliceKey != null" >
+       AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+      </if>
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -37,7 +67,7 @@
       #{shareRuleId,jdbcType=BIGINT}, #{operIncomeId,jdbcType=BIGINT}, #{sliceKeyId,jdbcType=BIGINT}, 
       #{sliceKey,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.IndexTableModel" >
+  <insert id="insertSelective" parameterType="map" >
     insert into index_table_mod
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="indexTableId != null" >

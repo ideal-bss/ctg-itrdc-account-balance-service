@@ -2,7 +2,7 @@ package com.ctg.itrdc.account.balance.repository;
 
 import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 
-public interface IAcctBalanceLogMapper {
+public interface IAcctBalanceLogMapper{
 
     int deleteByPrimaryKey(Long balanceLogId);
 

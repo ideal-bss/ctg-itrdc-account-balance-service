@@ -13,7 +13,10 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
-        
+        <action name="specialAddGo" class="com.ctg.itrdc.account.balance.action.SpecialPaymentAction" method="specialAddGo">
+            <result name="success">/view/special/specialPaymentAdd.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
  
     </package>
 </struts>

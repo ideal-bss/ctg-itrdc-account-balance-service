@@ -16,9 +16,11 @@ public interface IIndexTableMapper {
 
     int insert(IndexTableModel record);
 
-    int insertSelective(IndexTableModel record);
+    int insertSelective(Map map);
     
     Map<String, String> selectbyBalanceId(Long acctBalanceId);
     
     int selectCountByBalanceId(Map<String, String> map);
+    
+    String selectSliceKeyID(Map<String, Object> map);
 }
