@@ -1,6 +1,8 @@
 package com.ctg.itrdc.account.balance.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		iAcctBalanceMapper.selectAcctBalance(map);
 		
 	}
+	
 	public IAcctBalanceMapper getiAcctBalanceMapper() {
 		return iAcctBalanceMapper;
 	}
@@ -102,6 +105,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	@Autowired
 	public void setSliceKeyDao(SliceKeyDao sliceKeyDao) {
 		this.sliceKeyDao = sliceKeyDao;
+	}
+	@Override
+	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model) {
+		// TODO Auto-generated method stub
+		List<AcctBalanceModel> list=new ArrayList<AcctBalanceModel>();
+		list.add(iAcctBalanceMapper.selectByPrimaryKey(model));
+		return list;
 	}
 
 	

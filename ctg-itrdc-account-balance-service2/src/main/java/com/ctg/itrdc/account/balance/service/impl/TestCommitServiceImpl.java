@@ -61,9 +61,9 @@ public class TestCommitServiceImpl{
 		System.out.println("res....:"+res);
 	}
 	public void selectPrimaryKey(){
-		IAcctBalanceMapper iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);
-		AcctBalanceModel res=iAcctBalanceMapper.selectByPrimaryKey(1L);
-		System.out.println("selectAcctBalance....:"+res.getAcctBalanceId());
+//		IAcctBalanceMapper iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);
+//		AcctBalanceModel res=iAcctBalanceMapper.selectByPrimaryKey(1L);
+//		System.out.println("selectAcctBalance....:"+res.getAcctBalanceId());
 	}
 	public void testHit()
 	{

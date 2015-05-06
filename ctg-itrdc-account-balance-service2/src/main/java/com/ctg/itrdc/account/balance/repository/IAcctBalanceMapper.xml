@@ -27,11 +27,12 @@
     EXP_DATE, BALANCE, RESERVE_BALANCE, CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, STATUS_CD, 
     STATUS_DATE, CYCLE_TYPE, REMARK, NEED_INVOICE_AMOUNT, SLICE_KEY
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
     select 
     <include refid="Base_Column_List" />
     from acct_balance_mod
     where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+    and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
   </select>
    <insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
     insert into acct_balance_mod (ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, 
@@ -247,7 +248,7 @@
   </update>
    <select id="selectAcctBalance" parameterType="map">
    	select count(*) FROM ACCT_BALANCE WHERE ACCT_BALANCE_ID=#{ACCT_BALANCE_ID,jdbcType=DECIMAL} 
-   	AND SLICE_KEY=#{ACCT_BALANCE_ID,jdbcType=DECIMAL} 
+   	AND SLICE_KEY=#{SLICE_KEY,jdbcType=DECIMAL} 
    </select>
    <update id="updateBalance" parameterType="map">
    	update acct_balance_mod 

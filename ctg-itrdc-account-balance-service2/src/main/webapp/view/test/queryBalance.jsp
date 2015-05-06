@@ -36,10 +36,111 @@ $('#effDate').datebox({
 		}
  	});
 });
+
+ function submit_form(){
+ 	$.ajax({  
+        async:false,  
+        type:"POST",  
+        url:"<%=rootPath%>/acctBalance/balanceQueryGo.action",  
+        dataType:"json",  
+        cache: false,
+        data:$('#form_select').serialize(),  
+        success:function(datas){
+        	$('#balanceQueryResult').datagrid({
+    				striped : true,
+    				height:200,
+    				singleSelect : true,
+    				fitColumns : true,
+    				loadMsg : '数据加载中请稍后……',
+    				rownumbers : true,
+    				columns : [ [
+						{
+							field : 'ACCT_BALANCE_ID',
+							title : '余额帐本标识',
+							align : 'left',
+							width : 300
+						},{
+							field : 'BALANCE_TYPE_ID',
+							title : '余额类型标识',
+							align : 'left',
+							width : 300
+						},{
+							field : 'PAYMENT_RULE_ID',
+							title : '支付规则标识',
+							align : 'left',
+							width : 300
+						},{
+							field : 'SUB_ACCT_ID',
+							title : '拥有子账户标识',
+							align : 'left',
+							width : 300
+						},
+						{
+							field : 'ACCT_ID',
+							title : '帐户标识',
+							align : 'left',
+							width : 300
+						},{
+							field : 'BALANCE',
+							title : '余额(分)',
+							align : 'left',
+							width : 300
+						},{
+							field : 'STATUS_CD',
+							title : '状态',
+							align : 'left',
+							width : 300
+						},{
+							field : 'REMARK',
+							title : '备注',
+							align : 'left',
+							width : 300
+						}
+					] ]
+				}); 
+				$('#balanceQueryResult').datagrid('loadData', { total: 0, rows: [] });
+				if(datas){
+        		for(var i=0; i<datas.length; i++){
+            		var data = datas[i];
+            		$('#balanceQueryResult').datagrid('appendRow', {
+            				ACCT_BALANCE_ID: data.acctBalanceId,
+            				BALANCE_TYPE_ID: data.balanceTypeId ,
+            				PAYMENT_RULE_ID: data.paymentRuleId,
+            				SUB_ACCT_ID: data.subAcctId,
+            				ACCT_ID: data.acctId,
+            				BALANCE: data.balance,
+            				STATUS_CD: data.statusCd,
+            				REMARK: data.remark
+                    });
+            	}
+        	}
+        }
+    }); 
+ }
+
 </script>
 <div> 
 		<form id="form_select" >
 		<table style="padding: 10px;">
+			<tr>
+				<td width="10%">设备号:</td>
+				<td width="20%">
+					<input id="deviceNo" name="deviceNo" value="" class="easyui-textbox" >
+				</td>
+				<td width="10%">账户标识:</td>
+				<td width="20%">
+				<input id="acctId" name="acctId" value="" class="easyui-combo" >
+				</td>
+			</tr>
+			<tr>
+				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
+			</tr>
+		</table>
+		
+		
+		
+		
+		<!-- <table style="padding: 10px;">
 			<tr>
 				<td width="10%">余额帐本标识</td>
 				<td width="20%">
@@ -85,8 +186,9 @@ $('#effDate').datebox({
 			<tr>
 				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
 			</tr>
-		</table>
+		</table> -->
 		</form>
+		<div id="balanceQueryResult" ></div>
 		</div>
 </body>
 </html>

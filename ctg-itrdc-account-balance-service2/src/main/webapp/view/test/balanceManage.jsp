@@ -50,7 +50,7 @@ function balanceAdd(){
             title:"余额存入",
             href:"<%=rootPath%>/acctBalance/balanceAddGo.action",
             closable:true
-        });
+        });///view/acctBalance/balanceAdd.jsp  /acctBalance/balanceAddGo.action
     }
 }
 function specialQuery(){
@@ -75,6 +75,28 @@ function balanceType(){
         });
     }
 }
+function specialAddGo(){
+	if ($('#tt').tabs('exists', "专款专用新增")){
+        $('#tt').tabs('select', "专款专用新增");
+    } else {
+    	$('#tt').tabs('add',{
+            title:"专款专用新增",
+            href:"<%=rootPath%>/special/specialAddGo.action",
+            closable:true
+        });
+    }
+}
+function balanceTypeAddGo(){
+	if ($('#tt').tabs('exists', "余额类型新增")){
+        $('#tt').tabs('select', "余额类型新增");
+    } else {
+    	$('#tt').tabs('add',{
+            title:"余额类型新增",
+            href:"<%=rootPath%>/balanceType/balanceTypeAddGo.action",
+            closable:true
+        });
+    }
+}
 </script>
  <div class="easyui-layout" style="padding:10px;height:550px;">
 	<div data-options="region:'west',split:true" style="width: 20%;">
@@ -88,11 +110,13 @@ function balanceType(){
 			<div id="specialPayment" title="专款专用配置">
 				<ul type="none" style="font-size: 16px;">
 					<li><a href="javascript:specialQuery();" style="font-size: 16px;text-decoration: none;color: black;">专款专用查询</a></li>
+					<li><a href="javascript:specialAddGo();" style="font-size: 16px;text-decoration: none;color: black;">专款专用新增</a></li>
 				</ul>
 			</div>
 			<div id="balanceType" title="余额类型管理">
 				<ul type="none" style="font-size: 16px;">
 					<li><a href="javascript:balanceType();" style="font-size: 16px;text-decoration: none;color: black;">余额类型查询</a></li>
+					<li><a href="javascript:balanceTypeAddGo();" style="font-size: 16px;text-decoration: none;color: black;">余额类型新增</a></li>
 				</ul>
 			</div>
 		</div>

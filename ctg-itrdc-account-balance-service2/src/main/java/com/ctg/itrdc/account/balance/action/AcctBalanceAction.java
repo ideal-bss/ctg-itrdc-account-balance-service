@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
+import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 import com.opensymphony.xwork2.ActionSupport;
 /**
@@ -25,9 +26,16 @@ import com.opensymphony.xwork2.ActionSupport;
  *
  */
 @Controller
-public class AcctBalanceAction extends ActionSupport{
-	private String acctBalanceId;
-    private String balanceTypeId;
+public class AcctBalanceAction extends BaseAction{
+	private String objectId;//余额对象标识
+	private String objectType;//余额对象类型
+	private String shareRuleTypeId;//共享规则类型
+	private String shareRuleTypePri;//共享规则优先级
+	private String upperAmount;//扣费上限
+	private String lowerAmount;//扣费下限
+	
+//	private String acctBalanceId;
+    private String balanceTypeId;//余额类型标识
     private String paymentRuleId;
     private String subAcctId;
     private String acctId;
@@ -45,12 +53,22 @@ public class AcctBalanceAction extends ActionSupport{
     private String needInvoiceAmount;
 	private IAcctBalanceService iAcctBalanceService;
 	/**
+	 * 余额账本查询
+	 */
+	public void balanceQueryGo(){
+		AcctBalanceModel model=new AcctBalanceModel();
+		model.setAcctBalanceId((long)1);
+		model.setSliceKey((long)1);
+		writeJson(iAcctBalanceService.selectBalance(model));
+	}
+	/**
 	 * 普通余额存入界面展现
 	 * @return
 	 * @throws Exception
 	 */
 	public String balanceAddGo()throws Exception{
-		return SUCCESS;
+		System.out.println("..............................");
+		return "success";
 	}
 	/**
 	 * 普通余额存入
@@ -59,8 +77,8 @@ public class AcctBalanceAction extends ActionSupport{
 	 */
 	public String balanceAdd()throws Exception{
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
+		//账本对象
 		AcctBalanceModel acctBalanceModel=new AcctBalanceModel();
-		acctBalanceModel.setAcctBalanceId(Long.parseLong(acctBalanceId));
 		acctBalanceModel.setBalanceTypeId(Long.parseLong(balanceTypeId));
 		acctBalanceModel.setPaymentRuleId(Long.parseLong(paymentRuleId));
 		acctBalanceModel.setSubAcctId(Long.parseLong(subAcctId));
@@ -77,9 +95,16 @@ public class AcctBalanceAction extends ActionSupport{
 		acctBalanceModel.setRemark(remark);
 		acctBalanceModel.setNeedInvoiceAmount(Long.parseLong(needInvoiceAmount));
 		
-		iAcctBalanceService.insertAcctBalance(acctBalanceModel);
+		//共享规则对象
+		BalanceShareRuleModel shareModel=new BalanceShareRuleModel();
+		shareModel.setObjectId(Long.parseLong(objectId));
+		shareModel.setObjectType(objectType);
+		shareModel.setShareRuleTypeId(Long.parseLong(shareRuleTypeId));
+		shareModel.setShareRuleTypePri(Long.parseLong(shareRuleTypePri));
+		shareModel.setUpperAmount(Long.parseLong(upperAmount));
+		shareModel.setLowerAmount(Long.parseLong(lowerAmount));
 		
-		System.out.println("......."+acctBalanceId);
+		iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
 		List list=new ArrayList();
 		HttpServletResponse res =ServletActionContext.getResponse();
 		JSONArray json = new JSONArray();
@@ -89,7 +114,7 @@ public class AcctBalanceAction extends ActionSupport{
 		writer.print(json);
 		writer.flush();
 		writer.close();
-		return SUCCESS;
+		return "success";
 	}
 
 	
@@ -99,12 +124,6 @@ public class AcctBalanceAction extends ActionSupport{
 	@Autowired
 	public void setiAcctBalanceService(IAcctBalanceService iAcctBalanceService) {
 		this.iAcctBalanceService = iAcctBalanceService;
-	}
-	public String getAcctBalanceId() {
-		return acctBalanceId;
-	}
-	public void setAcctBalanceId(String acctBalanceId) {
-		this.acctBalanceId = acctBalanceId;
 	}
 	public String getBalanceTypeId() {
 		return balanceTypeId;
@@ -201,6 +220,42 @@ public class AcctBalanceAction extends ActionSupport{
 	}
 	public void setNeedInvoiceAmount(String needInvoiceAmount) {
 		this.needInvoiceAmount = needInvoiceAmount;
+	}
+	public String getObjectId() {
+		return objectId;
+	}
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
+	}
+	public String getObjectType() {
+		return objectType;
+	}
+	public void setObjectType(String objectType) {
+		this.objectType = objectType;
+	}
+	public String getShareRuleTypeId() {
+		return shareRuleTypeId;
+	}
+	public void setShareRuleTypeId(String shareRuleTypeId) {
+		this.shareRuleTypeId = shareRuleTypeId;
+	}
+	public String getShareRuleTypePri() {
+		return shareRuleTypePri;
+	}
+	public void setShareRuleTypePri(String shareRuleTypePri) {
+		this.shareRuleTypePri = shareRuleTypePri;
+	}
+	public String getUpperAmount() {
+		return upperAmount;
+	}
+	public void setUpperAmount(String upperAmount) {
+		this.upperAmount = upperAmount;
+	}
+	public String getLowerAmount() {
+		return lowerAmount;
+	}
+	public void setLowerAmount(String lowerAmount) {
+		this.lowerAmount = lowerAmount;
 	}
 	
 }

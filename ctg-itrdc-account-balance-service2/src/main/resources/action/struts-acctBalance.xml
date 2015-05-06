@@ -13,7 +13,10 @@
             <result name="success">/view/acctBalance/acctBalanceAdd.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
-        
+        <action name="balanceQueryGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceQueryGo">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
 
  		
     </package>
