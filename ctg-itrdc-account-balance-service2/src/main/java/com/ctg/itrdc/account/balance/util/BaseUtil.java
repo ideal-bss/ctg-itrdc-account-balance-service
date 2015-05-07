@@ -22,6 +22,23 @@ public class BaseUtil {
 		return url;
 
 	}
+	public static String getMenuUrl() {
+
+		Class c = null;
+		try {
+			c = Class
+					.forName("com.ctg.itrdc.account.balance.util.BaseUtil");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		File f = new File(c.getResource("").getPath());
+		String url= f.getParentFile().getParentFile().getParentFile()
+		.getParentFile().getParentFile().getParent()
+		+ File.separator+"conf/menu.xml";
+		return url;
+
+	}
 	public static String getProperty(String propertyName){
 		String pro="";
 		try {
@@ -36,6 +53,6 @@ public class BaseUtil {
 		return pro;
 	}
 	public static void main(String[] args) {
-		System.out.println(getProperty("balance.normal.expdate"));
+		System.out.println(getMenuUrl());
 	}
 }
