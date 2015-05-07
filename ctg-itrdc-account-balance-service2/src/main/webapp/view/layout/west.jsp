@@ -13,7 +13,7 @@
         			var data = datas[i];
         			$("#view_layout_west_accordion").accordion('add',{
 			            title: data.attributesMenu.itemName,
-			            selected: true,
+			            selected: false,
 			            content:"<ul id=\""+data.attributesMenu.itemId+"\"></ul>"
 			        });
 			        $("#"+data.attributesMenu.itemId+"").tree({

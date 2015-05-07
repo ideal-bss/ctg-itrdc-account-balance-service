@@ -19,7 +19,7 @@ import com.opensymphony.xwork2.ActionSupport;
  *
  */
 @Controller
-public class BalanceTypeAction extends ActionSupport{
+public class BalanceTypeAction extends BaseAction{
 	private String balanceTypeId;
 	private String priority;
 	private String spePaymentId;
@@ -36,16 +36,16 @@ public class BalanceTypeAction extends ActionSupport{
 		writer.print(json);
 		writer.flush();
 		writer.close();
-		return SUCCESS;
+		return "success";
 	}
 	public String balanceTypeQueryGo()throws Exception{
-		return SUCCESS;
+		return "success";
 	}
 	public String balanceTypeAdd()throws Exception{
-		return SUCCESS;
+		return "success";
 	}
 	public String balanceTypeAddGo()throws Exception{
-		return SUCCESS;
+		return "success";
 	}
 	public String getBalanceTypeId() {
 		return balanceTypeId;

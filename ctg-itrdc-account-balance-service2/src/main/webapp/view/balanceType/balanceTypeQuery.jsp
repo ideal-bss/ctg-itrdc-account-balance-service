@@ -1,49 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%
-	String rootPath = request.getContextPath();
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
-</head>
-
- <body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<body>
  <script type="text/javascript">
- (function($) {  
-    function load(context) {  
-        var nodeName = context.nodeName;  
-        var href = $(context).attr("href");  
-        console.log("nodeName=>" + nodeName + "; href=>" + href);  
-        if (nodeName != "a" && nodeName != "A" && href != "") {  
-            $(context).load(href);  
-        }  
-    }  
-  
-    $(".page").each(function() {  
-        //load content  
-        load(this);  
-        //auto reload content when href changed  
-        var self = this;  
-        $(self).bind("hrefChange", function() {  
-            load(self);  
-        });  
-    });  
-})(jQuery);  
  function submit_form(){
  	$.ajax({  
         async:false,  
         type:"POST",  
-        url:"<%=rootPath%>/balanceType/balanceTypeQuery.action",  
+        url:'${pageContext.request.contextPath}/balanceType/balanceTypeQuery.action',  
         dataType:"json",  
         cache: false,
-        data:$('#form_select').serialize(),  
+        data:$('#view_balanceType_balanceTypeQuery_form').serialize(),  
         success:function(data){
-        	//$.messager.alert("提示", "查询成功!");
-        	$('#balanceTypeQueryResult').datagrid({
+        	$('#view_balanceType_balanceTypeQuery_result').datagrid({
     				striped : true,
     				height:200,
     				singleSelect : true,
@@ -108,7 +75,7 @@
  }
  </script>
 <div> 
-		<form id="form_select" >
+		<form id="view_balanceType_balanceTypeQuery_form" >
 		<table style="padding: 10px;">
 			<tr>
 				<td width="10%">余额类型标识:</td>
@@ -140,7 +107,7 @@
 			</tr>
 		</table>
 		</form>
-		<div id="balanceTypeQueryResult" ></div>
+		<div id="view_balanceType_balanceTypeQuery_result" ></div>
 		</div>
 </body>
 </html>

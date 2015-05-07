@@ -1,23 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%
-	String rootPath = request.getContextPath();
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/gray/easyui.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/demo.css">
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
-	
-</head>
-
- <body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<body>
 <script type="text/javascript">
 $(function(){
 $('#effDate').datebox({  
@@ -41,12 +23,12 @@ $('#effDate').datebox({
  	$.ajax({  
         async:false,  
         type:"POST",  
-        url:"<%=rootPath%>/acctBalance/balanceQueryGo.action",  
+        url:'${pageContext.request.contextPath}/acctBalance/balanceQueryGo.action',  
         dataType:"json",  
         cache: false,
-        data:$('#form_select').serialize(),  
+        data:$('#view_acctBalance_balanceQuery_form').serialize(),  
         success:function(datas){
-        	$('#balanceQueryResult').datagrid({
+        	$('#view_acctBalance_balanceQuery_result').datagrid({
     				striped : true,
     				height:200,
     				singleSelect : true,
@@ -82,7 +64,7 @@ $('#effDate').datebox({
 							width : 300
 						},{
 							field : 'BALANCE',
-							title : '余额(分)',
+							title : '余额',
 							align : 'left',
 							width : 300
 						},{
@@ -98,11 +80,11 @@ $('#effDate').datebox({
 						}
 					] ]
 				}); 
-				$('#balanceQueryResult').datagrid('loadData', { total: 0, rows: [] });
+				$('#view_acctBalance_balanceQuery_result').datagrid('loadData', { total: 0, rows: [] });
 				if(datas){
         		for(var i=0; i<datas.length; i++){
             		var data = datas[i];
-            		$('#balanceQueryResult').datagrid('appendRow', {
+            		$('#view_acctBalance_balanceQuery_result').datagrid('appendRow', {
             				ACCT_BALANCE_ID: data.acctBalanceId,
             				BALANCE_TYPE_ID: data.balanceTypeId ,
             				PAYMENT_RULE_ID: data.paymentRuleId,
@@ -120,75 +102,40 @@ $('#effDate').datebox({
 
 </script>
 <div> 
-		<form id="form_select" >
+		<form id="view_acctBalance_balanceQuery_form" >
 		<table style="padding: 10px;">
 			<tr>
 				<td width="10%">设备号:</td>
 				<td width="20%">
-					<input id="deviceNo" name="deviceNo" value="" class="easyui-textbox" >
+					<input id="" name="" value="" class="easyui-textbox" >
 				</td>
-				<td width="10%">账户标识:</td>
+				<td width="10%">金额:</td>
 				<td width="20%">
-				<input id="acctId" name="acctId" value="" class="easyui-combo" >
+				<input id="" name="" value="" class="easyui-combo" >
+				</td>
+				<td width="10%">余额类型:</td>
+				<td width="20%">
+				<input id="" name="" value="" class="easyui-combo" >
+				</td>
+			</tr>
+			<tr>
+				<td width="10%">备注:</td>
+				<td width="20%">
+					<input id="" name="" value="" class="easyui-textbox" >
+				</td>
+				<td width="10%"></td>
+				<td width="20%">
+				</td>
+				<td width="10%"></td>
+				<td width="20%">
 				</td>
 			</tr>
 			<tr>
 				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
 			</tr>
 		</table>
-		
-		
-		
-		
-		<!-- <table style="padding: 10px;">
-			<tr>
-				<td width="10%">余额帐本标识</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-textbox" >
-					</td>
-				<td width="10%">&nbsp;余额类型标识:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-combo" >
-				</td>
-				<td width="10%">&nbsp;账户标识:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-textbox" >
-				</td>
-			</tr>
-			<tr>
-				<td width="10%">拥有子账户标识</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-textbox" >
-					</td>
-				<td width="10%">&nbsp;状态:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-combo" >
-				</td>
-				<td width="10%">&nbsp;限额类型:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-combo" >
-				</td>
-			</tr>
-			<tr>
-				<td width="10%">生效时间</td>
-				<td width="20%">
-					<input id="effDate" name="effDate" value="" class="easyui-datebox" >
-					</td>
-				<td width="10%">&nbsp;失效时间:</td>
-				<td width="20%">
-					<input id="expDate" name="" value="" class="easyui-datebox" >
-				</td>
-				<td width="10%">&nbsp;状态时间:</td>
-				<td width="20%">
-					<input id="statusDate" name="statusDate" value="" class="easyui-datebox" >
-				</td>
-			</tr>
-			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
-			</tr>
-		</table> -->
 		</form>
-		<div id="balanceQueryResult" ></div>
+		<div id="view_acctBalance_balanceQuery_result" ></div>
 		</div>
 </body>
 </html>

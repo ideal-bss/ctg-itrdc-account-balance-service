@@ -12,7 +12,7 @@
 			<state></state>
 			<checked>false</checked>
 			<attributes>
-				<url>/test/queryBalance.action</url>
+				<url>/acctBalance/queryBalance.action</url>
 			</attributes>
 		</element>
 		<element>
@@ -30,7 +30,7 @@
 			<state></state>
 			<checked>false</checked>
 			<attributes>
-				<url>/special/specialQueryGo.action</url>
+				<url>/balanceType/balanceTypeQueryGo.action</url>
 			</attributes>
 		</element>
 

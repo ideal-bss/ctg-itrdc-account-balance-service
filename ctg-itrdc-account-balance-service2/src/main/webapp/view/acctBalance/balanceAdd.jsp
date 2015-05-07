@@ -1,22 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%
-	String rootPath = request.getContextPath();
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/gray/easyui.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/themes/demo.css">
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="<%=request.getContextPath()%>/public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
-	
-</head>
-
- <body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<body>
  <script type="text/javascript">
  $(function () {
  	$('#effDate').datebox({  
@@ -96,10 +79,10 @@
  	$.ajax({  
         async:false,  
         type:"POST",  
-        url:"<%=rootPath%>/acctBalance/balanceAdd.action",  
+        url:'${pageContext.request.contextPath}/acctBalance/balanceAdd.action',  
         dataType:"json",  
         cache: false,
-        data:$('#form_select').serialize(),  
+        data:$('#"view_acctBalance_balanceAdd_form"').serialize(),  
         success:function(data){
         	$.messager.alert("提示", "存入成功!");
         }
@@ -107,7 +90,7 @@
  }
  </script>
 <div> 
-		<form id="form_select" >
+		<form id="view_acctBalance_balanceAdd_form" >
 		<table style="padding: 10px 10px 10px 10px;">
 			<tr>
 				

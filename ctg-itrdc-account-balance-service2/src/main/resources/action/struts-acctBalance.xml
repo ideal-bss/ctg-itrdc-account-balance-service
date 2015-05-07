@@ -4,7 +4,10 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="acctBalance" namespace="/acctBalance" extends="struts-default">
- 
+ 		<action name="queryBalance" class="com.ctg.itrdc.account.balance.action.TestAction" method="queryBalance">
+            <result name="success">/view/acctBalance/balanceQuery.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
         <action name="balanceAddGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceAddGo">
             <result name="success">/view/acctBalance/balanceAdd.jsp</result>
             <result name="error">/view/test/error.jsp</result>
