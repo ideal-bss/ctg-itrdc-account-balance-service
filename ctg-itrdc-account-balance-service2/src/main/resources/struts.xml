@@ -18,5 +18,6 @@
     <include file="action/struts-acctBalance.xml"></include>
     <include file="action/struts-special.xml"></include>
     <include file="action/struts-balanceType.xml"></include>
+    <include file="action/struts-system.xml"></include>
 </struts>
 
