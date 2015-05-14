@@ -1,22 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <body>
  <script type="text/javascript">
+function myformatter(date){
+	var y = date.getFullYear();
+	var m = date.getMonth()+1;
+	var d = date.getDate();
+	return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+}
+function myparser(s){
+	if (!s) return new Date();
+	var ss = (s.split('-')); 
+	var y = parseInt(ss[0],10);
+	var m = parseInt(ss[1],10);
+	var d = parseInt(ss[2],10);
+	if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+		return new Date(y,m-1,d);
+	} else {
+		return new Date();
+	}
+}	
  $(function () {
- 	$('#effDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	}); 
- 	$('#expDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	});
- 	$('#statusDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	});
+ 	
  	$('#objectType').combobox( {
 		valueField : 'id',
 		textField : 'text',
@@ -150,11 +154,11 @@
 			<tr>
 				<td width="10%">&nbsp;生效时间:</td>
 				<td width="20%">
-					<input id="effDate" name="effDate" class="easyui-datebox">
+					<input id="effDate" name="effDate" value="" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
 				</td>
 				<td width="10%">&nbsp;失效时间:</td>
 				<td width="20%">
-					<input id="expDate" name="expDate" class="easyui-datebox">
+					<input id="expDate" name="expDate" value="2099-01-01" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
 				</td>
 			</tr> 
 			<tr>
@@ -185,7 +189,7 @@
 					</td>
 				<td width="10%">&nbsp;状态时间:</td>
 				<td width="20%">
-					<input id="statusDate" name="statusDate" class="easyui-datebox">
+					<input id="statusDate" name="statusDate" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
 				</td>
 				<td width="10%">&nbsp;限额类型:</td>
 				<td width="20%">
@@ -208,5 +212,21 @@
 		</table>
 		</form>
 		</div>
+		
+		<!-- $('#effDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	}); 
+ 	$('#expDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	});
+ 	$('#statusDate').datebox({  
+		formatter: function(date){ 
+			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
+		}
+ 	}); -->
 </body>
 </html>

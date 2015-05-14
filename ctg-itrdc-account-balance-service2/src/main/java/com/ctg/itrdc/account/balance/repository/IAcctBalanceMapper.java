@@ -1,5 +1,6 @@
 package com.ctg.itrdc.account.balance.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import com.ctg.itrdc.account.balance.dao.Mapper;
@@ -10,4 +11,6 @@ public interface IAcctBalanceMapper extends Mapper<AcctBalanceModel>{
 	int selectAcctBalance(Map<String, String> map);
     
     int updateBalance(Map<String, Object> map);
+    
+    List<AcctBalanceModel> selectBalanceByAcct(AcctBalanceModel model);
 }

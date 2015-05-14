@@ -10,4 +10,6 @@ public interface IAcctBalanceService {
 	public void insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel);
 	public void selectAcctBalance(Map<String, String> map);
 	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model);
+	public AcctBalanceModel selectBalanceById(AcctBalanceModel model);
+	
 }

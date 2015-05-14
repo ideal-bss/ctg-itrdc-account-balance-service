@@ -23,11 +23,11 @@
    	
    	<!-- SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE where ACCT_BALANCE_ID=1 -->
    	
-   	SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE_MOD where ACCT_BALANCE_ID=1 
+   	SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE where ACCT_BALANCE_ID=1 
    </select>
    
    <insert id="insertAcctBalance">
-   insert into acct_balance_mod (ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, 
+   insert into acct_balance (ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, 
       SUB_ACCT_ID, ACCT_ID, EFF_DATE, 
       EXP_DATE, BALANCE, RESERVE_BALANCE, 
       CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, 
@@ -43,7 +43,7 @@
       )
    </insert>
    <select id="selectByPrimaryKey" resultType="java.lang.Integer">
-   SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE_MOD where ACCT_BALANCE_ID=1 and SLICE_KEY=1
+   SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE where ACCT_BALANCE_ID=1 and SLICE_KEY=1
    </select>
    
    <insert id="insertGlobalSequence">
@@ -54,7 +54,7 @@
    <if test="hitSql != null" >
         #{hitSql,jdbcType=VARCHAR}
       </if>
-   SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE_MOD where ACCT_BALANCE_ID=1 
+   SELECT ACCT_BALANCE_ID FROM ACCT_BALANCE where ACCT_BALANCE_ID=1 
    
    </select>
 </mapper>

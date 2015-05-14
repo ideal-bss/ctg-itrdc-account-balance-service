@@ -1,18 +1,11 @@
 package com.ctg.itrdc.account.balance.repository;
 
+import java.util.List;
+
+import com.ctg.itrdc.account.balance.dao.Mapper;
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 
-public interface IBalanceTypeMapper {
+public interface IBalanceTypeMapper extends Mapper<BalanceTypeModel>{
 
-    int deleteByPrimaryKey(Long balanceTypeId);
-
-    int insert(BalanceTypeModel record);
-
-    int insertSelective(BalanceTypeModel record);
-
-    BalanceTypeModel selectByPrimaryKey(Long balanceTypeId);
-
-    int updateByPrimaryKeySelective(BalanceTypeModel record);
-
-    int updateByPrimaryKey(BalanceTypeModel record);
+    List<BalanceTypeModel> selectAllBalanceType();
 }

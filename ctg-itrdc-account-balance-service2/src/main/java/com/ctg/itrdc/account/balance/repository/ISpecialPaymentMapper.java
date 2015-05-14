@@ -1,18 +1,11 @@
 package com.ctg.itrdc.account.balance.repository;
 
+import java.util.List;
+
+import com.ctg.itrdc.account.balance.dao.Mapper;
 import com.ctg.itrdc.account.balance.model.SpecialPaymentModel;
 
-public interface ISpecialPaymentMapper {
+public interface ISpecialPaymentMapper extends Mapper<SpecialPaymentModel>{
 
-    int deleteByPrimaryKey(Long spePaymentId);
-
-    int insert(SpecialPaymentModel record);
-
-    int insertSelective(SpecialPaymentModel record);
-
-    SpecialPaymentModel selectByPrimaryKey(Long spePaymentId);
-
-    int updateByPrimaryKeySelective(SpecialPaymentModel record);
-
-    int updateByPrimaryKey(SpecialPaymentModel record);
+    List<SpecialPaymentModel> selectAllSpecial();
 }

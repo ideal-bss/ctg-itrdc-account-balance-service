@@ -81,7 +81,7 @@ public class MenuServiceImpl implements IMenuService {
 		List<MenuParent> menuList = new ArrayList<MenuParent>();
 		Document doc;
 		try {
-			doc = Jsoup.parse(new File(BaseUtil.getMenuUrl()), "UTF-8");
+			doc = Jsoup.parse(new File(BaseUtil.getPropertyUrl("conf/menu.xml")), "UTF-8");
 			Elements elements = doc.getElementsByTag("elements");
 			for (Element element : elements) {
 				MenuParent menuParent=new MenuParent();

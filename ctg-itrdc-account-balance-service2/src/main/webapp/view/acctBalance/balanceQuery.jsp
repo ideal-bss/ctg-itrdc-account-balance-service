@@ -30,12 +30,70 @@ $('#effDate').datebox({
         success:function(datas){
         	$('#view_acctBalance_balanceQuery_result').datagrid({
     				striped : true,
-    				height:200,
+    				fit:true,
     				singleSelect : true,
     				fitColumns : true,
     				loadMsg : '数据加载中请稍后……',
-    				rownumbers : true,
+    				rownumbers : false,
+    				pagination: true, 
+    				toolbar: ["-", {
+					            id: 'view_acctBalance_balanceQuery_update',
+					            text: '抵扣',
+					            iconCls: 'icon-edit',
+					            handler: function () {
+					            	var row = $('#view_acctBalance_balanceQuery_result').datagrid('getSelected'); 
+					            	alert(row.ACCT_BALANCE_ID);
+							        if(row){
+							            $('#view_acctBalance_balanceQuery_Add').dialog({  
+								            title:"余额修改",  
+								            width:1000,  
+								            height:400,  
+								            href:'${pageContext.request.contextPath}/acctBalance/balanceAddGo.action',  
+								            max:false,  
+								            min:false,
+								            lock:true
+							        	});
+							        	$.ajax({  
+									        async:false,  
+									        type:"POST",  
+									        url:'${pageContext.request.contextPath}/acctBalance/balanceQueryById.action',  
+									        dataType:"json",  
+									        cache: false,
+									        success:function(datas){
+									        alert(datas);
+									        	$("#view_acctBalance_acctBalanceAdd_form").form("load",datas);
+									        }
+								        });
+							            
+							        }
+					            }
+					        }, "-", {
+					            id: '',
+					            text: '删除',
+					            iconCls: 'icon-remove',
+					            handler: function () { }
+					        }, "-", {
+					            id: '',
+					            text: '新增',
+					            iconCls: 'icon-add',
+					            handler: function () { 
+					            	submit_Add();
+					            
+					            }
+					        }, "-"],
     				columns : [ [
+	    				{
+	    					field:'checked',
+	    					width:60,
+	    					formatter:function(value,row,index){
+								if(row.checked){
+									return '<input type="checkbox" name="DataGridCheckbox" checked="checked">';
+								}
+								else{
+									return '<input type="checkbox" name="DataGridCheckbox">';
+								}
+							}
+						},
 						{
 							field : 'ACCT_BALANCE_ID',
 							title : '余额帐本标识',
@@ -64,9 +122,21 @@ $('#effDate').datebox({
 							width : 300
 						},{
 							field : 'BALANCE',
-							title : '余额',
+							title : '余额(元)',
 							align : 'left',
-							width : 300
+							width : 300,
+							formatter:function(val,rec){ 
+									var balanceVal=val/100;
+									if(balanceVal.toString().indexOf(".")>-1){
+										if (balanceVal.toString().substring(balanceVal+"".indexOf("."),balanceVal.toString().length)==1){
+											return balanceVal+"0";
+										}else {
+											return balanceVal+"";
+										}
+									}else {
+										return balanceVal+".00";
+									}
+								} 
 						},{
 							field : 'STATUS_CD',
 							title : '状态',
@@ -96,46 +166,52 @@ $('#effDate').datebox({
                     });
             	}
         	}
+        	
+        	var p = $('#view_acctBalance_balanceQuery_result').datagrid('getPager'); 
+		    $(p).pagination({ 
+		        pageSize: 10,//每页显示的记录条数，默认为10 
+		        pageList: [5,10,15],//可以设置每页记录条数的列表 
+		        beforePageText: '第',//页数文本框前显示的汉字 
+		        afterPageText: '页    共 {pages} 页', 
+		        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录', 
+		    }); 
         }
     }); 
  }
 
+function submit_Add(){
+		$('#view_acctBalance_balanceQuery_Add').dialog({  
+            title:"余额存入",  
+            width:1000,  
+            height:400,  
+            href:'${pageContext.request.contextPath}/acctBalance/balanceAddGo.action',  
+            max:false,  
+            min:false,
+            lock:true
+        });
+}
 </script>
 <div> 
+	<div style="height: 20%">
 		<form id="view_acctBalance_balanceQuery_form" >
 		<table style="padding: 10px;">
 			<tr>
-				<td width="10%">设备号:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-textbox" >
+				<td width="10%">
+				<input type="radio" name="radio" id="radio" value="0"/>
+          设备号
+          <input type="radio" name="radio" id="radio1" value="1"/>
+          合同号
+          &nbsp;&nbsp;<input id="acct_sub_id" name="acct_sub_id" value="" class="easyui-textbox" >
 				</td>
-				<td width="10%">金额:</td>
-				<td width="20%">
-				<input id="" name="" value="" class="easyui-combo" >
+				<td width="10%">
+					<a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px" data-options="iconCls:'icon-search'">查询</a>
 				</td>
-				<td width="10%">余额类型:</td>
-				<td width="20%">
-				<input id="" name="" value="" class="easyui-combo" >
-				</td>
-			</tr>
-			<tr>
-				<td width="10%">备注:</td>
-				<td width="20%">
-					<input id="" name="" value="" class="easyui-textbox" >
-				</td>
-				<td width="10%"></td>
-				<td width="20%">
-				</td>
-				<td width="10%"></td>
-				<td width="20%">
-				</td>
-			</tr>
-			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
 			</tr>
 		</table>
 		</form>
+		</div>
 		<div id="view_acctBalance_balanceQuery_result" ></div>
+		<div id="view_acctBalance_balanceQuery_Add" ></div>
 		</div>
 </body>
 </html>

@@ -52,15 +52,37 @@ public class AcctBalanceAction extends BaseAction{
     private String remark;
     private String needInvoiceAmount;
 	private IAcctBalanceService iAcctBalanceService;
+	
+	private String radio;
+	private String acct_sub_id;
 	/**
 	 * 余额账本查询
 	 */
 	public void balanceQueryGo(){
 		AcctBalanceModel model=new AcctBalanceModel();
+		System.out.println("radio:"+radio+"   acct_sub_id:"+acct_sub_id);
+		if(radio.equals("0")){
+			//设备号
+			
+			model.setAcctId(Long.parseLong(acct_sub_id));
+		}else{
+			//合同号
+			
+			model.setSubAcctId(Long.parseLong(acct_sub_id));
+		}
+//		model.setSliceKey((long)1);
+		writeJson(iAcctBalanceService.selectBalance(model));
+	}
+	/**
+	 * 余额账本单条查询
+	 */
+	public void balanceQueryById(){
+		AcctBalanceModel model=new AcctBalanceModel();
 		model.setAcctBalanceId((long)1);
 		model.setSliceKey((long)1);
 		writeJson(iAcctBalanceService.selectBalance(model));
 	}
+	
 	/**
 	 * 普通余额存入界面展现
 	 * @return
@@ -256,6 +278,18 @@ public class AcctBalanceAction extends BaseAction{
 	}
 	public void setLowerAmount(String lowerAmount) {
 		this.lowerAmount = lowerAmount;
+	}
+	public String getRadio() {
+		return radio;
+	}
+	public void setRadio(String radio) {
+		this.radio = radio;
+	}
+	public String getAcct_sub_id() {
+		return acct_sub_id;
+	}
+	public void setAcct_sub_id(String acct_sub_id) {
+		this.acct_sub_id = acct_sub_id;
 	}
 	
 }

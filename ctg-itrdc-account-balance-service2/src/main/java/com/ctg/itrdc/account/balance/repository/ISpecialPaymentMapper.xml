@@ -24,6 +24,13 @@
     from balance_special_payment_mod
     where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectAllSpecial" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from balance_special_payment_mod
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from balance_special_payment_mod
     where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}

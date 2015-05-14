@@ -110,8 +110,22 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model) {
 		// TODO Auto-generated method stub
 		List<AcctBalanceModel> list=new ArrayList<AcctBalanceModel>();
-		list.add(iAcctBalanceMapper.selectByPrimaryKey(model));
+		try {
+			list=iAcctBalanceMapper.selectBalanceByAcct(model);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
 		return list;
+	}
+	@Override
+	public AcctBalanceModel selectBalanceById(AcctBalanceModel model) {
+		// TODO Auto-generated method stub
+		
+		AcctBalanceModel acctModel=iAcctBalanceMapper.selectByPrimaryKey(model);
+		
+		return acctModel;
 	}
 
 	

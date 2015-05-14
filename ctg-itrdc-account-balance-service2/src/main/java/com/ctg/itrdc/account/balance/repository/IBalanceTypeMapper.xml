@@ -31,6 +31,14 @@
     from balance_type_mod
     where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectAllBalanceType" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from balance_type_mod
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from balance_type_mod
     where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
