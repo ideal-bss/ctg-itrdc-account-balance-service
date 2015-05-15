@@ -116,6 +116,7 @@ public class AcctBalanceAction extends BaseAction{
 		acctBalanceModel.setCycleType(cycleType);
 		acctBalanceModel.setRemark(remark);
 		acctBalanceModel.setNeedInvoiceAmount(Long.parseLong(needInvoiceAmount));
+		acctBalanceModel.setSliceKey(Long.parseLong(acctId));
 		
 		//共享规则对象
 		BalanceShareRuleModel shareModel=new BalanceShareRuleModel();
@@ -125,6 +126,7 @@ public class AcctBalanceAction extends BaseAction{
 		shareModel.setShareRuleTypePri(Long.parseLong(shareRuleTypePri));
 		shareModel.setUpperAmount(Long.parseLong(upperAmount));
 		shareModel.setLowerAmount(Long.parseLong(lowerAmount));
+		shareModel.setSliceKey(Long.parseLong(acctId));
 		
 		iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
 		List list=new ArrayList();

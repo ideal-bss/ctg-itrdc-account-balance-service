@@ -39,10 +39,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				Map<String, Object> mapObject=iBalanceShareRuleMapper.selectRuleType(map);
 				if(mapObject!=null){
 					//余额对象存在，且余额对象类型相同;修改该共享对象账本金额
-//					Long acctBalanceId=(Long) mapObject.get("ACCT_BALANCE_ID");
 					sliceMap.put("acctBalanceId", model.getAcctBalanceId());
 					mapObject.put("BALANCE", model.getBalance());
-					mapObject.put("SLICE_KEY", sliceKeyDao.getSliceKey(sliceMap));
+					mapObject.put("SLICE_KEY", model.getAcctId());
 					iAcctBalanceMapper.updateBalance(mapObject);
 				}else{
 					//余额对象存在，但余额对象类型不相同

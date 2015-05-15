@@ -20,7 +20,6 @@ function myparser(s){
 	}
 }	
  $(function () {
- 	
  	$('#objectType').combobox( {
 		valueField : 'id',
 		textField : 'text',
@@ -86,9 +85,11 @@ function myparser(s){
         url:'${pageContext.request.contextPath}/acctBalance/balanceAdd.action',  
         dataType:"json",  
         cache: false,
-        data:$('#"view_acctBalance_balanceAdd_form"').serialize(),  
+        data:$('#view_acctBalance_balanceAdd_form').serialize(),  
         success:function(data){
         	$.messager.alert("提示", "存入成功!");
+        	$('view_acctBalance_balanceQuery_Add').dialog('close',true);
+        	$('view_acctBalance_balanceQuery_result').datagrid('reload');  
         }
     }); 
  }
@@ -154,7 +155,7 @@ function myparser(s){
 			<tr>
 				<td width="10%">&nbsp;生效时间:</td>
 				<td width="20%">
-					<input id="effDate" name="effDate" value="" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
+					<input id="effDate" name="effDate" value="new Date()" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
 				</td>
 				<td width="10%">&nbsp;失效时间:</td>
 				<td width="20%">
@@ -189,7 +190,7 @@ function myparser(s){
 					</td>
 				<td width="10%">&nbsp;状态时间:</td>
 				<td width="20%">
-					<input id="statusDate" name="statusDate" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
+					<input id="statusDate" name="statusDate" value="new Date()" data-options="formatter:myformatter,parser:myparser" class="easyui-datebox">
 				</td>
 				<td width="10%">&nbsp;限额类型:</td>
 				<td width="20%">

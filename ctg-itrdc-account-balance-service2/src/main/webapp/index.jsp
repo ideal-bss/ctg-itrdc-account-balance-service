@@ -10,11 +10,11 @@
 <meta http-equiv="keywords" content="余额,账务,帐务">
 <meta http-equiv="description" content="余额管理界面">
 
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/public/jquery-easyui-1.4.2/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/public/jquery-easyui-1.4.2/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/public/jquery-easyui-1.4.2/themes/demo.css">
-<script type="text/javascript" src="${pageContext.request.contextPath}/public/jquery-easyui-1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="public/jquery-easyui-1.4.2/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="public/jquery-easyui-1.4.2/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="public/jquery-easyui-1.4.2/themes/demo.css">
+<script type="text/javascript" src="public/jquery-easyui-1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="public/jquery-easyui-1.4.2/jquery.easyui.min.js"></script>
 <script type="text/javascript"></script>
 </head>
 <body class="easyui-layout">
