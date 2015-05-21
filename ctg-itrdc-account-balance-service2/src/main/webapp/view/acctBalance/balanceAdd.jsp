@@ -78,7 +78,7 @@ function myparser(s){
 	}); 
  });
  
- function submit_form(){
+ function submit_balanceAdd_form(){
  	$.ajax({  
         async:false,  
         type:"POST",  
@@ -88,8 +88,8 @@ function myparser(s){
         data:$('#view_acctBalance_balanceAdd_form').serialize(),  
         success:function(data){
         	$.messager.alert("提示", "存入成功!");
-        	$('view_acctBalance_balanceQuery_Add').dialog('close',true);
-        	$('view_acctBalance_balanceQuery_result').datagrid('reload');  
+        	$('#view_acctBalance_balanceQuery_Add').dialog({closed:true});
+        //	$('#view_acctBalance_balanceQuery_result').datagrid('reload');  
         }
     }); 
  }
@@ -208,7 +208,7 @@ function myparser(s){
 				</td>
 			</tr>
 			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">存入</a></td>
+				<td><a href="#" class="easyui-linkbutton" onclick="submit_balanceAdd_form('');" style="width:65px">存入</a></td>
 			</tr>
 		</table>
 		</form>

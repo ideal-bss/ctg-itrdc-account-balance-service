@@ -70,7 +70,6 @@ public class AcctBalanceAction extends BaseAction{
 			
 			model.setSubAcctId(Long.parseLong(acct_sub_id));
 		}
-//		model.setSliceKey((long)1);
 		writeJson(iAcctBalanceService.selectBalance(model));
 	}
 	/**
@@ -99,48 +98,51 @@ public class AcctBalanceAction extends BaseAction{
 	 */
 	public String balanceAdd()throws Exception{
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
-		//账本对象
-		AcctBalanceModel acctBalanceModel=new AcctBalanceModel();
-		acctBalanceModel.setBalanceTypeId(Long.parseLong(balanceTypeId));
-		acctBalanceModel.setPaymentRuleId(Long.parseLong(paymentRuleId));
-		acctBalanceModel.setSubAcctId(Long.parseLong(subAcctId));
-		acctBalanceModel.setAcctId(Long.parseLong(acctId));
-		acctBalanceModel.setEffDate(sdf.parse(effDate));
-		acctBalanceModel.setExpDate(sdf.parse(expDate));
-		acctBalanceModel.setBalance(Long.parseLong(balance));
-		acctBalanceModel.setReserveBalance(Long.parseLong(reserveBalance));
-		acctBalanceModel.setCycleUpper(Long.parseLong(cycleUpper));
-		acctBalanceModel.setCycleLower(Long.parseLong(cycleLower));
-		acctBalanceModel.setStatusCd(statusCd);
-		acctBalanceModel.setStatusDate(sdf.parse(statusDate));
-		acctBalanceModel.setCycleType(cycleType);
-		acctBalanceModel.setRemark(remark);
-		acctBalanceModel.setNeedInvoiceAmount(Long.parseLong(needInvoiceAmount));
-		acctBalanceModel.setSliceKey(Long.parseLong(acctId));
-		
-		//共享规则对象
-		BalanceShareRuleModel shareModel=new BalanceShareRuleModel();
-		shareModel.setObjectId(Long.parseLong(objectId));
-		shareModel.setObjectType(objectType);
-		shareModel.setShareRuleTypeId(Long.parseLong(shareRuleTypeId));
-		shareModel.setShareRuleTypePri(Long.parseLong(shareRuleTypePri));
-		shareModel.setUpperAmount(Long.parseLong(upperAmount));
-		shareModel.setLowerAmount(Long.parseLong(lowerAmount));
-		shareModel.setSliceKey(Long.parseLong(acctId));
-		
-		iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
-		List list=new ArrayList();
-		HttpServletResponse res =ServletActionContext.getResponse();
-		JSONArray json = new JSONArray();
-		json.addAll(list);
-		System.out.println(json.toString());
-		PrintWriter writer = res.getWriter();
-		writer.print(json);
-		writer.flush();
-		writer.close();
+		try {
+			//账本对象
+			AcctBalanceModel acctBalanceModel=new AcctBalanceModel();
+			acctBalanceModel.setBalanceTypeId(Long.parseLong(balanceTypeId));
+			acctBalanceModel.setPaymentRuleId(Long.parseLong(paymentRuleId));
+			acctBalanceModel.setSubAcctId(Long.parseLong(subAcctId));
+			acctBalanceModel.setAcctId(Long.parseLong(acctId));
+			acctBalanceModel.setEffDate(sdf.parse(effDate));
+			acctBalanceModel.setExpDate(sdf.parse(expDate));
+			acctBalanceModel.setBalance(Long.parseLong(balance));
+			acctBalanceModel.setReserveBalance(Long.parseLong(reserveBalance));
+			acctBalanceModel.setCycleUpper(Long.parseLong(cycleUpper));
+			acctBalanceModel.setCycleLower(Long.parseLong(cycleLower));
+			acctBalanceModel.setStatusCd(statusCd);
+			acctBalanceModel.setStatusDate(sdf.parse(statusDate));
+			acctBalanceModel.setCycleType(cycleType);
+			acctBalanceModel.setRemark(remark);
+			acctBalanceModel.setNeedInvoiceAmount(Long.parseLong(needInvoiceAmount));
+			acctBalanceModel.setSliceKey(Long.parseLong(subAcctId));
+			
+			
+			//共享规则对象
+			BalanceShareRuleModel shareModel=new BalanceShareRuleModel();
+			shareModel.setObjectId(Long.parseLong(objectId));
+			shareModel.setObjectType(objectType);
+			shareModel.setShareRuleTypeId(Long.parseLong(shareRuleTypeId));
+			shareModel.setShareRuleTypePri(Long.parseLong(shareRuleTypePri));
+			shareModel.setUpperAmount(Long.parseLong(upperAmount));
+			shareModel.setLowerAmount(Long.parseLong(lowerAmount));
+			shareModel.setSliceKey(Long.parseLong(subAcctId));
+			
+			iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
+			writeJson(new ArrayList());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		System.out.println("balanceAdd...");
 		return "success";
 	}
 
+	public String deducBalance(){
+		
+		return "success";
+	}
 	
 	public IAcctBalanceService getiAcctBalanceService() {
 		return iAcctBalanceService;

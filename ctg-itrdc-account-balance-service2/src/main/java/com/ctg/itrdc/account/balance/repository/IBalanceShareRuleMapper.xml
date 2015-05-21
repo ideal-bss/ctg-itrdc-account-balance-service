@@ -232,15 +232,23 @@
       SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
     where SHARE_RULE_ID = #{shareRuleId,jdbcType=BIGINT}
   </update>
-  <select id="selectRuleByObjectId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+  <select id="selectRuleByObjectId" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleModel" resultType="java.lang.Integer">
   	select count(*) from balance_share_rule_mod
   	where
-  	OBJECT_ID=#{objectId,jdbcType=BIGINT}
+  		OBJECT_ID=#{objectId,jdbcType=BIGINT}
+  	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
   </select>
-  <select id="selectRuleType" parameterType="map" resultType="map">
+  <select id="selectRuleType" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleModel" resultType="map">
   	select ACCT_BALANCE_ID from balance_share_rule_mod
   	where 
-  		OBJECT_ID=#{OBJECT_ID,jdbcType=BIGINT}
-  	and OBJECT_TYPE = #{OBJECT_TYPE,jdbcType=VARCHAR}
+  		OBJECT_ID=#{objectId,jdbcType=BIGINT}
+  	and OBJECT_TYPE = #{objectType,jdbcType=VARCHAR}
+  	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
   </select>
+  <delete id="deleteRuleByAcctBalanceId" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleModel"> 
+  	delete from balance_share_rule_mod 
+  	where 
+  		ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+  	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+  </delete>
 </mapper>

@@ -24,6 +24,10 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
+        <action name="deducBalance" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="deducBalance">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
  		
     </package>
 </struts>

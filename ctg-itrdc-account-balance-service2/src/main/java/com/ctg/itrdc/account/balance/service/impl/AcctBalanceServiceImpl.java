@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ctg.itrdc.account.balance.dao.SliceKeyDao;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 import com.ctg.itrdc.account.balance.repository.IAcctBalanceMapper;
@@ -24,24 +23,23 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IIndexTableMapper iIndexTableMapper;
 	private ITestMapper iTestMapper;
 	private IBalanceShareRuleMapper iBalanceShareRuleMapper;
-	private SliceKeyDao sliceKeyDao;
 	@Override
 	public void insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel) {
 		// TODO Auto-generated method stub
 		try {
-			Map<String, Object> sliceMap=new HashMap<String, Object>();
-			Map<String, Object> map=new HashMap<String, Object>();
-			map.put("OBJECT_ID", shareModel.getObjectId());//余额对象标识
-			map.put("OBJECT_TYPE", shareModel.getObjectType());//余额对象类型
-			int count=iBalanceShareRuleMapper.selectRuleByObjectId(shareModel.getObjectId());
+		//	Map<String, Object> sliceMap=new HashMap<String, Object>();
+//			Map<String, Object> map=new HashMap<String, Object>();
+//			map.put("OBJECT_ID", shareModel.getObjectId());//余额对象标识
+//			map.put("OBJECT_TYPE", shareModel.getObjectType());//余额对象类型
+			int count=iBalanceShareRuleMapper.selectRuleByObjectId(shareModel);
 			if(count>0){
 				//余额规则中，余额对象存在
-				Map<String, Object> mapObject=iBalanceShareRuleMapper.selectRuleType(map);
+				Map<String, Object> mapObject=iBalanceShareRuleMapper.selectRuleType(shareModel);
 				if(mapObject!=null){
 					//余额对象存在，且余额对象类型相同;修改该共享对象账本金额
-					sliceMap.put("acctBalanceId", model.getAcctBalanceId());
+					//sliceMap.put("acctBalanceId", model.getAcctBalanceId());
 					mapObject.put("BALANCE", model.getBalance());
-					mapObject.put("SLICE_KEY", model.getAcctId());
+					mapObject.put("SLICE_KEY", model.getSubAcctId());
 					iAcctBalanceMapper.updateBalance(mapObject);
 				}else{
 					//余额对象存在，但余额对象类型不相同
@@ -50,8 +48,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				}
 			}else{
 				//余额规则总，余额对象不存在；新增余额账本；新增余额共享规则
-				iBalanceShareRuleMapper.insert(shareModel);
 				iAcctBalanceMapper.insert(model);
+				//获取新增的账本ID
+				Long acctBalanceId=iAcctBalanceMapper.selectAcctBalanceId(model);
+				shareModel.setAcctBalanceId(acctBalanceId);
+				
+				iBalanceShareRuleMapper.insert(shareModel);
+				
 			}
 			Map<String, String> param=new HashMap<String, String>();
 		} catch (Exception e) {
@@ -98,13 +101,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			IBalanceShareRuleMapper iBalanceShareRuleMapper) {
 		this.iBalanceShareRuleMapper = iBalanceShareRuleMapper;
 	}
-	public SliceKeyDao getSliceKeyDao() {
-		return sliceKeyDao;
-	}
-	@Autowired
-	public void setSliceKeyDao(SliceKeyDao sliceKeyDao) {
-		this.sliceKeyDao = sliceKeyDao;
-	}
+	
 	@Override
 	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model) {
 		// TODO Auto-generated method stub

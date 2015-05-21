@@ -2,23 +2,14 @@ package com.ctg.itrdc.account.balance.repository;
 
 import java.util.Map;
 
+import com.ctg.itrdc.account.balance.dao.Mapper;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 
-public interface IBalanceShareRuleMapper {
-
-    int deleteByPrimaryKey(Long shareRuleId);
-
-    int insert(BalanceShareRuleModel record);
-
-    int insertSelective(BalanceShareRuleModel record);
-
-    BalanceShareRuleModel selectByPrimaryKey(Long shareRuleId);
-
-    int updateByPrimaryKeySelective(BalanceShareRuleModel record);
-
-    int updateByPrimaryKey(BalanceShareRuleModel record);
+public interface IBalanceShareRuleMapper extends Mapper<BalanceShareRuleModel>{
     
-    int selectRuleByObjectId(Long objectId);
+    int selectRuleByObjectId(BalanceShareRuleModel model);
     
-    Map<String, Object> selectRuleType(Map<String, Object> map);
+    Map<String, Object> selectRuleType(BalanceShareRuleModel model);
+    
+    int deleteRuleByAcctBalanceId(BalanceShareRuleModel model);
 }

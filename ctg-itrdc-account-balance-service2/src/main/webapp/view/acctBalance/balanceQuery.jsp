@@ -19,7 +19,7 @@ $('#effDate').datebox({
  	});
 });
 
- function submit_form(){
+ function submit_balanceQuery_form(){
  	$.ajax({  
         async:false,  
         type:"POST",  
@@ -44,24 +44,14 @@ $('#effDate').datebox({
 					            	var row = $('#view_acctBalance_balanceQuery_result').datagrid('getSelected'); 
 					            	alert(row.ACCT_BALANCE_ID);
 							        if(row){
-							            $('#view_acctBalance_balanceQuery_Add').dialog({  
-								            title:"余额修改",  
-								            width:1000,  
-								            height:400,  
-								            href:'${pageContext.request.contextPath}/acctBalance/balanceAddGo.action',  
-								            max:false,  
-								            min:false,
-								            lock:true
-							        	});
 							        	$.ajax({  
 									        async:false,  
 									        type:"POST",  
-									        url:'${pageContext.request.contextPath}/acctBalance/balanceQueryById.action',  
+									        url:'${pageContext.request.contextPath}/acctBalance/deducBalance.action',  
 									        dataType:"json",  
 									        cache: false,
 									        success:function(datas){
-									        alert(datas);
-									        	$("#view_acctBalance_acctBalanceAdd_form").form("load",datas);
+									        
 									        }
 								        });
 							            
@@ -204,7 +194,7 @@ function submit_Add(){
           &nbsp;&nbsp;<input id="acct_sub_id" name="acct_sub_id" value="" class="easyui-textbox" >
 				</td>
 				<td width="10%">
-					<a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px" data-options="iconCls:'icon-search'">查询</a>
+					<a href="#" class="easyui-linkbutton" onclick="submit_balanceQuery_form('');" style="width:65px" data-options="iconCls:'icon-search'">查询</a>
 				</td>
 			</tr>
 		</table>

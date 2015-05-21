@@ -13,4 +13,8 @@ public interface IAcctBalanceMapper extends Mapper<AcctBalanceModel>{
     int updateBalance(Map<String, Object> map);
     
     List<AcctBalanceModel> selectBalanceByAcct(AcctBalanceModel model);
+    
+    Long selectAcctBalanceId(AcctBalanceModel model);
+    
+    int deleteAcctBalanceById(AcctBalanceModel model);
 }

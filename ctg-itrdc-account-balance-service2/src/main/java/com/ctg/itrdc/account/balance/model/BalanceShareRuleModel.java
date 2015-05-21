@@ -38,8 +38,24 @@ public class BalanceShareRuleModel implements Serializable{
     private Date updateDate;
 
     private Long sliceKey;
+    
+    /*private Long acctId;
+    
+    
 
-    public Long getShareRuleId() {
+    public Long getAcctId() {
+		return acctId;
+	}
+
+	public void setAcctId(Long acctId) {
+		this.acctId = acctId;
+	}
+*/
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Long getShareRuleId() {
         return shareRuleId;
     }
 

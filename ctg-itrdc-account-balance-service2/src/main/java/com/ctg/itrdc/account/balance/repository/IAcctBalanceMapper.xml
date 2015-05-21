@@ -288,4 +288,16 @@
    	where ACCT_BALANCE_ID = #{ACCT_BALANCE_ID,jdbcType=BIGINT}
    	and SLICE_KEY = #{SLICE_KEY,jdbcType=BIGINT}
    </update>
+   <select id="selectAcctBalanceId" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" resultType="java.lang.Long">
+   	select ACCT_BALANCE_ID from acct_balance_mod 
+   	where ACCT_ID = #{acctId,jdbcType=BIGINT} 
+   	and SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT}
+   	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+   
+   </select>
+   <delete id="deleteAcctBalanceById" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel">
+   	delete from acct_balance_mod where 
+   	ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+   	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+   </delete>
 </mapper>
