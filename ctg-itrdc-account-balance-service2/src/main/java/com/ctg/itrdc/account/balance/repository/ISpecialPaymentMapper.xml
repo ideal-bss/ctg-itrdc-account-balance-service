@@ -15,7 +15,7 @@
     <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
   </resultMap>
    <sql id="Base_Column_List" >
-    SPE_PAYMENT_ID, PARTNER_ID, PRODUCT_ID, ACCT_ITEM_GROUP_ID, ACCT_ITEM_PAYMENT_TYPE, 
+    SPE_PAYMENT_ID, PARTNER_ID, PRODUCT_ID, ACCT_ITEM_GROUP_ID, <!-- ACCT_ITEM_PAYMENT_TYPE,  -->
     STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE
   </sql>
    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

@@ -24,8 +24,24 @@ public class SpecialPaymentModel {
     private Date statusDate;
 
     private Date updateDate;
+    
+    /**
+     * 专款专用描述
+     */
+    private SpecialPaymentDescModel specialPaymentDescModel;
+    
+    
 
-    public Long getSpePaymentId() {
+    public SpecialPaymentDescModel getSpecialPaymentDescModel() {
+		return specialPaymentDescModel;
+	}
+
+	public void setSpecialPaymentDescModel(
+			SpecialPaymentDescModel specialPaymentDescModel) {
+		this.specialPaymentDescModel = specialPaymentDescModel;
+	}
+
+	public Long getSpePaymentId() {
         return spePaymentId;
     }
 

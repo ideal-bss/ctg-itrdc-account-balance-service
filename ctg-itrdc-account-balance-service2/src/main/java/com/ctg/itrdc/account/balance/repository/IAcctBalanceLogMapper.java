@@ -1,18 +1,9 @@
 package com.ctg.itrdc.account.balance.repository;
 
+import com.ctg.itrdc.account.balance.dao.Mapper;
 import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 
-public interface IAcctBalanceLogMapper{
+public interface IAcctBalanceLogMapper extends Mapper<AcctBalanceLogModel>{
 
-    int deleteByPrimaryKey(Long balanceLogId);
-
-    int insert(AcctBalanceLogModel record);
-
-    int insertSelective(AcctBalanceLogModel record);
-
-    AcctBalanceLogModel selectByPrimaryKey(Long balanceLogId);
-
-    int updateByPrimaryKeySelective(AcctBalanceLogModel record);
-
-    int updateByPrimaryKey(AcctBalanceLogModel record);
+    
 }

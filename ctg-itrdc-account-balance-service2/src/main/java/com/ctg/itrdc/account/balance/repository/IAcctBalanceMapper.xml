@@ -32,6 +32,36 @@
     <result column="CYCLE_LOWER" property="cycleLower" jdbcType="BIGINT" />
     <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
   </resultMap>
+  <resultMap id="BalanceSourceMap" type="com.ctg.itrdc.account.balance.model.BalanceSourceModel" >
+    <id column="OPER_INCOME_ID" property="operIncomeId" jdbcType="BIGINT" />
+    <result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT" />
+    <result column="OPER_TYPE" property="operType" jdbcType="VARCHAR" />
+    <result column="STAFF_ID" property="staffId" jdbcType="VARCHAR" />
+    <result column="OPER_DATE" property="operDate" jdbcType="TIMESTAMP" />
+    <result column="AMOUNT" property="amount" jdbcType="BIGINT" />
+    <result column="CUR_AMOUNT" property="curAmount" jdbcType="BIGINT" />
+    <result column="BALANCE_RELATION_ID" property="balanceRelationId" jdbcType="BIGINT" />
+    <result column="BALANCE_SOURCE_TYPE_ID" property="balanceSourceTypeId" jdbcType="BIGINT" />
+    <result column="CUR_STATUS_DATE" property="curStatusDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR" />
+    <result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="PAYMENT_ID" property="paymentId" jdbcType="BIGINT" />
+    <result column="SOURCE_DESC" property="sourceDesc" jdbcType="VARCHAR" />
+    <result column="INV_OFFER" property="invOffer" jdbcType="BIGINT" />
+    <result column="ALLOW_DRAW" property="allowDraw" jdbcType="BIGINT" />
+    <result column="CUR_STATUS" property="curStatus" jdbcType="VARCHAR" />
+    <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="BalanceRelationMap" type="com.ctg.itrdc.account.balance.model.BalanceRelationModel" >
+    <id column="BALANCE_RELATION_ID" property="balanceRelationId" jdbcType="BIGINT" />
+    <result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT" />
+    <result column="OBJECT_TYPE" property="objectType" jdbcType="VARCHAR" />
+    <result column="OBJECT_ID" property="objectId" jdbcType="BIGINT" />
+    <result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+  
    <sql id="Base_Column_List" >
     ACCT_BALANCE_ID, BALANCE_TYPE_ID, PAYMENT_RULE_ID, SUB_ACCT_ID, ACCT_ID, EFF_DATE, 
     EXP_DATE, BALANCE, RESERVE_BALANCE, CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, STATUS_CD, 
@@ -292,7 +322,7 @@
    	select ACCT_BALANCE_ID from acct_balance_mod 
    	where ACCT_ID = #{acctId,jdbcType=BIGINT} 
    	and SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT}
-   	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+   	and SLICE_KEY = #{subAcctId,jdbcType=BIGINT}
    
    </select>
    <delete id="deleteAcctBalanceById" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel">
@@ -300,4 +330,167 @@
    	ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
    	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
    </delete>
+   
+  <!--  余额来源记录 -->
+   <insert id="insertSourceSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceSourceModel"  useGeneratedKeys="true" keyProperty="operIncomeId">
+    insert into balance_source_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="operIncomeId != null" >
+        OPER_INCOME_ID,
+      </if>
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID,
+      </if>
+      <if test="operType != null" >
+        OPER_TYPE,
+      </if>
+      <if test="staffId != null" >
+        STAFF_ID,
+      </if>
+      <if test="operDate != null" >
+        OPER_DATE,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="curAmount != null" >
+        CUR_AMOUNT,
+      </if>
+      <if test="balanceRelationId != null" >
+        BALANCE_RELATION_ID,
+      </if>
+      <if test="balanceSourceTypeId != null" >
+        BALANCE_SOURCE_TYPE_ID,
+      </if>
+      <if test="curStatusDate != null" >
+        CUR_STATUS_DATE,
+      </if>
+      <if test="statusCd != null" >
+        STATUS_CD,
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE,
+      </if>
+      <if test="paymentId != null" >
+        PAYMENT_ID,
+      </if>
+      <if test="sourceDesc != null" >
+        SOURCE_DESC,
+      </if>
+      <if test="invOffer != null" >
+        INV_OFFER,
+      </if>
+      <if test="allowDraw != null" >
+        ALLOW_DRAW,
+      </if>
+      <if test="curStatus != null" >
+        CUR_STATUS,
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="operIncomeId != null" >
+        #{operIncomeId,jdbcType=BIGINT},
+      </if>
+      <if test="acctBalanceId != null" >
+        #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="operType != null" >
+        #{operType,jdbcType=VARCHAR},
+      </if>
+      <if test="staffId != null" >
+        #{staffId,jdbcType=VARCHAR},
+      </if>
+      <if test="operDate != null" >
+        #{operDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="curAmount != null" >
+        #{curAmount,jdbcType=BIGINT},
+      </if>
+      <if test="balanceRelationId != null" >
+        #{balanceRelationId,jdbcType=BIGINT},
+      </if>
+      <if test="balanceSourceTypeId != null" >
+        #{balanceSourceTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="curStatusDate != null" >
+        #{curStatusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusCd != null" >
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentId != null" >
+        #{paymentId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceDesc != null" >
+        #{sourceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="invOffer != null" >
+        #{invOffer,jdbcType=BIGINT},
+      </if>
+      <if test="allowDraw != null" >
+        #{allowDraw,jdbcType=BIGINT},
+      </if>
+      <if test="curStatus != null" >
+        #{curStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sliceKey != null" >
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+   <insert id="insertRelation" parameterType="com.ctg.itrdc.account.balance.model.BalanceRelationModel" useGeneratedKeys="true" keyProperty="balanceRelationId">
+    insert into balance_relation_mod
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="balanceRelationId != null" >
+        BALANCE_RELATION_ID,
+      </if>
+      <if test="acctBalanceId != null" >
+        ACCT_BALANCE_ID,
+      </if>
+      <if test="objectType != null" >
+        OBJECT_TYPE,
+      </if>
+      <if test="objectId != null" >
+        OBJECT_ID,
+      </if>
+      <if test="sliceKey != null" >
+        SLICE_KEY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="balanceRelationId != null" >
+        #{balanceRelationId,jdbcType=BIGINT},
+      </if>
+      <if test="acctBalanceId != null" >
+        #{acctBalanceId,jdbcType=BIGINT},
+      </if>
+      <if test="objectType != null" >
+        #{objectType,jdbcType=VARCHAR},
+      </if>
+      <if test="objectId != null" >
+        #{objectId,jdbcType=BIGINT},
+      </if>
+      <if test="sliceKey != null" >
+        #{sliceKey,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+   <select id="selectRelationId" parameterType="com.ctg.itrdc.account.balance.model.BalanceRelationModel" resultType="java.lang.Long">
+	select BALANCE_RELATION_ID
+	from balance_relation_mod
+	where
+	ACCT_BALANCE_ID=#{acctBalanceId,jdbcType=BIGINT}
+	and OBJECT_TYPE=#{objectType,jdbcType=VARCHAR}
+	and OBJECT_ID=#{objectId,jdbcType=BIGINT}
+	and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+   </select>
 </mapper>

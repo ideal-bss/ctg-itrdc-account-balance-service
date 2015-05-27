@@ -38,8 +38,23 @@ public class BalanceTypeModel implements Serializable{
     private Date statusDate;
 
     private Date updateDate;
+    
+    /**
+     * 专款专用对象
+     */
+    private SpecialPaymentModel specialPaymentModel;
+    
+    
 
-    public Long getBalanceTypeId() {
+    public SpecialPaymentModel getSpecialPaymentModel() {
+		return specialPaymentModel;
+	}
+
+	public void setSpecialPaymentModel(SpecialPaymentModel specialPaymentModel) {
+		this.specialPaymentModel = specialPaymentModel;
+	}
+
+	public Long getBalanceTypeId() {
         return balanceTypeId;
     }
 

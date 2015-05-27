@@ -20,6 +20,7 @@ import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
 /**
  * 余额账本
  * @author hxj
@@ -27,6 +28,8 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 @Controller
 public class AcctBalanceAction extends BaseAction{
+	
+	
 	private String objectId;//余额对象标识
 	private String objectType;//余额对象类型
 	private String shareRuleTypeId;//共享规则类型
@@ -34,7 +37,6 @@ public class AcctBalanceAction extends BaseAction{
 	private String upperAmount;//扣费上限
 	private String lowerAmount;//扣费下限
 	
-//	private String acctBalanceId;
     private String balanceTypeId;//余额类型标识
     private String paymentRuleId;
     private String subAcctId;
@@ -295,5 +297,4 @@ public class AcctBalanceAction extends BaseAction{
 	public void setAcct_sub_id(String acct_sub_id) {
 		this.acct_sub_id = acct_sub_id;
 	}
-	
 }

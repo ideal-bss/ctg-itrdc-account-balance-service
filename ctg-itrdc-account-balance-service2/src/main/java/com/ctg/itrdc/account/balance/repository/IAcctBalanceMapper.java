@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ctg.itrdc.account.balance.dao.Mapper;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
+import com.ctg.itrdc.account.balance.model.BalanceRelationModel;
+import com.ctg.itrdc.account.balance.model.BalanceSourceModel;
 
 public interface IAcctBalanceMapper extends Mapper<AcctBalanceModel>{
 	
@@ -17,4 +19,10 @@ public interface IAcctBalanceMapper extends Mapper<AcctBalanceModel>{
     Long selectAcctBalanceId(AcctBalanceModel model);
     
     int deleteAcctBalanceById(AcctBalanceModel model);
+    
+    int insertSourceSelective(BalanceSourceModel model);
+    
+    int insertRelation(BalanceRelationModel model);
+    
+    long selectRelationId(BalanceRelationModel model);
 }
