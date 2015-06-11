@@ -12,7 +12,7 @@
 			<state></state>
 			<checked>false</checked>
 			<attributes>
-				<url>/acctBalance/queryBalance.action</url>
+				<url>/acctBalance/balanceQueryGo.action</url>
 			</attributes>
 		</element>
 		<element>
@@ -36,6 +36,26 @@
 
 		<element>
 			<id>4</id>
+			<text>余额分配</text>
+			<state></state>
+			<checked>false</checked>
+			<attributes>
+				<url>/acctBalance/balRealDistrGo.action</url>
+			</attributes>
+		</element>
+		
+		<element>
+			<id>5</id>
+			<text>余额支取</text>
+			<state></state>
+			<checked>false</checked>
+			<attributes>
+				<url>/acctBalance/balanceDrawGo.action</url>
+			</attributes>
+		</element>
+		
+		<element>
+			<id>6</id>
 			<text>测试</text>
 			<state></state>
 			<checked>false</checked>

@@ -16,10 +16,11 @@
             <result name="success">/view/acctBalance/acctBalanceAdd.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
+        <!-- 
         <action name="balanceQueryGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceQueryGo">
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
-        </action>
+        </action> -->
 		<action name="balanceQueryById" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceQueryById">
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
@@ -28,6 +29,34 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
+ 		<!-- 余额查询  start -->
+        <action name="balanceQueryGo" class="com.ctg.itrdc.account.balance.action.QueryBalanceAction" method="queryBalanceGo">
+            <result name="success">/view/acctBalance/balanceQuery.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <action name="balanceQuery" class="com.ctg.itrdc.account.balance.action.QueryBalanceAction" method="queryBalance">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <!-- 余额查询  end -->
+        
+        <!-- 余额分配 ......start 
+		<action name="balRealDistrGo" class="com.ctg.itrdc.account.balance.action.BalRealDistrAction" method="balRealDistrGo">
+			<result name="success">/view/acctBalance/balRealDistr.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>-->
+		
+		<!-- 余额分配...... end -->
  		
+ 		<!-- 余额支取 ......start-->
+ 		<action name="balanceDrawGo" class="com.ctg.itrdc.account.balance.action.BalanceDrawAction" method="balanceDrawGo">
+ 			<result name="success">/view/acctBalance/balanceDraw.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="balanceDraw" class="com.ctg.itrdc.account.balance.action.BalanceDrawAction" method="balanceDraw">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action> 
+ 		<!-- 余额支取 ......end -->
     </package>
 </struts>

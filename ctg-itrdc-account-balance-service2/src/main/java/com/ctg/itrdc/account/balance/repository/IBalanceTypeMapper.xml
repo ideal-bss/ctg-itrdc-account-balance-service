@@ -240,4 +240,26 @@
       UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
     where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
   </update>
+  
+  <select id="queryByBalanceType" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from balance_type_mod
+    where 1=1
+    <if test="balanceTypeId != null and balanceTypeId!=''" >
+   	 and BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+    </if>
+    <if test="priority != null and priority!=''">
+   	 and PRIORITY = #{priority,jdbcType=BIGINT}
+    </if>
+    <if test="spePaymentId != null and spePaymentId!=''">
+   	 and SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+    </if>
+    <if test="balanceTypeName != null and balanceTypeName!=''">
+   	 and BALANCE_TYPE_NAME = #{balanceTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="statusCd != null and statusCd!=''">
+   	 and STATUS_CD = #{statusCd,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

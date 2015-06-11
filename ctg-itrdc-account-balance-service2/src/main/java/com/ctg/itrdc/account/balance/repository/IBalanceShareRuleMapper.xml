@@ -251,4 +251,10 @@
   		ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
   	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
   </delete>
+  <select id="selectRuleList" parameterType="map" resultType="java.util.Map">
+  	select <include refid="Base_Column_List" /> 
+  	from balance_share_rule_mod
+  	where OBJECT_ID=#{objectId,jdbcType=BIGINT}
+  	and OBJECT_TYPE = #{objectType,jdbcType=VARCHAR}
+  </select>
 </mapper>

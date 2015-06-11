@@ -73,7 +73,9 @@
     from acct_balance_mod
     where
      ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+     <if test="sliceKey != null">
     and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+     </if>
   </select>
   <select id="selectBalanceByAcct" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
   	select 
@@ -284,8 +286,12 @@
       </if> -->
     </set>
     where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+    <if test="acctId != null">
     and ACCT_ID=#{acctId,jdbcType=BIGINT}
+    </if>
+    <if test="sliceKey != null">
     AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    </if>
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
     update acct_balance_mod

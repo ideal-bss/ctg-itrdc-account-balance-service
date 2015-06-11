@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public class BaseUtil {
@@ -93,5 +96,31 @@ public class BaseUtil {
 	
 	public static void main(String[] args) {
 		System.out.println(getPropertyUrl("conf/menu.xml"));
+	}
+	
+	/**
+	 * 
+	 * @desc 时间字符串转换成日期类型
+	 * @author ls
+	 * @param dateStr
+	 * @param format
+	 * @return
+	 */
+	public static Date stringToDate(Object dateStr, String pattern){
+		Date date = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+			date = sdf.parse(String.valueOf(dateStr));
+		} catch (NullPointerException e) {
+			System.err.println("时间格式为空." + e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			System.err.println("时间格式不合法." + e.getMessage());
+			e.printStackTrace();
+		} catch (ParseException e) {
+			System.err.println("时间解析错误." + e.getMessage());
+			e.printStackTrace();
+		}
+		return date;
 	}
 }
