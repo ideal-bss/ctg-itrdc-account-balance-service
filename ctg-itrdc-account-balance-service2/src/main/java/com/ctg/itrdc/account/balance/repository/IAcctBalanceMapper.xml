@@ -76,6 +76,9 @@
      <if test="sliceKey != null">
     and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
      </if>
+     <if test="subAcctId != null">
+    and SUB_ACCT_ID=#{subAcctId,jdbcType=BIGINT}
+     </if>
   </select>
   <select id="selectBalanceByAcct" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
   	select 
@@ -498,5 +501,28 @@
 	and OBJECT_TYPE=#{objectType,jdbcType=VARCHAR}
 	and OBJECT_ID=#{objectId,jdbcType=BIGINT}
 	and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+   </select>
+   
+   <select id="selectByAcctId" parameterType="java.util.Map" resultMap="BaseResultMap">
+   		select 
+	    <include refid="Base_Column_List" />
+	    from acct_balance_mod
+	    where SUB_ACCT_ID=#{acctId,jdbcType=BIGINT}
+	    <if test="sliceKey != null" >
+	      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+	    </if>
+	    <if test="balanceTypeId != null" >
+	      and BALANCE_TYPE_ID=#{balanceTypeId,jdbcType=BIGINT}
+	    </if>
+	    <if test="objectType != null and objectId != null">
+		    and ACCT_BALANCE_ID in(
+		    	select ACCT_BALANCE_ID from balance_share_rule_mod
+		    	where OBJECT_TYPE=#{objectType,jdbcType=BIGINT}
+		    	 and OBJECT_ID=#{objectId,jdbcType=BIGINT}
+		    	 <if test="sliceKey != null" >
+			      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+			     </if>
+		    )
+	    </if>
    </select>
 </mapper>

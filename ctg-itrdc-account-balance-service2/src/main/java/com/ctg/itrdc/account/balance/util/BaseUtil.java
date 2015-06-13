@@ -123,4 +123,19 @@ public class BaseUtil {
 		}
 		return date;
 	}
+	
+	public static String dateToString(Date date, String pattern){
+		String dateStr = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+			dateStr = sdf.format(date);
+		} catch (NullPointerException e) {
+			System.err.println("时间格式为空." + e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			System.err.println("时间格式不合法." + e.getMessage());
+			e.printStackTrace();
+		}
+		return dateStr;
+	}
 }

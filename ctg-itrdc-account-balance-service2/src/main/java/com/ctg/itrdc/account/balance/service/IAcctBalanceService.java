@@ -13,5 +13,6 @@ public interface IAcctBalanceService {
 	public AcctBalanceModel selectBalanceById(AcctBalanceModel model);
 	public List<Object> queryBalance(Map<String, Object> model);
 	public String balanceDraw(Map<String,Object> model);
+	public String balanceTransfer(Map<String, Object> map);
 	
 }

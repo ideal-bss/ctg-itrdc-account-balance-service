@@ -58,5 +58,16 @@
  			<result name="error">/view/test/error.jsp</result>
  		</action> 
  		<!-- 余额支取 ......end -->
+ 		
+ 		<!-- 余额转账 ......start....... -->
+ 		<action name="balanceTransferGo" class="com.ctg.itrdc.account.balance.action.BalanceTransferAction" method="balanceTarnsferGo">
+ 			<result name="success">/view/acctBalance/balanceTransfer.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="balanceTransfer" class="com.ctg.itrdc.account.balance.action.BalanceTransferAction" method="balanceTarnsfer">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<!-- 余额转账 ......end....... -->
     </package>
 </struts>

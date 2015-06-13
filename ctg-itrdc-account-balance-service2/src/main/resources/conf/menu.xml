@@ -53,9 +53,17 @@
 				<url>/acctBalance/balanceDrawGo.action</url>
 			</attributes>
 		</element>
-		
 		<element>
 			<id>6</id>
+			<text>余额转账</text>
+			<state></state>
+			<checked>false</checked>
+			<attributes>
+				<url>/acctBalance/balanceTransferGo.action</url>
+			</attributes>
+		</element>
+		<element>
+			<id>7</id>
 			<text>测试</text>
 			<state></state>
 			<checked>false</checked>
