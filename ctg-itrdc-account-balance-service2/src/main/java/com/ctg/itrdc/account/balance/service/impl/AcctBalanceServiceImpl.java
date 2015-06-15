@@ -265,6 +265,8 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		List<Long> acctBalIdList = new ArrayList<Long>();
 		List<Long> acctBalList = new ArrayList<Long>();
 		try {
+			long acctId = Long.parseLong(String.valueOf(model.get("acctId")));
+			model.put("sliceKey", acctId);
 			//根据余额对象、余额对象类型、账户标识  查询余额账本
 			List<AcctBalanceModel> acctBalanceModelList = iAcctBalanceMapper.selectByAcctId(model);
 			if (acctBalanceModelList!=null && acctBalanceModelList.size()>0) {
@@ -294,7 +296,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			//支取金额
 			long drawAmount = Long.parseLong(String.valueOf(model.get("drawAmount")));
 			long requestId = Long.parseLong(String.valueOf(model.get("requestId")));
-			long acctId = Long.parseLong(String.valueOf(model.get("acctId")));
+			
 			//支取金额大于等于账本总余额，才可以支取。否则不能支取
 			if (sumBalance>=drawAmount) {
 				boolean flag = true;
@@ -331,6 +333,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 					logger.info("查询余额来源信息,并更新余额来源表金额，记录余额账本日志.");
 					balSourceModel = new BalanceSourceModel();
 					balSourceModel.setAcctBalanceId(acctBalanceId);
+					balSourceModel.setSliceKey(acctId);
 					balanceSourceList = iBalanceSourceMapper.selectByAcctBalanceId(balSourceModel);
 					for (BalanceSourceModel balanceSource : balanceSourceList) {
 						BalanceSourceModel balSource = new BalanceSourceModel();
@@ -466,6 +469,68 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		}
 		logger.info(flagHint);
 		return flagHint;
+	}
+	
+	/**
+	 * 余额冲正
+	 */
+	@Override
+	public String balanceReverse(long operIncomeId) {
+		String hint = "";
+		Date currDate = new Date();
+		try {
+			logger.info("balanceReverse().");
+			logger.info("根据来源操作流水查询余额来源记录。");
+			BalanceSourceModel balSourceRecord = new BalanceSourceModel();
+			balSourceRecord.setOperIncomeId(operIncomeId);
+			BalanceSourceModel balSourceModel = iBalanceSourceMapper.selectByPrimaryKey(balSourceRecord);
+			if (balSourceModel != null) {
+				if (balSourceModel.getCurAmount() > 0 && balSourceModel.getAmount() == balSourceModel.getCurAmount()) {
+					//没有返销接口，暂时不做。
+					logger.info("调用返销账接口，进行账单返销。");
+					
+					logger.info("修改余额账本余额.");
+					AcctBalanceModel acctBalanceRecord = new AcctBalanceModel();
+					acctBalanceRecord.setAcctBalanceId(balSourceModel.getAcctBalanceId());
+					AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalanceRecord);
+					acctBalanceRecord.setBalance(acctBalanceModel.getBalance()-balSourceModel.getCurAmount());
+					acctBalanceRecord.setRemark("balance reverse." + (double)balSourceModel.getCurAmount()/100
+								+ " dollar.operation date:" + currDate);
+					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalanceRecord);
+					
+					logger.info("修改账本余额来源记录.");
+					balSourceRecord.setCurAmount(0L);
+					balSourceRecord.setOperDate(currDate);
+					iBalanceSourceMapper.updateByPrimaryKey(balSourceRecord);
+					
+					logger.info("记录余额支出日志.");
+					long operPayoutId = newBalancePayoutLog(balSourceModel.getAcctBalanceId(), 0L, 
+							acctBalanceModel.getBalance(), acctBalanceModel.getBalance()-balSourceModel.getCurAmount(), 
+							"balance reverse", balSourceModel.getSliceKey());
+					logger.info("记录余额账本日志.");
+					newAcctBalanceLog(balSourceModel, operPayoutId, balSourceModel.getCurAmount());
+					
+					hint = "余额冲正成功！";
+				} else if (balSourceModel.getCurAmount() <= 0){
+					hint = "余额来源金额不足，不能冲正操作！";
+				} else if(balSourceModel.getAmount() != balSourceModel.getCurAmount()){
+					hint = "余额来源金额已发生变化，不能冲正操作！";
+				} else {
+					hint = "余额来源金额异常，不能冲正操作！";
+				}
+			} else {
+				hint = "此余额来源不存在！";
+			}
+			
+		} catch (Exception e) {
+			hint = "冲正出错！";
+			logger.info(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			logger.info(hint);
+		}
+		
+		return hint;
 	}
 	
 	

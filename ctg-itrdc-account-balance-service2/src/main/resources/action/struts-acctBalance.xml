@@ -69,5 +69,16 @@
  			<result name="error">/view/test/error.jsp</result>
  		</action>
  		<!-- 余额转账 ......end....... -->
+ 		
+ 		<!-- 余额冲正......start...... -->
+ 		<action name="balanceReverseGo" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverseGo">
+ 			<result name="success">/view/acctBalance/balanceReverse.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="balanceReverse" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverse">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<!-- 余额冲正......end...... -->
     </package>
 </struts>
