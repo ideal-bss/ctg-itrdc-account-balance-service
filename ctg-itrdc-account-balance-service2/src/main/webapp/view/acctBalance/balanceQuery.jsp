@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <body>
 <script type="text/javascript">
- function submit_form(){
+ function submit_form_query(){
  	$.ajax({
         async:false,  
         type:"POST",  
@@ -51,7 +51,7 @@
 							width : 300
 						},{
 							field : 'BALANCE',
-							title : '单个账本余额',
+							title : '单个账本余额（元）',
 							align : 'left',
 							width : 300
 						},{
@@ -77,7 +77,7 @@
 	            				BALANCE_TYPE_NAME: data.balanceTypeName,
 	            				EFF_DATE: data.effDate,
 	            				EXP_DATE: data.expDate,
-	            				BALANCE: data.balance,
+	            				BALANCE: data.balance/100,
 	            				OBJECT_ID: data.objectId,
 	            				FREEZE_BALANCE: data.freezeBalance
 	                    });
@@ -125,7 +125,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="submit_form('');" style="width:65px">查询</a></td>
+				<td><a href="#" class="easyui-linkbutton" onclick="submit_form_query('');" style="width:65px">查询</a></td>
 			</tr>
 		</table>
 		</form>
