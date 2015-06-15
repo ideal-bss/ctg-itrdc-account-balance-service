@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalancePayoutMapper">
+	<resultMap type="com.ctg.itrdc.account.balance.model.BalancePayoutModel" id="BaseResultMap">
+		<id column="OPER_PAYOUT_ID" property="operPayoutId" jdbcType="BIGINT"/>
+		<result column="BILL_ID" property="billId" jdbcType="BIGINT"/>
+		<result column="OPER_TYPE" property="operType" jdbcType="BIGINT"/>
+		<result column="STAFF_ID" property="staffId" jdbcType="VARCHAR"/>
+		<result column="OPER_DATE" property="operDate" jdbcType="TIMESTAMP"/>
+		<result column="AMOUNT" property="amount" jdbcType="BIGINT"/>
+		<result column="BALANCE" property="balance" jdbcType="BIGINT"/>
+		<result column="PRN_COUNT" property="prnCount" jdbcType="BIGINT"/>
+		<result column="BALANCE_RELATION_ID" property="balanceRelationId" jdbcType="BIGINT"/>
+		<result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT"/>
+		<result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR"/>
+		<result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP"/>
+		<result column="BALANCE_SOURCE_ID" property="balanceSourceId" jdbcType="BIGINT"/>
+		<result column="EXT_SERIAL_ID" property="extSerialId" jdbcType="BIGINT"/>
+		<result column="PAYOUT_DESC" property="payoutDesc" jdbcType="VARCHAR"/>
+		<result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		OPER_PAYOUT_ID,BILL_ID,OPER_TYPE,STAFF_ID,OPER_DATE,AMOUNT,BALANCE,PRN_COUNT,BALANCE_RELATION_ID,
+		ACCT_BALANCE_ID,STATUS_CD,STATUS_DATE,BALANCE_SOURCE_ID,EXT_SERIAL_ID,PAYOUT_DESC,SLICE_KEY
+	</sql>
+	<insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.BalancePayoutModel" useGeneratedKeys="true" keyProperty="operPayoutId">
+		insert into BALANCE_PAYOUT_MOD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="billId != null">BILL_ID,</if>
+			<if test="operType != null">OPER_TYPE,</if>
+			<if test="staffId != null">STAFF_ID,</if>
+			<if test="operDate != null">OPER_DATE,</if>
+			<if test="amount != null">AMOUNT,</if>
+			<if test="balance != null">BALANCE,</if>
+			<if test="prnCount != null">PRN_COUNT,</if>
+			<if test="balanceRelationId != null">BALANCE_RELATION_ID,</if>
+			<if test="acctBalanceId != null">ACCT_BALANCE_ID,</if>
+			<if test="statusCd != null">STATUS_CD,</if>
+			<if test="statusDate != null">STATUS_DATE,</if>
+			<if test="balanceSourceId != null">BALANCE_SOURCE_ID,</if>
+			<if test="extSerialId != null">EXT_SERIAL_ID,</if>
+			<if test="payoutDesc != null">PAYOUT_DESC,</if>
+			<if test="sliceKey != null">SLICE_KEY,</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="billId != null">#{billId,jdbcType=BIGINT},</if>
+			<if test="operType != null">#{operType,jdbcType=BIGINT},</if>
+			<if test="staffId != null">#{staffId,jdbcType=VARCHAR},</if>
+			<if test="operDate != null">#{operDate,jdbcType=TIMESTAMP},</if>
+			<if test="amount != null">#{amount,jdbcType=BIGINT},</if>
+			<if test="balance != null">#{balance,jdbcType=BIGINT},</if>
+			<if test="prnCount != null">#{prnCount,jdbcType=BIGINT},</if>
+			<if test="balanceRelationId != null">#{balanceRelationId,jdbcType=BIGINT},</if>
+			<if test="acctBalanceId != null">#{acctBalanceId,jdbcType=BIGINT},</if>
+			<if test="statusCd != null">#{statusCd,jdbcType=VARCHAR},</if>
+			<if test="statusDate != null">#{statusDate,jdbcType=TIMESTAMP},</if>
+			<if test="balanceSourceId != null">#{balanceSourceId,jdbcType=BIGINT},</if>
+			<if test="extSerialId != null">#{extSerialId,jdbcType=BIGINT},</if>
+			<if test="payoutDesc != null">#{payoutDesc,jdbcType=VARCHAR},</if>
+			<if test="sliceKey != null">#{sliceKey,jdbcType=BIGINT},</if>
+		</trim>
+	</insert>
+</mapper>
