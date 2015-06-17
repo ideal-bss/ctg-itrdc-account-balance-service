@@ -10,4 +10,5 @@ import com.ctg.itrdc.account.balance.model.BalancePayoutModel;
  */
 public interface IBalancePayoutMapper {
 	void insert(BalancePayoutModel record);
+	BalancePayoutModel selectByPrimaryKey(BalancePayoutModel record);
 }

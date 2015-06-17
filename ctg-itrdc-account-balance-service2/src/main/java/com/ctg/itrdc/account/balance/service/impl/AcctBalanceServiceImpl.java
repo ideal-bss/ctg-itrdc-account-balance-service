@@ -13,17 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
+import com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel;
 import com.ctg.itrdc.account.balance.model.BalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalancePayoutModel;
 import com.ctg.itrdc.account.balance.model.BalanceRelationModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 import com.ctg.itrdc.account.balance.model.BalanceSourceModel;
+import com.ctg.itrdc.account.balance.model.BalanceSourceTypeModel;
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 import com.ctg.itrdc.account.balance.repository.IAcctBalanceLogMapper;
 import com.ctg.itrdc.account.balance.repository.IAcctBalanceMapper;
+import com.ctg.itrdc.account.balance.repository.IBalanceAcctItemPayedMapper;
 import com.ctg.itrdc.account.balance.repository.IBalancePayoutMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceShareRuleMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceMapper;
+import com.ctg.itrdc.account.balance.repository.IBalanceSourceTypeMapper;
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 import com.ctg.itrdc.account.balance.util.BaseUtil;
 @Service
@@ -35,6 +39,8 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IAcctBalanceLogMapper iAcctBalanceLogMapper;
 	private IBalanceSourceMapper iBalanceSourceMapper;
 	private IBalancePayoutMapper iBalancePayoutMapper;
+	private IBalanceAcctItemPayedMapper iBalanceAcctItemPayedMapper;
+	private IBalanceSourceTypeMapper iBalanceSourceTypeMapper;
 	
 	/*SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
 	IAcctBalanceMapper iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);//余额账目
@@ -533,7 +539,164 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		return hint;
 	}
 	
-	
+	@Override
+	public List<Object> queryAcctBalanceLog(Map<String, Object> map) {
+		logger.info("acctBalanceLog().");
+		List<Object> resultList = new ArrayList<Object>();
+		boolean acctBalFlag = true;
+		try {
+			logger.info("根据账户标识和余额类型查询余额账本。");
+			//根据账户标识和余额类型查询余额账本。
+			long acctId = Long.parseLong(String.valueOf(map.get("acctId")));
+			long balanceTypeId = Long.parseLong(String.valueOf(map.get("balanceTypeId")));
+			Map<String, Object> acctBalMap = new HashMap<String, Object>();
+			acctBalMap.put("acctId", acctId);
+			acctBalMap.put("balanceTypeId", balanceTypeId);
+			acctBalMap.put("sliceKey", acctId);
+			List<AcctBalanceModel> acctBalModelList = iAcctBalanceMapper.selectByAcctId(acctBalMap);
+			if (acctBalModelList != null && acctBalModelList.size() > 0) {
+				for (AcctBalanceModel acctBalanceModel : acctBalModelList) {
+					//余额类型查询
+					BalanceConfig balanceConfig =BalanceConfig.getInstance();
+					BalanceTypeModel balanceTypeModel=balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+					
+					
+					//根据账本标识查询余额账本日志
+					Map<String, Object> mapLog = new HashMap<String, Object>();
+					mapLog.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+					mapLog.put("sliceKey", acctId);
+					List<AcctBalanceLogModel> acctBalLogList = iAcctBalanceLogMapper.selectLogByAcctBalId(mapLog);
+					for (AcctBalanceLogModel acctBalanceLogModel : acctBalLogList) {
+						
+						//根据余额来源操作流水查询余额来源记录
+						BalanceSourceModel balSourceRecord = new BalanceSourceModel();
+						balSourceRecord.setOperIncomeId(acctBalanceLogModel.getOperIncomeId());
+						balSourceRecord.setSliceKey(acctId);
+						BalanceSourceModel balSourceModel = iBalanceSourceMapper.selectByPrimaryKey(balSourceRecord);
+						
+						//余额来源类型
+						BalanceSourceTypeModel balSourceTypeModel = 
+									iBalanceSourceTypeMapper.selectByPrimaryKey(balSourceModel.getBalanceSourceTypeId());
+						
+						//根据余额支出操作流水查询余额支出记录
+						BalancePayoutModel balPayoutRecord = new BalancePayoutModel();
+						balPayoutRecord.setOperPayoutId(acctBalanceLogModel.getOperPayoutId());
+						balPayoutRecord.setSliceKey(acctId);
+						BalancePayoutModel balPayoutModel = iBalancePayoutMapper.selectByPrimaryKey(balPayoutRecord);
+						
+						//余额支出账目查询
+						BalanceAcctItemPayedModel record = new BalanceAcctItemPayedModel();
+						record.setOperPayoutId(acctBalanceLogModel.getOperPayoutId());
+						record.setSliceKey(acctId);
+						List<BalanceAcctItemPayedModel> itemPayoutList = iBalanceAcctItemPayedMapper.selectByPayoutId(record);
+						
+						Map<String, Object> resultMap = new HashMap<String, Object>();
+						if (itemPayoutList == null || itemPayoutList.size() == 0) {
+							//余额账本
+							resultMap.put("acctId", acctId);
+							resultMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+							resultMap.put("acctBalance", acctBalanceModel.getBalance());
+							if (balanceTypeModel != null) {
+								resultMap.put("balanceTypeId", balanceTypeModel.getBalanceTypeId());
+								resultMap.put("balanceTypeName", balanceTypeModel.getBalanceTypeName());
+							}
+							
+							//余额来源记录
+							if (balSourceModel != null) {
+								resultMap.put("operIncomeId", balSourceModel.getOperIncomeId());
+								resultMap.put("sourceOperType", balSourceModel.getOperType());
+								resultMap.put("sourceStaffId", balSourceModel.getStaffId());
+								resultMap.put("sourceOperDate", balSourceModel.getOperDate());
+								resultMap.put("sourceAmount", balSourceModel.getAmount());
+								resultMap.put("curAmount", balSourceModel.getCurAmount());
+							}
+							if (balSourceTypeModel != null) {
+								resultMap.put("balanceSourceTypeId", balSourceTypeModel.getBalanceSourceTypeId());
+								resultMap.put("balanceSourceTypeIdDesc", balSourceTypeModel.getBalanceSourceTypeDesc());
+							}
+							
+							//余额支出记录
+							if (balPayoutModel != null) {
+								resultMap.put("operPayoutId", balPayoutModel.getOperPayoutId());
+								resultMap.put("payoutAmount", acctBalanceLogModel.getPayoutAmount());
+								resultMap.put("billId", balPayoutModel.getBillId());
+								resultMap.put("extSerialId", balPayoutModel.getExtSerialId());
+								resultMap.put("payoutOperType", balPayoutModel.getOperType());
+								resultMap.put("payoutStaffId", balPayoutModel.getStaffId());
+								resultMap.put("payoutBalance", balPayoutModel.getBalance());
+								resultMap.put("payoutOperDate", balPayoutModel.getOperDate());
+							}
+							
+							//余额支出账目
+							resultMap.put("acctItemId", null);
+							resultMap.put("acctItemBalance", 0);
+							
+						} else {
+							for (BalanceAcctItemPayedModel balanceAcctItemPayedModel : itemPayoutList) {
+								
+								//余额账本
+								resultMap.put("acctId", acctId);
+								resultMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+								resultMap.put("acctBalance", acctBalanceModel.getBalance());
+								if (balanceTypeModel != null) {
+									resultMap.put("balanceTypeId", balanceTypeModel.getBalanceTypeId());
+									resultMap.put("balanceTypeName", balanceTypeModel.getBalanceTypeName());
+								}
+								
+								//余额来源记录
+								if (balSourceModel != null) {
+									resultMap.put("operIncomeId", balSourceModel.getOperIncomeId());
+									resultMap.put("sourceOperType", balSourceModel.getOperType());
+									resultMap.put("sourceStaffId", balSourceModel.getStaffId());
+									resultMap.put("sourceOperDate", balSourceModel.getOperDate());
+									resultMap.put("sourceAmount", balSourceModel.getAmount());
+									resultMap.put("curAmount", balSourceModel.getCurAmount());
+								}
+								if (balSourceTypeModel != null) {
+									resultMap.put("balanceSourceTypeId", balSourceTypeModel.getBalanceSourceTypeId());
+									resultMap.put("balanceSourceTypeIdDesc", balSourceTypeModel.getBalanceSourceTypeDesc());
+								}
+								
+								//余额支出记录
+								if (balPayoutModel != null) {
+									resultMap.put("operPayoutId", balPayoutModel.getOperPayoutId());
+									resultMap.put("payoutAmount", acctBalanceLogModel.getPayoutAmount());
+									resultMap.put("billId", balPayoutModel.getBillId());
+									resultMap.put("extSerialId", balPayoutModel.getExtSerialId());
+									resultMap.put("payoutOperType", balPayoutModel.getOperType());
+									resultMap.put("payoutStaffId", balPayoutModel.getStaffId());
+									resultMap.put("payoutBalance", balPayoutModel.getBalance());
+									resultMap.put("payoutOperDate", balPayoutModel.getOperDate());
+								}
+								
+								//余额支出账目
+								resultMap.put("acctItemId", balanceAcctItemPayedModel.getAcctItemId());
+								resultMap.put("acctItemBalance", balanceAcctItemPayedModel.getBalance());
+								
+							}
+						}
+						resultList.add(resultMap);
+						acctBalFlag = false;
+					}
+				}
+			} else {
+				Map<String, Object> hintMap = new HashMap<String, Object>();
+				hintMap.put("errorInfo", "余额账本不存在！");
+				resultList.add(hintMap);
+				acctBalFlag = false;
+			}
+			if (acctBalFlag) {
+				Map<String, Object> hintMap = new HashMap<String, Object>();
+				hintMap.put("errorInfo", "余额账本日志不存在！");
+				resultList.add(hintMap);
+			}
+			logger.info(resultList);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			e.printStackTrace();
+		}
+		return resultList;
+	}
 	
 	public IAcctBalanceMapper getiAcctBalanceMapper() {
 		return iAcctBalanceMapper;
@@ -573,6 +736,23 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	}
 	
 	
+	public IBalanceAcctItemPayedMapper getiBalanceAcctItemPayedMapper() {
+		return iBalanceAcctItemPayedMapper;
+	}
+	@Autowired
+	public void setiBalanceAcctItemPayedMapper(
+			IBalanceAcctItemPayedMapper iBalanceAcctItemPayedMapper) {
+		this.iBalanceAcctItemPayedMapper = iBalanceAcctItemPayedMapper;
+	}
+	
+	public IBalanceSourceTypeMapper getiBalanceSourceTypeMapper() {
+		return iBalanceSourceTypeMapper;
+	}
+	@Autowired
+	public void setiBalanceSourceTypeMapper(
+			IBalanceSourceTypeMapper iBalanceSourceTypeMapper) {
+		this.iBalanceSourceTypeMapper = iBalanceSourceTypeMapper;
+	}
 	/**
 	 * 
 	 * @desc 记录余额账本日志
@@ -614,7 +794,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		balPayout.setAcctBalanceId(acctBalanceId);
 		balPayout.setBillId(billId);
 		balPayout.setOperDate(payoutDate);
-		balPayout.setStaffId("staff id");
+		balPayout.setStaffId("system");
 		balPayout.setStatusCd("1");
 		balPayout.setStatusDate(payoutDate);
 		balPayout.setPayoutDesc(payoutDesc);
@@ -639,7 +819,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		BalanceSourceModel balSourceModel = new BalanceSourceModel();
 		balSourceModel.setAcctBalanceId(acctBalanceId);
 		balSourceModel.setOperType("");
-		balSourceModel.setStaffId("staff id");
+		balSourceModel.setStaffId("system");
 		balSourceModel.setOperDate(balSourceDate);
 		balSourceModel.setAmount(amount);
 		balSourceModel.setCurAmount(curAmount);

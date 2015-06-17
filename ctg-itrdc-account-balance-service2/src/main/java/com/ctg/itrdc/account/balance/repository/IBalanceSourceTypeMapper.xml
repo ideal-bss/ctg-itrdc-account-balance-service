@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalanceSourceTypeMapper">
+		<resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.BalanceSourceTypeModel">
+			<id column="BALANCE_SOURCE_TYPE_ID" property="balanceSourceTypeId" jdbcType="BIGINT"/>
+			<result column="BALANCE_SOURCE_TYPE_DESC" property="balanceSourceTypeDesc" jdbcType="VARCHAR"/>
+			<result column="STATUS_CD" property="statusCd" jdbcType="VARCHAR"/>
+			<result column="CREATE_STAFF" property="createStaff" jdbcType="VARCHAR"/>
+			<result column="UPDATE_STAFF" property="updateStaff" jdbcType="VARCHAR"/>
+			<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+			<result column="STATUS_DATE" property="statusDate" jdbcType="TIMESTAMP"/>
+			<result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
+		</resultMap>
+		<sql id="Base_Column_List">
+			BALANCE_SOURCE_TYPE_ID,BALANCE_SOURCE_TYPE_DESC,STATUS_CD,
+			CREATE_STAFF,UPDATE_STAFF,CREATE_DATE,STATUS_DATE,UPDATE_DATE
+		</sql>
+		<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+			select <include refid="Base_Column_List"/>
+			from BALANCE_SOURCE_TYPE_MOD
+			<where>
+				BALANCE_SOURCE_TYPE_ID = #{balanceSourceTypeId,jdbcType=BIGINT}
+			</where>
+		</select>
+</mapper>

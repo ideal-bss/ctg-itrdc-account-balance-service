@@ -1,5 +1,7 @@
 package com.ctg.itrdc.account.balance.repository;
 
+import java.util.List;
+
 import com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel;
 
 public interface IBalanceAcctItemPayedMapper {
@@ -15,4 +17,6 @@ public interface IBalanceAcctItemPayedMapper {
     int updateByPrimaryKeySelective(BalanceAcctItemPayedModel record);
 
     int updateByPrimaryKey(BalanceAcctItemPayedModel record);
+    
+    List<BalanceAcctItemPayedModel> selectByPayoutId(BalanceAcctItemPayedModel record);
 }

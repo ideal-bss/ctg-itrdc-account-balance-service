@@ -15,5 +15,6 @@ public interface IAcctBalanceService {
 	public String balanceDraw(Map<String,Object> model);
 	public String balanceTransfer(Map<String, Object> map);
 	public String balanceReverse(long operIncomeId);
+	public List<Object> queryAcctBalanceLog(Map<String, Object> map);
 	
 }

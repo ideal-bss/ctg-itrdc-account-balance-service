@@ -150,4 +150,15 @@
       SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
     where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
   </update>
+  
+  <select id="selectLogByAcctBalId" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from acct_balance_log_mod
+  	<where>
+  		ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+  		<if test="sliceKey!=null">
+  			and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+  		</if>
+  	</where>
+  </select>
 </mapper>

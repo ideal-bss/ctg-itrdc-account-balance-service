@@ -80,5 +80,16 @@
  			<result name="error">/view/test/error.jsp</result>
  		</action>
  		<!-- 余额冲正......end...... -->
+ 		
+ 		<!-- 余额账本日志......start...... -->
+ 		<action name="acctBalanceLogGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalanceLogGo">
+			<result name="success">/view/acctBalance/acctBalanceLog.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="acctBalanceLog" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalanceLog">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额账本日志......end...... -->
     </package>
 </struts>

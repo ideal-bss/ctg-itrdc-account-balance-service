@@ -73,6 +73,15 @@
 		</element>
 		<element>
 			<id>8</id>
+			<text>账本日志查询</text>
+			<state></state>
+			<checked>false</checked>
+			<attributes>
+				<url>/acctBalance/acctBalanceLogGo.action</url>
+			</attributes>
+		</element>
+		<element>
+			<id>8</id>
 			<text>测试</text>
 			<state></state>
 			<checked>false</checked>

@@ -23,6 +23,16 @@
 		OPER_PAYOUT_ID,BILL_ID,OPER_TYPE,STAFF_ID,OPER_DATE,AMOUNT,BALANCE,PRN_COUNT,BALANCE_RELATION_ID,
 		ACCT_BALANCE_ID,STATUS_CD,STATUS_DATE,BALANCE_SOURCE_ID,EXT_SERIAL_ID,PAYOUT_DESC,SLICE_KEY
 	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List"/>
+		from BALANCE_PAYOUT_MOD
+		<where>
+			OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+			<if test="sliceKey!=null">
+				and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
 	<insert id="insert" parameterType="com.ctg.itrdc.account.balance.model.BalancePayoutModel" useGeneratedKeys="true" keyProperty="operPayoutId">
 		insert into BALANCE_PAYOUT_MOD
 		<trim prefix="(" suffix=")" suffixOverrides=",">

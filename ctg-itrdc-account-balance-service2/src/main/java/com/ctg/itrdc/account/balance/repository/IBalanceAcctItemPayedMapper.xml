@@ -103,4 +103,14 @@
       SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
     where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
   </update>
+  
+  <select id="selectByPayoutId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from balance_acct_item_payed_mod
+    where OPER_PAYOUT_ID = #{operPayoutId,jdbcType=BIGINT}
+    <if test="sliceKey!=null">
+    	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+    </if>
+  </select>
 </mapper>
