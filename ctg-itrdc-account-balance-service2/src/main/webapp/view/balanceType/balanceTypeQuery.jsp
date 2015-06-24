@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <body>
  <script type="text/javascript">
- function query_form(){
+ function bal_type_query_form(){
  	$.ajax({
         async:false,  
         type:"POST",  
@@ -16,7 +16,7 @@
     				fitColumns : false,
     				loadMsg : '数据加载中请稍后……',
     				rownumbers : true,
-    				singleSelect : false,
+    				singleSelect : true,
     				columns : [ [{
     						field : '',
     						title : '选择',
@@ -81,7 +81,8 @@
 							field : 'statusDate',
 							title : '状态时间',
 							align : 'left',
-							width : 150
+							width : 150,
+							formatter : formatterdate 
 						}
 					] ],
 					toolbar:[
@@ -94,16 +95,45 @@
 	                    	href : "${pageContext.request.contextPath}/view/balanceType/balanceTypeAdd.jsp"
 	                    });
 	                    
-	                }},{text:"删除",iconCls:"icon-remove",handler:function(){
-	                	var row = $("#view_balanceType_balanceTypeQuery_result").datagrid("getSelections");
-	                	$.messager.alert("提示",row.length+"  "+row[1].priority+"  "+row[1].balanceTypeName);
-	                }},{text:"修改",iconCls:"icon-edit",handler:function(){
-	                    $('#edit_balanceType').window({
-	                    	title : '修改余额类型',
-	                    	width : 600,
-	                    	height : 400,
-	                    	modal : true
-	                    });
+	                }}/*,{text:"删除",iconCls:"icon-remove",handler:function(){
+	                	var rows = $("#view_balanceType_balanceTypeQuery_result").datagrid("getSelections");
+                		if (rows == null || rows[0] == null) {
+							$.messager.alert("提示","请选择余额类型！");
+						} else {
+		                	var balTypeId = new Array();
+		                	for(var i=0;i<rows.length;i++){
+		                		balTypeId.push(rows[i].balanceTypeId);
+		                	}
+		                	var url = "${pageContext.request.contextPath}/balanceType/delBalanceType.action?balTypeId=" + balTypeId;
+		                		$.post(url, rows, function(response){
+								    $.messager.alert("提示",response);
+								}, 'json');
+	                	}
+	                }}*/,{text:"修改",iconCls:"icon-edit",handler:function(){
+	                	var rows = $("#view_balanceType_balanceTypeQuery_result").datagrid("getSelections");
+                		if (rows == null || rows[0] == null || rows.length == 0) {
+							$.messager.alert("提示","请选择余额类型！");
+							return;
+						}else if(rows.length > 1 ){
+							$.messager.alert("提示","只能选择一种余额类型！");
+							return;
+						}
+						$('#balanceTypeIdEdit').textbox("setValue",rows[0].balanceTypeId);
+						$('#priorityEdit').combobox("setValue",rows[0].priority);
+						$('#spePaymentIdEdit').textbox("setValue",rows[0].spePaymentId);
+						$('#balanceTypeNameEdit').textbox("setValue",rows[0].balanceTypeName);
+						$('#allowDrawEdit').combobox("setValue",rows[0].allowDraw);
+						$('#ifEarningEdit').combobox("setValue",rows[0].ifEarning);
+						$('#ifPayOldEdit').combobox("setValue",rows[0].ifPayold);
+						$('#statusCdEdit').combobox("setValue",rows[0].statusCd);
+						$('#statusDateEdit').datebox("setValue",rows[0].statusDate);
+						$('#invOfferEdit').combobox("setValue",rows[0].invOffer);
+						$('#ifSaveBackEdit').combobox("setValue",rows[0].ifSaveback);
+						$('#ifPrincipalEdit').combobox("setValue",rows[0].ifPrincipal);
+						$(".balanceTypeNameClassEdit").html('');
+						$('#edit_balanceType').window('open');
+						
+	                    
                 	}}]
 			}); 
 			
@@ -130,7 +160,61 @@
         }
     }); 
  }
-	   
+ 
+  function formatterdate(val, row) {
+	    var date = new Date(val);
+	    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+  }
+ 
+  function myformatter(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+  }
+  function myparser(s){
+		if (!s) return new Date();
+		var ss = (s.split('-')); 
+		var y = parseInt(ss[0],10);
+		var m = parseInt(ss[1],10);
+		var d = parseInt(ss[2],10);
+		if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+			return new Date(y,m-1,d);
+		} else {
+			return new Date();
+		}
+  }
+  
+  function bal_type_edit_form(){
+  		if(!checkParas()){
+	 		return false;
+	 	}
+  		$.ajax({
+	        async:false,  
+	        type:"POST",  
+	        url:'${pageContext.request.contextPath}/balanceType/modifyBalanceType.action',  
+	        dataType:"json",  
+	        cache: false,
+	        data:$('#edit_balanceType_form_view').serialize(),  
+	        success:function(datas){
+        		$.messager.alert('提示',datas);
+        	}
+        });
+  }
+  
+   function checkParas(){
+	 	var flag = false;
+	 	var balanceTypeName = $("#balanceTypeNameEdit"); 
+	 	var balanceTypeNameClass = $(".balanceTypeNameClassEdit");
+	 	if($.trim(balanceTypeName.val()) == ''){
+	 		balanceTypeNameClass.html('<font color="red">余额类型名称不能为空！</font>');
+	 		flag = false;
+	 	}else{
+	 		balanceTypeNameClass.html('');
+	 		flag = true;
+	 	}
+	 	return flag;
+  }
  </script>
 <div> 
 		<form id="view_balanceType_balanceTypeQuery_form" >
@@ -170,14 +254,121 @@
 				</td>
 			</tr>
 			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="query_form('');" style="width:65px">查询</a></td>
+				<td><a href="#" class="easyui-linkbutton" onclick="bal_type_query_form('');" style="width:65px">查询</a></td>
 				<!-- <td><a href="#" class="easyui-linkbutton" onclick="balanceTypeAddGo('');" style="width:65px">新增</a></td> -->
 			</tr>
 		</table>
 		</form>
-		<div id="add_balanceType"></div>
-		<div id="edit_balanceType"></div>
-		<div id="view_balanceType_balanceTypeQuery_result" ></div>
+		
 	</div>
+	
+	<div id="add_balanceType"></div>
+	<div id="edit_balanceType" class="easyui-window" title="余额类型修改" closed="true" 
+				style="width:600px;height:400px;padding:10px;" align="center">
+		<form id="edit_balanceType_form_view">
+			<table style="padding: 10px 10px 10px 10px;">
+			<tr><td colspan="4" hidden="true"><input id="balanceTypeIdEdit" name="balanceTypeId" value="" class="easyui-textbox" ></td></tr>
+			<tr>
+				<td width="20%">余额类型优先级:</td>
+				<td width="30%">
+					<!-- <input id="priority" name="priority" value="" class="easyui-combo" > -->
+					<select id="priorityEdit" name="priority" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					</select>
+				</td>
+				<td width="20%">专款专用标识:</td>
+				<td width="30%">
+					<input id="spePaymentIdEdit" name="spePaymentId" value="" class="easyui-textbox" style="width: 150px;">
+				</td>
+			</tr>
+			<tr>
+				<td width="20%">余额类型名称:</td>
+				<td width="30%">
+					<input id="balanceTypeNameEdit" name="balanceTypeName" value="" class="easyui-textbox" style="width: 150px;">
+					<span class="balanceTypeNameClassEdit">&nbsp;</span>
+				</td>
+				<td width="20%">允许提取标志:</td>
+				<td width="30%">
+					<!-- <input id="allowDraw" name="allowDraw" value="" class="easyui-textbox" > -->
+					<select id="allowDrawEdit" name="allowDraw" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+				
+			</tr>
+			<tr>
+				<td width="20%">是否抵收入:</td>
+				<td width="30%">
+					<!-- <input id="ifEarning" name="ifEarning" value="" class="easyui-combo" > -->
+					<select id="ifEarningEdit" name="ifEarning" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+				<td width="20%">是否抵旧欠:</td>
+				<td width="30%">
+					<!-- <input id="ifPayOld" name="ifPayOld" value="" class="easyui-combo" > -->
+					<select id="ifPayOldEdit" name="ifPayOld" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+				
+			</tr>
+			<tr>
+				<td width="20%">状态:</td>
+				<td width="30%">
+					<!-- <input id="statusCd" name="statusCd" value="" class="easyui-combo" > -->
+					<select id="statusCdEdit" name="statusCd" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">有效</option>
+						<option value="N">无效</option>
+					</select>
+				</td>
+				<td width="20%">状态时间:</td>
+				<td width="30%">
+					<input id="statusDateEdit" name="statusDate" data-options="formatter:myformatter,parser:myparser,editable:false" value="" class="easyui-datebox" style="width: 150px;">
+					<span class="statusDateClassEdit"></span>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%">提供发票标志:</td>
+				<td width="30%">
+					<!-- <input id="invOffer" name="invOffer" value="" class="easyui-combo" > -->
+					<select id="invOfferEdit" name="invOffer" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+				<td width="20%">是否滚存:</td>
+				<td width="30%">
+					<!-- <input id="ifSaveBack" name="ifSaveBack" value="" class="easyui-combo" > -->
+					<select id="ifSaveBackEdit" name="ifSaveBack" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%">是否本金:</td>
+				<td width="30%">
+					<!-- <input id="ifPrincipal" name="ifPrincipal" value="" class="easyui-combo" > -->
+					<select id="ifPrincipalEdit" name="ifPrincipal" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+						<option value="Y">是</option>
+						<option value="N">否</option>
+					</select>
+				</td>
+				<td>&nbsp;</td><td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="4" align="center"><a href="#" class="easyui-linkbutton" onclick="bal_type_edit_form();" style="width:65px">修改</a></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<div id="view_balanceType_balanceTypeQuery_result" ></div>
 </body>
 </html>

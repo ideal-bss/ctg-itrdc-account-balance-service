@@ -21,6 +21,15 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
- 
+ 		
+ 		<action name="delBalanceType" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="delBalanceType">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		
+ 		<action name="modifyBalanceType" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="modifyBalanceType">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
     </package>
 </struts>

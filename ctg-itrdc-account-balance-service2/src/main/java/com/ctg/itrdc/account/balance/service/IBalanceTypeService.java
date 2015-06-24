@@ -1,6 +1,7 @@
 package com.ctg.itrdc.account.balance.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 
@@ -27,5 +28,14 @@ public interface IBalanceTypeService {
 	 */
 	 public String newInsertBalanceType(BalanceTypeModel balanceTypeModel);
 	 
-
+	 /**
+	  * 
+	  * @desc 删除余额类型
+	  * @author ls
+	  * @param balTypeId
+	  * @return
+	  */
+	 public String delBalType(String[] balTypeId);
+	 
+	 public String modifyBalType(BalanceTypeModel record);
 }

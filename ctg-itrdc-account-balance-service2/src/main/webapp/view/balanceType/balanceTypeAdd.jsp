@@ -153,7 +153,7 @@ function myparser(s){
 				<td>&nbsp;</td><td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="4"><a href="#" class="easyui-linkbutton" onclick="add_form('');" style="width:65px">新增</a></td>
+				<td colspan="4" align="center"><a href="#" class="easyui-linkbutton" onclick="add_form('');" style="width:65px">新增</a></td>
 			</tr>
 		</table>
 		</form>

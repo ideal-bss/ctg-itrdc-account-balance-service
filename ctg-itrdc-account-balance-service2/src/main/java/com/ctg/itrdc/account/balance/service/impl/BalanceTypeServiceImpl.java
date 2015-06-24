@@ -1,5 +1,6 @@
 package com.ctg.itrdc.account.balance.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -48,7 +49,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 		SpecialPaymentModel SpecialPaymentModel = null;
 		spePaymentId = balanceTypeModel.getSpePaymentId();
 		balanceTypeModel.setCreateStaff("system");
-		balanceTypeModel.setUpdateStaff("system");
+		balanceTypeModel.setCreateDate(new Date());
 		
 		try {
 			if (spePaymentId != null && spePaymentId > 0) {
@@ -94,6 +95,56 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 			e.printStackTrace();
 		}
 		return message;
+	}
+	
+	/**
+	 * 删除余额类型
+	 */
+	@Override
+	public String delBalType(String[] balTypeId) {
+		String hint = "";
+		try {
+			for (String bti : balTypeId) {
+				Long balanceTypeId = Long.parseLong(bti);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hint;
+	}
+	
+	/**
+	 * 余额类型修改
+	 */
+	@Override
+	public String modifyBalType(BalanceTypeModel record) {
+		logger.info("modifyBalType().");
+		String hint = "修改成功！";
+		try {
+			BalanceTypeModel balTypeModel = iBalanceTypeMapper.selectByPrimaryKey(record);
+			if (balTypeModel != null && balTypeModel.getBalanceTypeId() != null && balTypeModel.getBalanceTypeId() > 0) {
+				balTypeModel.setPriority(record.getPriority());
+				balTypeModel.setSpePaymentId(record.getSpePaymentId());
+				balTypeModel.setBalanceTypeName(record.getBalanceTypeName());
+				balTypeModel.setAllowDraw(record.getAllowDraw());
+				balTypeModel.setIfEarning(record.getIfEarning());
+				balTypeModel.setIfPayold(record.getIfPayold());
+				balTypeModel.setStatusCd(record.getStatusCd());
+				balTypeModel.setStatusDate(record.getStatusDate());
+				balTypeModel.setInvOffer(record.getInvOffer());
+				balTypeModel.setIfSaveback(record.getIfSaveback());
+				balTypeModel.setIfPrincipal(record.getIfPrincipal());
+				iBalanceTypeMapper.updateByPrimaryKeySelective(balTypeModel);
+			}else{
+				hint = "该余额类型已被删除！";
+			}
+		} catch (Exception e) {
+			hint = e.getMessage();
+			e.printStackTrace();
+		} finally {
+			logger.info(hint);
+		}
+		return hint;
 	}
 	
 	@Autowired

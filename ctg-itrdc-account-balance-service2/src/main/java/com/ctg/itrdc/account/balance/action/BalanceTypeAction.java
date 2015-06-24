@@ -35,6 +35,7 @@ public class BalanceTypeAction extends BaseAction{
 	private String statusDate; //状态时间
 	private IBalanceTypeService iBalanceTypeService;
 	private BalanceTypeModel balanceTypeModel;
+	private String[] balTypeId;
 	
 	/**
 	 * 余额类型查询
@@ -101,13 +102,45 @@ public class BalanceTypeAction extends BaseAction{
 	 * @throws Exception
 	 * @author ls
 	 */
-	public String balanceTypeAddGo()throws Exception{
+	public String balanceTypeAddGo(){
 		logger.info("balanceTypeAddGo().");
 		return "success";
 	}
 	
 	/**
-	 * 封装页面传输的参数
+	 * 
+	 * @desc 删除余额类型
+	 * @author ls
+	 * @return
+	 */
+	public String delBalanceType(){
+		logger.info("delBalanceType()......start......");
+		String hint = iBalanceTypeService.delBalType(getBalTypeId());
+		writeJson(hint);
+		logger.info("delBalanceType()......end......");
+		return "success";
+	}
+	
+	
+	/**
+	 * 
+	 * @desc 修改余额类型
+	 * @author ls
+	 * @return
+	 */
+	public String modifyBalanceType(){
+		logger.info("modifyBalanceType()......start......");
+		String hint = setBalanceType("modify");
+		if (hint == null || hint.trim().equals("")) {
+			hint = iBalanceTypeService.modifyBalType(balanceTypeModel);
+		}
+		writeJson(hint);
+		logger.info("modifyBalanceType()......end......");
+		return "success";
+	}
+	
+	/**
+	 * 参数
 	 * @author ls
 	 */
 	protected String setBalanceType(String type) {
@@ -115,7 +148,7 @@ public class BalanceTypeAction extends BaseAction{
 		balanceTypeModel = new BalanceTypeModel();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		try {
-			if (type.equals("query") || type.equals("insert")) {
+			if (type.equals("query") || type.equals("insert") || type.equals("modify")) {
 				if (balanceTypeId != null && !balanceTypeId.trim().equals("")) {
 					balanceTypeModel.setBalanceTypeId(Long.valueOf(balanceTypeId));
 				}
@@ -129,7 +162,7 @@ public class BalanceTypeAction extends BaseAction{
 				balanceTypeModel.setStatusCd(statusCd);
 			}
 			
-			if (type.equals("insert")) {
+			if (type.equals("insert") || type.equals("modify")) {
 				balanceTypeModel.setAllowDraw(allowDraw);
 				balanceTypeModel.setInvOffer(invOffer);
 				balanceTypeModel.setIfEarning(ifEarning);
@@ -232,6 +265,12 @@ public class BalanceTypeAction extends BaseAction{
 	}
 	public IBalanceTypeService getiBalanceTypeService() {
 		return iBalanceTypeService;
+	}
+	public String[] getBalTypeId() {
+		return balTypeId;
+	}
+	public void setBalTypeId(String[] balTypeId) {
+		this.balTypeId = balTypeId;
 	}
 	
 	
