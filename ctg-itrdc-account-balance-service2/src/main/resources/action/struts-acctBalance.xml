@@ -91,5 +91,24 @@
 			<result name="error">/view/test/error.jsp</result>
 		</action>
 		<!-- 余额账本日志......end...... -->
+		
+		<!-- 余额冻结解冻管理......start...... -->
+		<action name="balanceFrozenQueryGo" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozenQueryGo">
+			<result name="success">/view/acctBalance/balanceFrozenUnfronzen.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceFrozenQuery" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozenQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceFrozen" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozen">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceUnFrozen" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceUnFrozen">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额冻结解冻管理......end...... -->
     </package>
 </struts>

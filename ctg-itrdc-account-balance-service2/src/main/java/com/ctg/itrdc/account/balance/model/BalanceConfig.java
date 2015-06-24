@@ -71,7 +71,7 @@ public class BalanceConfig {
         
         for(BalanceTypeModel type:typeList){
         	for(SpecialPaymentModel specialmodel:specialList){
-        		if(type.getSpePaymentId().equals(specialmodel.getSpePaymentId())){
+        		if(type.getSpePaymentId() != null && type.getSpePaymentId().equals(specialmodel.getSpePaymentId())){
         			type.setSpecialPaymentModel(specialmodel);
         			break;
         		}

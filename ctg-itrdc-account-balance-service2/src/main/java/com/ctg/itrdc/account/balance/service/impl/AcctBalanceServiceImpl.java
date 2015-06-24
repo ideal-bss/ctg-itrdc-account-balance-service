@@ -15,6 +15,7 @@ import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
 import com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel;
 import com.ctg.itrdc.account.balance.model.BalanceConfig;
+import com.ctg.itrdc.account.balance.model.BalanceFrozenModel;
 import com.ctg.itrdc.account.balance.model.BalancePayoutModel;
 import com.ctg.itrdc.account.balance.model.BalanceRelationModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
@@ -24,6 +25,7 @@ import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 import com.ctg.itrdc.account.balance.repository.IAcctBalanceLogMapper;
 import com.ctg.itrdc.account.balance.repository.IAcctBalanceMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceAcctItemPayedMapper;
+import com.ctg.itrdc.account.balance.repository.IBalanceFrozenMapper;
 import com.ctg.itrdc.account.balance.repository.IBalancePayoutMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceShareRuleMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceMapper;
@@ -41,6 +43,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IBalancePayoutMapper iBalancePayoutMapper;
 	private IBalanceAcctItemPayedMapper iBalanceAcctItemPayedMapper;
 	private IBalanceSourceTypeMapper iBalanceSourceTypeMapper;
+	private IBalanceFrozenMapper iBalanceFrozenMapper;
 	
 	/*SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
 	IAcctBalanceMapper iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);//余额账目
@@ -539,6 +542,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		return hint;
 	}
 	
+	/**
+	 * 查询余额账本日志
+	 */
 	@Override
 	public List<Object> queryAcctBalanceLog(Map<String, Object> map) {
 		logger.info("acctBalanceLog().");
@@ -698,6 +704,216 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		return resultList;
 	}
 	
+	/**
+	 * 查询余额冻结记录
+	 */
+	@Override
+	public List<Object> queryBalFrozen(long acctId){
+		logger.info("queryBalFrozen().");
+		String hint = "";
+		Map<String, Object> hintMap = null;
+		List<Object> resultList = new ArrayList<Object>();
+		boolean flag = true;
+		try {
+			Map<String, Object> acctBalMap = new HashMap<String, Object>();
+			acctBalMap.put("acctId", acctId);
+			acctBalMap.put("sliceKey", acctId);
+			logger.info("query Acct Bal Frozen list." + acctBalMap);
+			List<AcctBalanceModel> acctBalList = iAcctBalanceMapper.selectByAcctId(acctBalMap);
+			if (acctBalList == null || acctBalList.size() == 0) {
+				hint = "账本不存在！";
+			}
+			for (AcctBalanceModel acctBalanceModel : acctBalList) {
+				String statusCd = acctBalanceModel.getStatusCd();
+				if (statusCd != null && statusCd.equals("2")) { //2账本冻结，其他为账本未冻结
+					acctBalMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+					List<BalanceFrozenModel> list = iBalanceFrozenMapper.queryBalFrozenByAcctId(acctBalMap);
+					for (BalanceFrozenModel balanceFrozenModel : list) {
+						if (balanceFrozenModel.getFrozenState() != null && balanceFrozenModel.getFrozenState().equals("2")) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("balanceFrozenId", balanceFrozenModel.getBalanceFrozenId());
+							map.put("frozenAmount", balanceFrozenModel.getFrozenAmount());
+							resultList.add(map);
+							flag = false;
+						}
+					}
+					//没有账本冻结记录，则修改账本状态为未冻结，否则输出冻结记录
+					if (list == null || list.size() == 0) {
+						acctBalMap.put("statusCd", 1);
+						acctBalMap.put("statusDate", new Date());
+						iAcctBalanceMapper.updateBalanceByAcctBalId(acctBalMap);
+						hint = "不存在账本冻结记录，更新账本为未冻结状态！";
+					}
+				}else{
+					hint = "账本未被冻结！";
+				}
+			}
+			if (flag && (hint == null || hint.equals(""))) {
+				hint = "余额冻结记录不存在！";
+			}
+			
+		} catch (Exception e) {
+			hint = e.getMessage();
+			e.printStackTrace();
+		} finally {
+			
+			if (resultList.size() == 0) {
+				hintMap = new HashMap<String, Object>();
+				hintMap.put("errorInfo", hint);
+				resultList.add(hintMap);
+			}
+			logger.info(resultList);
+		}
+		
+		return resultList;
+	}
+	
+	/**
+	 * 余额冻结
+	 */
+	@Override
+	public String balanceFrozen(Map<String, Object> record) {
+		logger.info("balanceFrozen().");
+		String hint = "";
+		try {
+			long subAcctId = Long.parseLong(String.valueOf(record.get("subAcctId")));
+			long acctBalanceId = Long.parseLong(String.valueOf(record.get("acctBalanceId")));
+			long frozenAmount = Long.parseLong(String.valueOf(record.get("frozenAmount")));
+			AcctBalanceModel acctBalRecord = new AcctBalanceModel();
+			acctBalRecord.setAcctBalanceId(acctBalanceId);
+			acctBalRecord.setSubAcctId(subAcctId);
+			acctBalRecord.setSliceKey(subAcctId);
+			logger.info("acct balance query by id.");
+			AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalRecord);
+			if (acctBalanceModel != null) {
+				long frozenAmountSum = 0;
+				//statusCd=2账本冻结，其他为账本未冻结
+				if (acctBalanceModel.getStatusCd() != null && acctBalanceModel.getStatusCd().equals("2")) {
+					logger.info("acct balance is frozened.");
+					Map<String, Object> frozenMap = new HashMap<String, Object>();
+					frozenMap.put("acctBalanceId", acctBalanceId);
+					frozenMap.put("acctId", subAcctId);
+					frozenMap.put("sliceKey", subAcctId);
+					List<BalanceFrozenModel> balFrozenRecord = iBalanceFrozenMapper.queryBalFrozenByAcctId(record);
+					for (BalanceFrozenModel balanceFrozenModel : balFrozenRecord) {
+						if (balanceFrozenModel.getFrozenState() != null && balanceFrozenModel.getFrozenState().equals("2")) {
+							frozenAmountSum += balanceFrozenModel.getFrozenAmount();
+						}
+					}
+				}
+				//未被冻结余额
+				long balanceAmount = acctBalanceModel.getBalance()-frozenAmount-frozenAmountSum;
+				if (balanceAmount>=0) {
+					Date currDate = new Date();
+					
+					logger.info("frozen acct balance.");
+					BalanceFrozenModel balFrozenModel = new BalanceFrozenModel();
+					balFrozenModel.setAcctBalanceId(acctBalanceId);
+					balFrozenModel.setAcctId(subAcctId);
+					balFrozenModel.setFrozenAmount(frozenAmount);
+					balFrozenModel.setBalanceAmount(balanceAmount);
+					balFrozenModel.setFrozenState("2");
+					balFrozenModel.setReason("balance frozen");
+					balFrozenModel.setStaffId("system");
+					balFrozenModel.setCreateDate(currDate);
+					balFrozenModel.setEffDate(currDate);
+					balFrozenModel.setExpDate(BaseUtil.stringToDate("2099-1-1", "yyyy-MM-dd"));
+					balFrozenModel.setSliceKey(subAcctId);
+					iBalanceFrozenMapper.insertBalanceFrozen(balFrozenModel);
+					
+					acctBalanceModel.setStatusCd("2");
+					acctBalanceModel.setStatusDate(currDate);
+					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalanceModel);
+				 	
+					hint = "余额冻结成功！";
+				}else{
+					hint = "余额不足！";
+				}
+				
+			}else{
+				hint = "余额账本不存在！";
+			}
+		} catch (Exception e) {
+			hint = e.getMessage();
+			e.printStackTrace();
+		} finally {
+			logger.info(hint);
+		}
+		
+		return hint;
+	}
+	
+	/**
+	 * 余额解冻
+	 */
+	@Override
+	public String BalanceUnFrozen(String[] balanceFrozenIdArray) {
+		logger.info("BalanceUnFrozen().");
+		String hint = "余额已解冻！";
+		boolean flag = true;
+		long acctBalanceId = 0;
+		long acctId = 0;
+		long sliceKey = 0;
+		try {
+			logger.info("query balance frozen by key.");
+			for (int i = 0; i < balanceFrozenIdArray.length; i++) {
+				long balanceFrozenId = Long.parseLong(balanceFrozenIdArray[i]);
+				Map<String, Object> balFrozenMap = new HashMap<String, Object>();
+				balFrozenMap.put("balanceFrozenId", balanceFrozenId);
+				BalanceFrozenModel balFrozenModel = iBalanceFrozenMapper.selectByPrimaryKey(balFrozenMap);
+				acctBalanceId = balFrozenModel.getAcctBalanceId();
+				acctId = balFrozenModel.getAcctId();
+				sliceKey = balFrozenModel.getSliceKey();
+				if (balFrozenModel != null) {
+					Map<String, Object> balFrozenRecord = new HashMap<String, Object>();
+					balFrozenRecord.put("frozenState", "1");
+					balFrozenRecord.put("reason", "balance unfrozen.");
+					balFrozenRecord.put("updateDate", new Date());
+					balFrozenRecord.put("balanceFrozenId", balanceFrozenId);
+					balFrozenRecord.put("sliceKey", sliceKey);
+					iBalanceFrozenMapper.balanceUnFrozen(balFrozenRecord);
+					flag = false;
+				}
+			}
+			
+			logger.info("query balance frozen by acctBalanceId.");
+			Map<String, Object> acctBalMap = new HashMap<String, Object>();
+			acctBalMap.put("acctBalanceId", acctBalanceId);
+			acctBalMap.put("acctId", acctId);
+			acctBalMap.put("sliceKey", sliceKey);System.out.println(acctBalMap);
+			List<BalanceFrozenModel> balFrozenModelList = iBalanceFrozenMapper.queryBalFrozenByAcctId(acctBalMap);
+			boolean balFrozenFlag = true;
+			for (BalanceFrozenModel balanceFrozenModel : balFrozenModelList) {
+				//2 代表冻结，1未冻结
+				if(balanceFrozenModel.getFrozenState() != null && balanceFrozenModel.getFrozenState().equals("2")){
+					balFrozenFlag = false;
+					break;
+				}
+			}
+			//如果冻结记录中全部为未冻结，则更新余额账本为未冻结
+			if (balFrozenFlag) {
+				logger.info("query acct balance by acctBalanceId.");
+				AcctBalanceModel acctBalRecord = new AcctBalanceModel();
+				acctBalRecord.setAcctBalanceId(acctBalanceId);
+				acctBalRecord.setSubAcctId(acctId);
+				acctBalRecord.setSliceKey(sliceKey);
+				AcctBalanceModel acctBalModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalRecord);
+				
+				logger.info("update acct balance to unfrozen.");
+				acctBalModel.setStatusCd("1");
+				acctBalModel.setStatusDate(new Date());
+				iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalModel);
+			}
+			if (flag) {
+				hint = "冻结记录不存在！";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return hint;
+	}
+	
 	public IAcctBalanceMapper getiAcctBalanceMapper() {
 		return iAcctBalanceMapper;
 	}
@@ -752,6 +968,14 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	public void setiBalanceSourceTypeMapper(
 			IBalanceSourceTypeMapper iBalanceSourceTypeMapper) {
 		this.iBalanceSourceTypeMapper = iBalanceSourceTypeMapper;
+	}
+	
+	public IBalanceFrozenMapper getiBalanceFrozenMapper() {
+		return iBalanceFrozenMapper;
+	}
+	@Autowired
+	public void setiBalanceFrozenMapper(IBalanceFrozenMapper iBalanceFrozenMapper) {
+		this.iBalanceFrozenMapper = iBalanceFrozenMapper;
 	}
 	/**
 	 * 

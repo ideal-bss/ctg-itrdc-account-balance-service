@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctg.itrdc.account.balance.repository.IBalanceFrozenMapper">
+	<resultMap id="BaseResultMap" type="com.ctg.itrdc.account.balance.model.BalanceFrozenModel">
+		<id column="BALANCE_FROZEN_ID" property="balanceFrozenId" jdbcType="BIGINT"/>
+		<result column="ACCT_BALANCE_ID" property="acctBalanceId" jdbcType="BIGINT"/>
+		<result column="ACCT_ID" property="acctId" jdbcType="BIGINT"/>
+		<result column="FROZEN_AMOUNT" property="frozenAmount" jdbcType="BIGINT"/>
+		<result column="BALANCE_AMOUNT" property="balanceAmount" jdbcType="BIGINT"/>
+		<result column="FROZEN_STATE" property="frozenState" jdbcType="VARCHAR"/>
+		<result column="REASON" property="reason" jdbcType="VARCHAR"/>
+		<result column="STAFF_ID" property="staffId" jdbcType="VARCHAR"/>
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
+		<result column="EFF_DATE" property="effDate" jdbcType="TIMESTAMP"/>
+		<result column="EXP_DATE" property="expDate" jdbcType="TIMESTAMP"/>
+		<result column="SLICE_KEY" property="sliceKey" jdbcType="BIGINT"/>
+		<result column="SERV_ID" property="servId" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		BALANCE_FROZEN_ID,ACCT_BALANCE_ID,ACCT_ID,FROZEN_AMOUNT,BALANCE_AMOUNT,
+		FROZEN_STATE,REASON,STAFF_ID,CREATE_DATE,UPDATE_DATE,EFF_DATE,EXP_DATE,SLICE_KEY,SERV_ID
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from BALANCE_FROZEN_mod
+		<where>
+			BALANCE_FROZEN_ID = #{balanceFrozenId,jdbcType=BIGINT}
+			<if test="sliceKey != null">
+				AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryBalFrozenByAcctId" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from BALANCE_FROZEN_mod
+		<where>
+			ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+			<if test="acctId != null">
+				AND ACCT_ID = #{acctId,jdbcType=BIGINT}
+			</if>
+			<if test="sliceKey != null">
+				AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertBalanceFrozen" parameterType="com.ctg.itrdc.account.balance.model.BalanceFrozenModel" useGeneratedKeys="true" keyProperty="balanceFrozenId">
+		insert into BALANCE_FROZEN_mod
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="acctBalanceId != null">ACCT_BALANCE_ID,</if>
+			<if test="acctId != null">ACCT_ID,</if>
+			<if test="frozenAmount != null">FROZEN_AMOUNT,</if>
+			<if test="balanceAmount != null">BALANCE_AMOUNT,</if>
+			<if test="frozenState != null">FROZEN_STATE,</if>
+			<if test="reason != null">REASON,</if>
+			<if test="staffId != null">STAFF_ID,</if>
+			<if test="createDate != null">CREATE_DATE,</if>
+			<if test="updateDate != null">UPDATE_DATE,</if>
+			<if test="effDate != null">EFF_DATE,</if>
+			<if test="expDate != null">EXP_DATE,</if>
+			<if test="sliceKey != null">SLICE_KEY,</if>
+			<if test="servId != null">SERV_ID,</if>
+		</trim>
+		<trim prefix=" values(" suffix=")" suffixOverrides=",">
+			<if test="acctBalanceId != null">#{acctBalanceId,jdbcType=BIGINT},</if>
+			<if test="acctId != null">#{acctId,jdbcType=BIGINT},</if>
+			<if test="frozenAmount != null">#{frozenAmount,jdbcType=BIGINT},</if>
+			<if test="balanceAmount != null">#{balanceAmount,jdbcType=BIGINT},</if>
+			<if test="frozenState != null">#{frozenState,jdbcType=VARCHAR},</if>
+			<if test="reason != null">#{reason,jdbcType=VARCHAR},</if>
+			<if test="staffId != null">#{staffId,jdbcType=VARCHAR},</if>
+			<if test="createDate != null">#{createDate,jdbcType=TIMESTAMP},</if>
+			<if test="updateDate != null">#{updateDate,jdbcType=TIMESTAMP},</if>
+			<if test="effDate != null">#{effDate,jdbcType=TIMESTAMP},</if>
+			<if test="expDate != null">#{expDate,jdbcType=TIMESTAMP},</if>
+			<if test="sliceKey != null">#{sliceKey,jdbcType=BIGINT},</if>
+			<if test="servId != null">#{servId,jdbcType=BIGINT},</if>
+		</trim>
+	</insert>
+	
+	<update id="balanceUnFrozen" parameterType="java.util.Map" >
+		update BALANCE_FROZEN_mod
+		<set>
+			<trim suffixOverrides=",">
+				<if test="frozenState != null">FROZEN_STATE = #{frozenState,jdbcType=VARCHAR},</if>
+				<if test="reason != null">REASON = #{reason,jdbcType=VARCHAR},</if>
+				<if test="updateDate != null">UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},</if>
+			</trim>
+		</set>
+		<where>
+			BALANCE_FROZEN_ID = #{balanceFrozenId,jdbcType=BIGINT}
+			<if test="sliceKey != null">
+				AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+			</if>
+		</where>
+	</update>
+</mapper>

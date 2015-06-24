@@ -67,7 +67,7 @@
     EXP_DATE, BALANCE, RESERVE_BALANCE, CYCLE_UPPER, CYCLE_LOWER, CREATE_DATE, STATUS_CD, 
     STATUS_DATE, CYCLE_TYPE, REMARK, NEED_INVOICE_AMOUNT, SLICE_KEY
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap2" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
     select 
     <include refid="Base_Column_List" />
     from acct_balance_mod
@@ -525,4 +525,14 @@
 		    )
 	    </if>
    </select>
+   
+   <update id="updateBalanceByAcctBalId" parameterType="java.util.Map" useGeneratedKeys="true">
+   	update acct_balance_mod 
+   	set STATUS_CD = #{statusCd,jdbcType=VARCHAR}
+   	and STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP}
+   	where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+   	<if test="sliceKey != null">
+   		and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+   	</if>
+   </update>
 </mapper>

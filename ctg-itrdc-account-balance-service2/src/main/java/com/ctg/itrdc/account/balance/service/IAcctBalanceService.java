@@ -16,5 +16,7 @@ public interface IAcctBalanceService {
 	public String balanceTransfer(Map<String, Object> map);
 	public String balanceReverse(long operIncomeId);
 	public List<Object> queryAcctBalanceLog(Map<String, Object> map);
-	
+	public List<Object> queryBalFrozen(long acctId);
+	public String balanceFrozen(Map<String, Object> record);
+	public String BalanceUnFrozen(String[] balanceFrozenIdArray);
 }

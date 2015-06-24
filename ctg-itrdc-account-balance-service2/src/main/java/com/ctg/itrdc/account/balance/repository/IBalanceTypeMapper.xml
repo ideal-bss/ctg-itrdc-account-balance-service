@@ -262,4 +262,9 @@
    	 and STATUS_CD = #{statusCd,jdbcType=VARCHAR}
     </if>
   </select>
+  <select id="selectByBalanceTypeName" resultType="java.lang.Integer" parameterType="java.lang.String">
+  		select count(BALANCE_TYPE_ID) balanceTypeCnt
+	  		from balance_type_mod
+	  		where BALANCE_TYPE_NAME=#{balanceTypeName,jdbcType=VARCHAR}
+  </select>
 </mapper>
