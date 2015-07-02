@@ -19,15 +19,22 @@
  }
  
  function checkParas(){
- 	var flag = false;
+ 	var flag = true;
  	var balanceTypeName = $("#balanceTypeName_add"); 
  	var balanceTypeNameClass = $(".balanceTypeNameClass");
- 	if(balanceTypeName.val() == ''){
+ 	var statusDate_add = $("#statusDate_add").datebox("getValue");
+ 	var statusDateClass = $(".statusDateClass");
+ 	if(balanceTypeName.val() == null || balanceTypeName.val() == ''){
  		balanceTypeNameClass.html('<font color="red">余额类型名称不能为空！</font>');
  		flag = false;
  	}else{
  		balanceTypeNameClass.html('');
- 		flag = true;
+ 	}
+ 	if(statusDate_add == null || statusDate_add == ''){
+ 		statusDateClass.html('<font color="red">状态时间不能为空！</font>');
+ 		flag = false;
+ 	}else{
+ 		statusDateClass.html('');
  	}
  	return flag;
  }
@@ -61,8 +68,7 @@ function myparser(s){
 				<td width="20%">余额类型优先级:</td>
 				<td width="30%">
 					<!-- <input id="priority" name="priority" value="" class="easyui-combo" > -->
-					<select id="priority" name="priority" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="0">0</option>
+					<select id="priority" name="priority" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
@@ -70,7 +76,7 @@ function myparser(s){
 				</td>
 				<td width="20%">专款专用标识:</td>
 				<td width="30%">
-					<input id="spePaymentId" name="spePaymentId" value="" class="easyui-textbox" style="width: 150px;">
+					<input id="spePaymentId" name="spePaymentId" value="" class="easyui-numberbox" style="width: 150px;">
 				</td>
 			</tr>
 			<tr>
@@ -82,9 +88,9 @@ function myparser(s){
 				<td width="20%">允许提取标志:</td>
 				<td width="30%">
 					<!-- <input id="allowDraw" name="allowDraw" value="" class="easyui-textbox" > -->
-					<select id="allowDraw" name="allowDraw" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="allowDraw" name="allowDraw" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 				
@@ -93,17 +99,17 @@ function myparser(s){
 				<td width="20%">是否抵收入:</td>
 				<td width="30%">
 					<!-- <input id="ifEarning" name="ifEarning" value="" class="easyui-combo" > -->
-					<select id="ifEarning" name="ifEarning" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="ifEarning" name="ifEarning" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 				<td width="20%">是否抵旧欠:</td>
 				<td width="30%">
 					<!-- <input id="ifPayOld" name="ifPayOld" value="" class="easyui-combo" > -->
-					<select id="ifPayOld" name="ifPayOld" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="ifPayOld" name="ifPayOld" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 				
@@ -112,7 +118,7 @@ function myparser(s){
 				<td width="20%">状态:</td>
 				<td width="30%">
 					<!-- <input id="statusCd" name="statusCd" value="" class="easyui-combo" > -->
-					<select id="statusCd" name="statusCd" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
+					<select id="statusCd" name="statusCd" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
 						<option value="Y">有效</option>
 						<option value="N">无效</option>
 					</select>
@@ -127,17 +133,17 @@ function myparser(s){
 				<td width="20%">提供发票标志:</td>
 				<td width="30%">
 					<!-- <input id="invOffer" name="invOffer" value="" class="easyui-combo" > -->
-					<select id="invOffer" name="invOffer" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="invOffer" name="invOffer" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 				<td width="20%">是否滚存:</td>
 				<td width="30%">
 					<!-- <input id="ifSaveBack" name="ifSaveBack" value="" class="easyui-combo" > -->
-					<select id="ifSaveBack" name="ifSaveBack" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="ifSaveBack" name="ifSaveBack" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 			</tr>
@@ -145,9 +151,9 @@ function myparser(s){
 				<td width="20%">是否本金:</td>
 				<td width="30%">
 					<!-- <input id="ifPrincipal" name="ifPrincipal" value="" class="easyui-combo" > -->
-					<select id="ifPrincipal" name="ifPrincipal" class="easyui-combobox" style="width: 150px;" data-options="editable:false" >
-						<option value="Y">是</option>
-						<option value="N">否</option>
+					<select id="ifPrincipal" name="ifPrincipal" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80" >
+						<option value="Y">Y</option>
+						<option value="N">N</option>
 					</select>
 				</td>
 				<td>&nbsp;</td><td>&nbsp;</td>

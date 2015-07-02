@@ -1,10 +1,12 @@
 package com.ctg.itrdc.account.balance.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -94,9 +96,7 @@ public class BaseUtil {
 		return conn;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(getPropertyUrl("conf/menu.xml"));
-	}
+
 	
 	/**
 	 * 
@@ -106,36 +106,74 @@ public class BaseUtil {
 	 * @param format
 	 * @return
 	 */
-	public static Date stringToDate(Object dateStr, String pattern){
+	public static Date stringToDate(Object dateStr, String pattern) throws Exception{
 		Date date = null;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-			date = sdf.parse(String.valueOf(dateStr));
-		} catch (NullPointerException e) {
-			System.err.println("时间格式为空." + e.getMessage());
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			System.err.println("时间格式不合法." + e.getMessage());
-			e.printStackTrace();
-		} catch (ParseException e) {
-			System.err.println("时间解析错误." + e.getMessage());
-			e.printStackTrace();
-		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		date = sdf.parse(String.valueOf(dateStr));
 		return date;
 	}
 	
-	public static String dateToString(Date date, String pattern){
+	/**
+	 * 
+	 * @desc 日期类型转换成时间字符串
+	 * @author ls
+	 * @param date
+	 * @param pattern
+	 * @return
+	 * @throws Exception
+	 */
+	public static String dateToString(Date date, String pattern) throws Exception{
 		String dateStr = null;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-			dateStr = sdf.format(date);
-		} catch (NullPointerException e) {
-			System.err.println("时间格式为空." + e.getMessage());
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			System.err.println("时间格式不合法." + e.getMessage());
-			e.printStackTrace();
-		}
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		dateStr = sdf.format(date);
 		return dateStr;
+	}
+	
+	/**
+	 * 
+	 * @desc 生成csv，txt文件，以\r\n换行
+	 * @author ls
+	 * @param content
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean newExcelFile(String content,String filePath,String fileName){
+		File fileMkdir = null;
+		File file = null;
+		FileOutputStream outputStream = null;
+		try {
+			fileMkdir = new File(filePath);
+			if (!fileMkdir.exists()) {
+				fileMkdir.mkdirs();
+			}
+			file = new File(fileMkdir, fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			outputStream = new FileOutputStream(file);
+			outputStream.write(content.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (outputStream != null) {
+					outputStream.close();
+				}
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	public static void main(String[] args) {
+//		System.out.println(getPropertyUrl("conf/menu.xml"));
+		//清空目录中的文件
+		File[] fileList = (new File("D:/logs/balance/balanceTypeFail/")).listFiles();
+		for (File rmFile : fileList) {
+			rmFile.delete();
+		}
+		
 	}
 }

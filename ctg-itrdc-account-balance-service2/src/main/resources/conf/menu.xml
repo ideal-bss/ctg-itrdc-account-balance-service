@@ -82,13 +82,14 @@
 		</element>
 		<element>
 			<id>9</id>
-			<text>余额冻结解冻管理</text>
+			<text>余额冻结解冻</text>
 			<state></state>
 			<checked>false</checked>
 			<attributes>
 				<url>/acctBalance/balanceFrozenQueryGo.action</url>
 			</attributes>
 		</element>
+		<!-- 
 		<element>
 			<id>10</id>
 			<text>测试</text>
@@ -98,7 +99,7 @@
 				<url>/special/specialQueryGo.action</url>
 			</attributes>
 		</element>
-
+		 -->
 	</elements>
 	<elements>
 		<attributesMenu>

@@ -1,5 +1,8 @@
 package com.ctg.itrdc.account.balance.action;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +39,14 @@ public class BalanceTypeAction extends BaseAction{
 	private IBalanceTypeService iBalanceTypeService;
 	private BalanceTypeModel balanceTypeModel;
 	private String[] balTypeId;
+	
+	private File balType;
+	private String balTypeContentType;
+	private String balTypeFileName;
+	
+	public InputStream inputStream;
+	public String csvName;
+	public String csvPath;
 	
 	/**
 	 * 余额类型查询
@@ -113,14 +124,47 @@ public class BalanceTypeAction extends BaseAction{
 	 * @author ls
 	 * @return
 	 */
-	public String delBalanceType(){
-		logger.info("delBalanceType()......start......");
-		String hint = iBalanceTypeService.delBalType(getBalTypeId());
-		writeJson(hint);
-		logger.info("delBalanceType()......end......");
+	public String importBalanceType(){
+		logger.info("importBalanceType()......start......");
+		List<Object> list = null;
+		try {
+			list = iBalanceTypeService.importBalanceType(balType);
+			
+		}catch (NullPointerException e) {
+			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			writeJson(list);
+		}
+		
+		logger.info("importBalanceType()......end......");
 		return "success";
 	}
 	
+	/**
+	 * 
+	 * @desc 文件导出
+	 * @author ls
+	 * @return
+	 */
+	public String exportBalanceType(){
+		logger.info("exportBalanceType()......start......");
+		try {
+			File file = new File(csvPath+csvName);
+			inputStream = new FileInputStream(file);
+			
+			//清空目录中的文件
+			File[] fileList = (new File(csvPath)).listFiles();
+			for (File rmFile : fileList) {
+				rmFile.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.info("exportBalanceType()......end......");
+		return "success";
+	}
 	
 	/**
 	 * 
@@ -155,13 +199,14 @@ public class BalanceTypeAction extends BaseAction{
 				if (spePaymentId != null && !spePaymentId.trim().equals("")) {
 					balanceTypeModel.setSpePaymentId(Long.valueOf(spePaymentId));
 				}
-				if (priority != null && !priority.trim().equals("")) {
+				if (priority != null && !priority.trim().equals("") && !priority.trim().equals("0")) {
 					balanceTypeModel.setPriority(Long.valueOf(priority));
 				}
-				balanceTypeModel.setBalanceTypeName(balanceTypeName);
-				balanceTypeModel.setStatusCd(statusCd);
+				balanceTypeModel.setBalanceTypeName(balanceTypeName.trim());
+				if (statusCd != null && !statusCd.trim().equals("") && !statusCd.trim().equals("Q")) {
+					balanceTypeModel.setStatusCd(statusCd);
+				}
 			}
-			
 			if (type.equals("insert") || type.equals("modify")) {
 				balanceTypeModel.setAllowDraw(allowDraw);
 				balanceTypeModel.setInvOffer(invOffer);
@@ -272,6 +317,41 @@ public class BalanceTypeAction extends BaseAction{
 	public void setBalTypeId(String[] balTypeId) {
 		this.balTypeId = balTypeId;
 	}
-	
+	public File getBalType() {
+		return balType;
+	}
+	public void setBalType(File balType) {
+		this.balType = balType;
+	}
+	public String getBalTypeContentType() {
+		return balTypeContentType;
+	}
+	public void setBalTypeContentType(String balTypeContentType) {
+		this.balTypeContentType = balTypeContentType;
+	}
+	public String getBalTypeFileName() {
+		return balTypeFileName;
+	}
+	public void setBalTypeFileName(String balTypeFileName) {
+		this.balTypeFileName = balTypeFileName;
+	}
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
+	public String getCsvName() {
+		return csvName;
+	}
+	public void setCsvName(String csvName) {
+		this.csvName = csvName;
+	}
+	public String getCsvPath() {
+		return csvPath;
+	}
+	public void setCsvPath(String csvPath) {
+		this.csvPath = csvPath;
+	}
 	
 }

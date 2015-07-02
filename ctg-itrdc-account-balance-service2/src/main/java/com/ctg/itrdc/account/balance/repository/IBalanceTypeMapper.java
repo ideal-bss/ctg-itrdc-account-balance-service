@@ -9,7 +9,7 @@ public interface IBalanceTypeMapper extends Mapper<BalanceTypeModel>{
 
     List<BalanceTypeModel> selectAllBalanceType();
     
-    List<Object> queryByBalanceType(BalanceTypeModel balanceTypeModel);
+    List<BalanceTypeModel> queryByBalanceType(BalanceTypeModel balanceTypeModel);
     
     int selectByBalanceTypeName(String balanceTypeName);
     
