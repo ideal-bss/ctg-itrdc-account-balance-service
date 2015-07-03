@@ -2,6 +2,7 @@ package com.ctg.itrdc.account.balance.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 
@@ -19,7 +20,7 @@ public interface IBalanceTypeService {
 	 * @param balanceTypeModel
 	 * @return
 	 */
-	public List<Object> queryBalanceType(BalanceTypeModel balanceTypeModel);
+	public Map<String, Object> queryBalanceType(BalanceTypeModel balanceTypeModel,int rows,int page);
 	
 	/**
 	 * 新增余额类型

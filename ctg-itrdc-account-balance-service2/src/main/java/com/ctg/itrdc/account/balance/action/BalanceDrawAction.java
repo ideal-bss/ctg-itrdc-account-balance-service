@@ -34,7 +34,7 @@ public class BalanceDrawAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceDrawGo(){
-		logger.info("balance draw go.");
+		logger.debug("balance draw go.");
 		return "success";
 	}
 	
@@ -45,7 +45,7 @@ public class BalanceDrawAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceDraw(){
-		logger.info("balance draw start.");
+		logger.debug("balance draw start.");
 		String drawHint = "";
 		JSONArray json = new JSONArray();
 		List<String> responseList = new ArrayList<String>();
@@ -60,13 +60,12 @@ public class BalanceDrawAction extends BaseAction {
 			responseList.add(drawHint);
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage());
 			responseList.add("余额支取失败：" + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			json.add(responseList);
 			writeJson(json);
-			logger.info("balance draw end.");
+			logger.debug("balance draw end.");
 		}
 		
 		return "success";

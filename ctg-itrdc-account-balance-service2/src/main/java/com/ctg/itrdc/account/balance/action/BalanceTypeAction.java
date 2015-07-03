@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class BalanceTypeAction extends BaseAction{
 	public String csvName;
 	public String csvPath;
 	
+	public int rows;
+	public int page;
+	
 	/**
 	 * 余额类型查询
 	 * @author ls
@@ -55,17 +59,16 @@ public class BalanceTypeAction extends BaseAction{
 	 * @throws Exception
 	 */
 	public String balanceTypeQuery()throws Exception{
-		logger.info("balanceTypeQuery()......start......");
-		List<Object> list= new ArrayList<Object>();
+		logger.debug("balanceTypeQuery()......start......");
 		String type = "query";
 		try {
 			setBalanceType(type);
-			list = iBalanceTypeService.queryBalanceType(balanceTypeModel);
-			writeJson(list);
+			Map<String, Object> map= iBalanceTypeService.queryBalanceType(balanceTypeModel,rows,page);
+			writeJson(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.info("balanceTypeQuery()......end......");
+		logger.debug("balanceTypeQuery()......end......");
 		return "success";
 	}
 	/**
@@ -75,7 +78,7 @@ public class BalanceTypeAction extends BaseAction{
 	 * @throws Exception
 	 */
 	public String balanceTypeQueryGo()throws Exception{
-		logger.info("balanceTypeQueryGo().");
+		logger.debug("balanceTypeQueryGo().");
 		return "success";
 	}
 	
@@ -87,7 +90,7 @@ public class BalanceTypeAction extends BaseAction{
 	 * @author ls
 	 */
 	public String balanceTypeAdd(){
-		logger.info("balanceTypeAdd()......start......");
+		logger.debug("balanceTypeAdd()......start......");
 		String hint = "";
 		List<String> list = new ArrayList<String>();
 		String type = "insert";
@@ -103,7 +106,7 @@ public class BalanceTypeAction extends BaseAction{
 			list.add(hint);
 			writeJson(hint);
 		}
-		logger.info("balanceTypeAdd()......end......");
+		logger.debug("balanceTypeAdd()......end......");
 		return "success";
 	}
 	
@@ -114,7 +117,7 @@ public class BalanceTypeAction extends BaseAction{
 	 * @author ls
 	 */
 	public String balanceTypeAddGo(){
-		logger.info("balanceTypeAddGo().");
+		logger.debug("balanceTypeAddGo().");
 		return "success";
 	}
 	
@@ -125,7 +128,7 @@ public class BalanceTypeAction extends BaseAction{
 	 * @return
 	 */
 	public String importBalanceType(){
-		logger.info("importBalanceType()......start......");
+		logger.debug("importBalanceType()......start......");
 		List<Object> list = null;
 		try {
 			list = iBalanceTypeService.importBalanceType(balType);
@@ -138,7 +141,7 @@ public class BalanceTypeAction extends BaseAction{
 			writeJson(list);
 		}
 		
-		logger.info("importBalanceType()......end......");
+		logger.debug("importBalanceType()......end......");
 		return "success";
 	}
 	
@@ -149,7 +152,7 @@ public class BalanceTypeAction extends BaseAction{
 	 * @return
 	 */
 	public String exportBalanceType(){
-		logger.info("exportBalanceType()......start......");
+		logger.debug("exportBalanceType()......start......");
 		try {
 			File file = new File(csvPath+csvName);
 			inputStream = new FileInputStream(file);
@@ -162,7 +165,7 @@ public class BalanceTypeAction extends BaseAction{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.info("exportBalanceType()......end......");
+		logger.debug("exportBalanceType()......end......");
 		return "success";
 	}
 	
@@ -173,13 +176,13 @@ public class BalanceTypeAction extends BaseAction{
 	 * @return
 	 */
 	public String modifyBalanceType(){
-		logger.info("modifyBalanceType()......start......");
+		logger.debug("modifyBalanceType()......start......");
 		String hint = setBalanceType("modify");
 		if (hint == null || hint.trim().equals("")) {
 			hint = iBalanceTypeService.modifyBalType(balanceTypeModel);
 		}
 		writeJson(hint);
-		logger.info("modifyBalanceType()......end......");
+		logger.debug("modifyBalanceType()......end......");
 		return "success";
 	}
 	
@@ -202,7 +205,10 @@ public class BalanceTypeAction extends BaseAction{
 				if (priority != null && !priority.trim().equals("") && !priority.trim().equals("0")) {
 					balanceTypeModel.setPriority(Long.valueOf(priority));
 				}
-				balanceTypeModel.setBalanceTypeName(balanceTypeName.trim());
+				if (balanceTypeName != null && !balanceTypeName.trim().equals("")) {
+					balanceTypeModel.setBalanceTypeName(balanceTypeName.trim());
+				}
+				
 				if (statusCd != null && !statusCd.trim().equals("") && !statusCd.trim().equals("Q")) {
 					balanceTypeModel.setStatusCd(statusCd);
 				}
@@ -353,5 +359,18 @@ public class BalanceTypeAction extends BaseAction{
 	public void setCsvPath(String csvPath) {
 		this.csvPath = csvPath;
 	}
+	public int getRows() {
+		return rows;
+	}
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+	public int getPage() {
+		return page;
+	}
+	public void setPage(int page) {
+		this.page = page;
+	}
+	
 	
 }

@@ -1,121 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <body>
  <script type="text/javascript">
+
  function bal_type_query_form(){
- 	$("Element").removeAttr("#span_balType_result_id");
- 	$.ajax({
-        async:false,  
-        type:"POST",  
-        url:'${pageContext.request.contextPath}/balanceType/balanceTypeQuery.action',  
-        dataType:"json",  
-        cache: false,
-        data:$('#view_balanceType_balanceTypeQuery_form').serialize(),  
-        success:function(datas){
-        	$('#view_balanceType_balanceTypeQuery_result').datagrid({
-    				striped : true,
-    				height:450,
-    				fitColumns : false,
-    				loadMsg : '数据加载中请稍后……',
-    				rownumbers : true,
-    				singleSelect : true,
-    				columns : [ [{
-    						field : '',
-    						title : '选择',
-    						checkbox : true,
-    						align : 'left'
-    					},{
-							field : 'balanceTypeId',
-							title : '余额类型标识',
-							align : 'left',
-							width : 150
-						},{
-							field : 'balanceTypeName',
-							title : '余额类型名称',
-							align : 'left',
-							width : 150
-						},{
-							field : 'priority',
-							title : '余额类型优先级',
-							align : 'left',
-							width : 150
-						},{
-							field : 'spePaymentId',
-							title : '专款专用标识',
-							align : 'left',
-							width : 150
-						},{
-							field : 'spePaymentName',
-							title : '专款专用描述',
-							align : 'left',
-							width : 150
-						},
-						{
-							field : 'allowDraw',
-							title : '允许提取标志',
-							align : 'left',
-							width : 150
-						},{
-							field : 'invOffer',
-							title : '提供发票标志',
-							align : 'left',
-							width : 150
-						},{
-							field : 'ifEarning',
-							title : '是否抵收入',
-							align : 'left',
-							width : 150
-						},{
-							field : 'ifPayold',
-							title : '是否抵旧欠',
-							align : 'left',
-							width : 150
-						},{
-							field : 'ifSaveback',
-							title : '是否滚存',
-							align : 'left',
-							width : 150
-						},{
-							field : 'ifPrincipal',
-							title : '是否本金',
-							align : 'left'
-						},{
-							field : 'statusCd',
-							title : '状态',
-							align : 'left',
-							width : 150
-						},{
-							field : 'statusDate',
-							title : '状态时间',
-							align : 'left',
-							width : 150,
-							formatter : formatterdate 
-						}
-					] ]
-			}); 
-			
-			$('#view_balanceType_balanceTypeQuery_result').datagrid('loadData', { total: 0, rows: [] });
-			if(datas){
-        		for(var i=0; i<datas.length; i++){
-            		var data = datas[i];
-            		$('#view_balanceType_balanceTypeQuery_result').datagrid('appendRow', {
-            				balanceTypeId: data.balanceTypeId,
-            				priority: data.priority,
-            				spePaymentId: data.spePaymentId,
-            				spePaymentName: data.spePaymentName,
-            				balanceTypeName: data.balanceTypeName,
-            				allowDraw: data.allowDraw,
-            				invOffer: data.invOffer,
-            				ifEarning: data.ifEarning,
-            				ifPayold: data.ifPayold,
-            				ifSaveback: data.ifSaveback,
-            				ifPrincipal: data.ifPrincipal,
-            				statusCd: data.statusCd,
-            				statusDate: data.statusDate
-                    });
-            	}
-       		}
-        }
-    }); 
+    $('#bal_type_list_data').datagrid({
+    	loadMsg : '数据加载中...',
+    	fit : true,
+    	url : '${pageContext.request.contextPath}/balanceType/balanceTypeQuery.action',
+    	queryParams : {
+    		balanceTypeId : $('#balanceTypeIdQuery').val(),
+    		priority : $('#priorityQuery').combobox('getValue'),
+    		spePaymentId : $('#spePaymentIdQuery').val(),
+    		balanceTypeName : $('#balanceTypeNameQuery').val(),
+    		statusCd : $('#statusCdQuery').combobox('getValue')
+    	}
+    });
+    //设置分页控件
+    var pager = $('#bal_type_list_data').datagrid('getPager');
+    $(pager).pagination({
+    	pageNumber : 1,//初始化页码
+    	pageSize : 10, //每页显示的记录数  默认10条
+    	pageList: [5,10,15],
+    	beforePageText : '第',
+    	afterPageText: '页    共 {pages} 页',
+		displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+    });
  }
  
   function formatterdate(val, row) {
@@ -184,7 +93,7 @@
   }
   
   function bal_type_edit(){
-  		var rows = $("#view_balanceType_balanceTypeQuery_result").datagrid("getSelections");
+  		var rows = $("#bal_type_list_data").datagrid("getSelections");
         if (rows == null || rows[0] == null || rows.length == 0) {
 			$.messager.alert("提示","请选择余额类型！");
 			return;
@@ -242,47 +151,50 @@
   	}
   	
   }
+
  </script>
 <div> 
-		<form id="view_balanceType_balanceTypeQuery_form" >
-		<table style="padding: 10px;">
+		<form id="view_balanceType_balanceTypeQuery_form" method="post">
+		<table style="padding: 5px;">
 			<tr>
 				<td width="10%">余额类型标识:</td>
 				<td width="20%">
-					<input id="balanceTypeId" name="balanceTypeId" value="" class="easyui-numberbox" >
+					<input id="balanceTypeIdQuery" name="balanceTypeId" value="" class="easyui-numberbox" >
 					</td>
-				<td width="10%">&nbsp;余额类型优先级:</td>
+				<td width="10%">余额类型优先级:</td>
 				<td width="20%">
-					<!-- <input id="" name="" value="" class="easyui-combo" > -->
-					<select id="priority" name="priority" class="easyui-combobox" style="width:150px;" data-options="editable:false,panelHeight:100">
-						<option value="0">全部</option>
+					<!--  <input id="priorityQuery" name="priority" value="" class="easyui-combo"> -->
+				   <select id="priorityQuery" name="priority" class="easyui-combobox" style="width:150px;" 
+						data-options="editable:false,panelHeight:100">
+					    <option value="0">全部</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
 					</select>
 				</td>
-				<td width="10%">&nbsp;专款专用标识:</td>
+				<td width="10%">专款专用标识:</td>
 				<td width="20%">
-					<input id="spePaymentId" name="spePaymentId" value="" class="easyui-numberbox" >
+					<input id="spePaymentIdQuery" name="spePaymentId" value="" class="easyui-numberbox" >
 				</td>
 			</tr>
 			<tr>
 				<td width="10%">余额类型名称:</td>
 				<td width="20%">
-					<input id="balanceTypeName" name="balanceTypeName" value="" class="easyui-textbox" >
+					<input id="balanceTypeNameQuery" name="balanceTypeName" value="" class="easyui-textbox" >
 				</td>
 				<td width="10%">状态:</td>
 				<td width="20%">
 					<!-- <input id="" name="" value="" class="easyui-combo" > -->
-					<select id="statusCd" name="statusCd" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:100">
+					<select id="statusCdQuery" name="statusCd" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:100">
 						<option value="Q">全部</option>
 						<option value="Y">有效</option>
 						<option value="N">无效</option>
 					</select>
 				</td>
+				<td colspan="2"></td>
 			</tr>
-			<tr>
-				<td><a href="#" class="easyui-linkbutton" onclick="bal_type_query_form('');" style="width:65px">查询</a></td>
+			<tr align="center">
+				<td colspan="6"><a href="#" class="easyui-linkbutton" onclick="bal_type_query_form('');" style="width:65px">查询</a></td>
 			</tr>
 		</table>
 		</form>
@@ -300,6 +212,29 @@
 					</form>
 				</td>
 			</tr>
+		</table>
+	</div>
+	<div id="view_balanceType_balanceTypeQuery_result">
+		<table id="bal_type_list_data" class="easyui-datagrid" 
+			data-options="rownumbers:true,fitColumns:true,height:430,singleSelect:true,pagination:true,striped:true">
+			<thead> 
+		        <tr>
+		        	<th data-options="field:'',checkbox:true"></th> 
+		            <th data-options="field:'balanceTypeId'" style="width: 40px">余额类型标识</th>
+		            <th data-options="field:'balanceTypeName'" style="width: 40px">余额类型名称</th>
+		            <th data-options="field:'priority'">余额类型优先级</th>
+		            <th data-options="field:'spePaymentId'" style="width: 40px">专款专用标识</th>
+		            <th data-options="field:'spePaymentName'" style="width: 40px">专款专用描述</th>
+		            <th data-options="field:'allowDraw'">允许提取标志</th>
+		            <th data-options="field:'invOffer'">提供发票标志</th>
+		            <th data-options="field:'ifEarning'">是否抵收入</th>
+		            <th data-options="field:'ifPayold'">是否抵旧欠</th>
+		            <th data-options="field:'ifSaveback'">是否滚存</th>
+		            <th data-options="field:'ifPrincipal'">是否本金</th>
+		            <th data-options="field:'statusCd'" style="width: auto;">状态</th>
+		            <th data-options="field:'statusDate',formatter:formatterdate" style="width: 40px">状态时间</th>
+		        </tr> 
+		    </thead> 
 		</table>
 	</div>
 	<div id="add_balanceType"></div>
@@ -408,6 +343,6 @@
 		</table>
 		</form>
 	</div>
-	<div id="view_balanceType_balanceTypeQuery_result"></div>
+	
 </body>
 </html>

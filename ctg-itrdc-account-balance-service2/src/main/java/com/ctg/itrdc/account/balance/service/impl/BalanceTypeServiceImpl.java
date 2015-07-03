@@ -40,33 +40,48 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 	 * 余额类型查询
 	 */
 	@Override
-	public List<Object> queryBalanceType(BalanceTypeModel balanceTypeMap) {
-		logger.info("queryBalanceType().");
-		List<BalanceTypeModel> list = iBalanceTypeMapper.queryByBalanceType(balanceTypeMap);
+	public Map<String, Object> queryBalanceType(BalanceTypeModel balanceTypeMap,int rows,int page) {
+		logger.debug("queryBalanceType().");
+		Map<String, Object> mapResult = new HashMap<String, Object>();
 		List<Object> resultList = new ArrayList<Object>();
-		Map<String, Object> map = null;
-		for (BalanceTypeModel balanceTypeModel : list) {
-			map = new HashMap<String, Object>();
-			map.put("balanceTypeId", balanceTypeModel.getBalanceTypeId());
-			map.put("priority", balanceTypeModel.getPriority());
-			map.put("spePaymentId", balanceTypeModel.getSpePaymentId());
-			map.put("balanceTypeName", balanceTypeModel.getBalanceTypeName());
-			map.put("allowDraw", balanceTypeModel.getAllowDraw());
-			map.put("invOffer", balanceTypeModel.getInvOffer());
-			map.put("ifEarning", balanceTypeModel.getIfEarning());
-			map.put("ifPayold", balanceTypeModel.getIfPayold());
-			map.put("ifSaveback", balanceTypeModel.getIfSaveback());
-			map.put("ifPrincipal", balanceTypeModel.getIfPrincipal());
-			map.put("statusCd", balanceTypeModel.getStatusCd());
-			map.put("statusDate", balanceTypeModel.getStatusDate());
-			if (balanceTypeModel.getSpePaymentId() != null ) {
-				map.put("spePaymentName",BalanceConfig.getInstance().getByTypeId(balanceTypeModel.getBalanceTypeId()).getSpecialPaymentModel().getSpecialPaymentDescModel().getSpePaymentDesc());
+		try {
+			Map<String, Object> requestMap = new HashMap<String, Object>();
+			requestMap.put("balanceTypeId", balanceTypeMap.getBalanceTypeId());
+			requestMap.put("priority", balanceTypeMap.getPriority());
+			requestMap.put("spePaymentId", balanceTypeMap.getSpePaymentId());
+			requestMap.put("balanceTypeName", balanceTypeMap.getBalanceTypeName());
+			requestMap.put("statusCd", balanceTypeMap.getStatusCd());
+			requestMap.put("rows", rows);
+			requestMap.put("page", ((page-1)*rows));
+			List<BalanceTypeModel> list = iBalanceTypeMapper.queryByBalanceType(requestMap);
+			Map<String, Object> map = new HashMap<String, Object>();
+			for (BalanceTypeModel balanceTypeModel : list) {
+				map = new HashMap<String, Object>();
+				map.put("balanceTypeId", balanceTypeModel.getBalanceTypeId());
+				map.put("priority", balanceTypeModel.getPriority());
+				map.put("spePaymentId", balanceTypeModel.getSpePaymentId());
+				map.put("balanceTypeName", balanceTypeModel.getBalanceTypeName());
+				map.put("allowDraw", balanceTypeModel.getAllowDraw());
+				map.put("invOffer", balanceTypeModel.getInvOffer());
+				map.put("ifEarning", balanceTypeModel.getIfEarning());
+				map.put("ifPayold", balanceTypeModel.getIfPayold());
+				map.put("ifSaveback", balanceTypeModel.getIfSaveback());
+				map.put("ifPrincipal", balanceTypeModel.getIfPrincipal());
+				map.put("statusCd", balanceTypeModel.getStatusCd());
+				map.put("statusDate", balanceTypeModel.getStatusDate());
+				if (balanceTypeModel.getSpePaymentId() != null) {
+					map.put("spePaymentName",BalanceConfig.getInstance().getByTypeId(balanceTypeModel.getBalanceTypeId()).getSpecialPaymentModel().getSpecialPaymentDescModel().getSpePaymentDesc());
+				}
+				
+				resultList.add(map);
 			}
-			
-			resultList.add(map);
+			int total = iBalanceTypeMapper.queryByBalanceTypeSum(balanceTypeMap);
+			mapResult.put("total", total);
+			mapResult.put("rows", resultList);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		logger.info(resultList);
-		return resultList;
+		return mapResult;
 	}
 	
 	/**
@@ -74,7 +89,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 	 */
 	@Override
 	public String newInsertBalanceType(BalanceTypeModel balanceTypeModel) {
-		logger.info("newInsertBalanceType().");
+		logger.debug("newInsertBalanceType().");
 		String hint = "";
 		SpecialPaymentModel specialPaymentModel = null;
 		Long spePaymentId = balanceTypeModel.getSpePaymentId();
@@ -83,7 +98,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 		
 		try {
 			if (spePaymentId != null && spePaymentId > 0) {
-				logger.info("根据专款专用标识取专款专用信息。");
+				logger.debug("根据专款专用标识取专款专用信息。");
 				specialPaymentModel = iSpecialPaymentMapper.selectByPrimaryKey(spePaymentId);
 				if (specialPaymentModel != null) {
 					hint = insertBalanceType(balanceTypeModel);
@@ -97,7 +112,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 			hint = e.getMessage();
 			e.printStackTrace();
 		}
-		logger.info(hint);
+		logger.debug(hint);
 		return hint;
 	}
 	
@@ -105,7 +120,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 	protected String insertBalanceType(BalanceTypeModel balanceTypeModel) {
 		String message = "";
 		try {
-			logger.info("判断余额类型是否存在。");
+			logger.debug("判断余额类型是否存在。");
 			//根据余额类型名称校验余额类型是否存在
 			int balanceTypeCnt = iBalanceTypeMapper.selectByBalanceTypeName(balanceTypeModel.getBalanceTypeName());
 			//判断余额类型是否已存在，根据余额类型名称校验
@@ -113,6 +128,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 				//插入新余额类型配置
 				if(iBalanceTypeMapper.insertSelective(balanceTypeModel)>0){
 					message = "存入成功！";
+					BalanceConfig.getInstance().ReLoadCache();
 				}else{
 					message = "存入失败！";
 				}
@@ -434,6 +450,9 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 				if (sumCnt == succCnt) {
 					list.add(3,"allSucced");
 				}
+				if (succCnt>0) {
+					BalanceConfig.getInstance().ReLoadCache();
+				}
 			}else{
 				list.add(0,hint);
 			}
@@ -448,7 +467,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 	 */
 	@Override
 	public String modifyBalType(BalanceTypeModel record) {
-		logger.info("modifyBalType().");
+		logger.debug("modifyBalType().");
 		String hint = "该余额类型已修改！";
 		try {
 			BalanceTypeModel balTypeModel = iBalanceTypeMapper.selectByPrimaryKey(record);
@@ -459,7 +478,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 					SpecialPaymentModel SpecialPaymentModel = null;
 					Long spePaymentId = record.getSpePaymentId();
 					if (spePaymentId != null && spePaymentId > 0) {
-						logger.info("根据专款专用标识取专款专用信息。");
+						logger.debug("根据专款专用标识取专款专用信息。");
 						SpecialPaymentModel = iSpecialPaymentMapper.selectByPrimaryKey(spePaymentId);
 						if (SpecialPaymentModel != null) {
 							updateBalType(record,balTypeModel);
@@ -481,7 +500,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 			hint = e.getMessage();
 			e.printStackTrace();
 		} finally {
-			logger.info(hint);
+			logger.debug(hint);
 		}
 		return hint;
 	}
@@ -506,7 +525,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 		balTypeModel.setIfSaveback(record.getIfSaveback());
 		balTypeModel.setIfPrincipal(record.getIfPrincipal());
 		balTypeModel.setUpdateDate(new Date());
-		balTypeModel.setStatusCd("system");
+		balTypeModel.setUpdateStaff("system");
 		iBalanceTypeMapper.updateByPrimaryKeySelective(balTypeModel);
 	}
 	

@@ -172,9 +172,7 @@
       <if test="priority != null" >
         PRIORITY = #{priority,jdbcType=BIGINT},
       </if>
-      <if test="spePaymentId != null" >
-        SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
-      </if>
+      SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
       <if test="measureMethodId != null" >
         MEASURE_METHOD_ID = #{measureMethodId,jdbcType=BIGINT},
       </if>
@@ -241,7 +239,7 @@
     where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
   </update>
   
-  <select id="queryByBalanceType" resultMap="BaseResultMap" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+  <select id="queryByBalanceType" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     <include refid="Base_Column_List" />
     from balance_type_mod
@@ -261,7 +259,32 @@
     <if test="statusCd != null and statusCd!=''">
    	 and STATUS_CD = #{statusCd,jdbcType=VARCHAR}
     </if>
+    <if test="rows != null and page != null">
+    	limit #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </if>
   </select>
+  
+  <select id="queryByBalanceTypeSum" resultType="java.lang.Integer" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+    select count(BALANCE_TYPE_ID)
+    from balance_type_mod
+    where 1=1
+    <if test="balanceTypeId != null and balanceTypeId!=''" >
+   	 and BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+    </if>
+    <if test="priority != null and priority!=''">
+   	 and PRIORITY = #{priority,jdbcType=BIGINT}
+    </if>
+    <if test="spePaymentId != null and spePaymentId!=''">
+   	 and SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
+    </if>
+    <if test="balanceTypeName != null and balanceTypeName!=''">
+   	 and BALANCE_TYPE_NAME = #{balanceTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="statusCd != null and statusCd!=''">
+   	 and STATUS_CD = #{statusCd,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
   <select id="selectByBalanceTypeName" resultType="java.lang.Integer" parameterType="java.lang.String">
   		select count(BALANCE_TYPE_ID) balanceTypeCnt
 	  		from balance_type_mod

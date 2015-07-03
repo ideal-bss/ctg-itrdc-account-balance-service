@@ -29,7 +29,7 @@ public class AcctBalanceLogAction extends BaseAction {
 	 * @return
 	 */
 	public String acctBalanceLogGo(){
-		logger.info("acctBalanceLogGo().");
+		logger.debug("acctBalanceLogGo().");
 		return "success";
 	}
 	
@@ -40,7 +40,7 @@ public class AcctBalanceLogAction extends BaseAction {
 	 * @return
 	 */
 	public String acctBalanceLog(){
-		logger.info("acctBalanceLog()......start......");
+		logger.debug("acctBalanceLog()......start......");
 		List<Object> resultList = null;
 		try {
 			
@@ -51,10 +51,10 @@ public class AcctBalanceLogAction extends BaseAction {
 			
 			writeJson(resultList);
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			logger.debug(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			logger.info("acctBalanceLog()......end......");
+			logger.debug("acctBalanceLog()......end......");
 		}
 		
 		return "success";

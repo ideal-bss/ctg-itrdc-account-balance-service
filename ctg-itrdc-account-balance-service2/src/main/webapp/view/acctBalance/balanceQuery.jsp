@@ -52,17 +52,17 @@
 						},{
 							field : 'BALANCE',
 							title : '单个账本余额（元）',
-							align : 'left',
+							align : 'right',
 							width : 300
 						},{
 							field : 'OBJECT_ID',
-							title : '余额对象标识',
+							title : '余额对象号码',
 							align : 'left',
 							width : 300
 						},{
 							field : 'FREEZE_BALANCE',
-							title : '冻结余额',
-							align : 'left',
+							title : '冻结余额（元）',
+							align : 'right',
 							width : 300
 						}
 					] ]
@@ -92,7 +92,7 @@
 		<form id="view_acctBalance_balanceQuery_form" >
 		<table style="padding: 10px;">
 			<tr>
-				<td width="10%">余额对象:</td>
+				<td width="10%">余额对象号码:</td>
 				<td width="20%">
 					<input id="objectId" name="objectId" value="" class="easyui-textbox" >
 				</td>
@@ -101,7 +101,7 @@
 				<!-- 
 				<input id="balanceTypeId" name="balanceTypeId" value="" class="easyui-combo" data-options="valueField:'id',textField:'text'">
 				 -->
-				 <select id="balanceTypeId" name="balanceTypeId" class="easyui-combobox" style="width: 150px">
+				 <select id="balanceTypeId" name="balanceTypeId" class="easyui-combobox" style="width: 150px" data-options="editable:false,panelHeight:100">
 				 	<option value="0">全部</option>
 				 	<option value="1">普通预存款</option>
 				 	<option value="2">溢收款</option>
@@ -115,7 +115,7 @@
 					<!-- 
 					<input id="ObjectIdType" name="ObjectIdType" value="" class="easyui-combo" >
 					 -->
-				 <select id="ObjectIdType" name="ObjectIdType" class="easyui-combobox" style="width: 150px">
+				 <select id="ObjectIdType" name="ObjectIdType" class="easyui-combobox" style="width: 150px" data-options="editable:false,panelHeight:100">
 				 	<option value="1">账户</option>
 				 	<option value="2">设备</option>
 				 </select>

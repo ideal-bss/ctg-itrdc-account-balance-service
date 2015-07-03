@@ -33,7 +33,7 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	 * @return
 	 */
 	public String balanceFrozenQueryGo(){
-		logger.info("balanceFrozenGo().");
+		logger.debug("balanceFrozenGo().");
 		return "success";
 	}
 	
@@ -44,10 +44,10 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	 * @return
 	 */
 	public String balanceFrozenQuery(){
-		logger.info("balanceFrozenQuery()......start......");
+		logger.debug("balanceFrozenQuery()......start......");
 		List<Object> resultList = iAcctBalanceService.queryBalFrozen(acctId);
 		writeJson(resultList);
-		logger.info("balanceFrozenQuery()......end......");
+		logger.debug("balanceFrozenQuery()......end......");
 		return "success";
 	}
 	
@@ -58,14 +58,14 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	 * @return
 	 */
 	public String balanceFrozen(){
-		logger.info("balanceFrozen()......start......");
+		logger.debug("balanceFrozen()......start......");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("subAcctId", subAcctId);
 		map.put("acctBalanceId", acctBalanceId);
 		map.put("frozenAmount", frozenAmount);
 		String hint = iAcctBalanceService.balanceFrozen(map);
 		writeJson(hint);
-		logger.info("balanceFrozen()......end......");
+		logger.debug("balanceFrozen()......end......");
 		return "success";
 	}
 	
@@ -76,7 +76,7 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	 * @return
 	 */
 	public String balanceUnFrozen(){
-		logger.info("balanceUnFrozen()......start......");
+		logger.debug("balanceUnFrozen()......start......");
 		try {
 			String json = "";
 			String []balFrozenIdArray = balFrozenId.split(",");
@@ -85,7 +85,7 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.info("balanceUnFrozen()......end......");
+		logger.debug("balanceUnFrozen()......end......");
 		return "success";
 	}
 

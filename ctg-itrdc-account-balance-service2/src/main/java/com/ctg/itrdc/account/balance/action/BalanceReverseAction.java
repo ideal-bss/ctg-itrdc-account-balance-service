@@ -25,7 +25,7 @@ public class BalanceReverseAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceReverseGo(){
-		logger.info("balanceReverseGo.");
+		logger.debug("balanceReverseGo.");
 		return "success";
 	}
 	
@@ -36,7 +36,7 @@ public class BalanceReverseAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceReverse(){
-		logger.info("balanceReverse start.");
+		logger.debug("balanceReverse start.");
 		String hint = null;
 		hint = iAcctBalanceService.balanceReverse(operIncomeId);
 		if (hint == null || hint.trim().length()==0) {
@@ -44,7 +44,7 @@ public class BalanceReverseAction extends BaseAction {
 			logger.info(hint);
 		}
 		writeJson(hint);
-		logger.info("balanceReverse end.");
+		logger.debug("balanceReverse end.");
 		return "success";
 	}
 

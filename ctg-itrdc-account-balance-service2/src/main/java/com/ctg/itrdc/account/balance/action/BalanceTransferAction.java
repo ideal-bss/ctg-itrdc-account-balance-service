@@ -37,7 +37,7 @@ public class BalanceTransferAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceTarnsferGo(){
-		logger.info("balanceTarnsferGo().");
+		logger.debug("balanceTarnsferGo().");
 		return "success";
 	}
 	
@@ -48,7 +48,7 @@ public class BalanceTransferAction extends BaseAction {
 	 * @return
 	 */
 	public String balanceTarnsfer() {
-		logger.info("balanceTarnsfer() ......余额转账 start......");
+		logger.debug("balanceTarnsfer() ......余额转账 start......");
 		String json = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("origBalanceTypeId", origBalanceTypeId);
@@ -61,7 +61,7 @@ public class BalanceTransferAction extends BaseAction {
 		map.put("acctId", acctId);
 		map.put("objectType", objectType);
 		map.put("objectId", objectId);
-		logger.info("map:" + map);
+		logger.debug("map:" + map);
 		
 		if (balanceTypeId == origBalanceTypeId) {
 			json = iAcctBalanceService.balanceTransfer(map);
@@ -71,7 +71,7 @@ public class BalanceTransferAction extends BaseAction {
 		
 		
 		writeJson(json);
-		logger.info("balanceTarnsfer() ......余额转账 end......");
+		logger.debug("balanceTarnsfer() ......余额转账 end......");
 		return "success";
 	}
 

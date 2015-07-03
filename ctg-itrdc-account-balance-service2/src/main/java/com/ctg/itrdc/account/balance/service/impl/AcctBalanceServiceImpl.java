@@ -186,7 +186,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	@Override
 	public List<Object> queryBalance(Map<String, Object> model) {
 		
-		logger.info("queryBalance()");
+		logger.debug("queryBalance()");
 		
 		List<Map<String, Object>> shareRuleList = null;
 		List<Object> balanceResultList = new ArrayList<Object>();
@@ -196,16 +196,16 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		
 		try {
 			
-			logger.info("query balance share rule."+model);
+			logger.debug("query balance share rule."+model);
 			shareRuleList = iBalanceShareRuleMapper.selectRuleList(model);
 			
-			logger.info("query share rule result." + shareRuleList);
+			logger.debug("query share rule result." + shareRuleList);
 			
 			for(Map<String, Object> shareRule:shareRuleList){
 				Long acctBalanceId = Long.parseLong(shareRule.get("ACCT_BALANCE_ID").toString());
 				Long sliceKey = Long.parseLong(shareRule.get("SLICE_KEY").toString());
 				
-				logger.info("query acct balance.");
+				logger.debug("query acct balance.");
 				acctBalanceModelQuery = new AcctBalanceModel();
 				acctBalanceModelQuery.setAcctBalanceId(acctBalanceId);
 				acctBalanceModelQuery.setSliceKey(sliceKey);
@@ -216,10 +216,10 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 					continue;
 				}
 				
-				logger.info("query balance type.");
+				logger.debug("query balance type.");
 				BalanceConfig balanceConfig =BalanceConfig.getInstance();
 				BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(balanceTypeId);
-				logger.info("balance query result.");
+				logger.debug("balance query result.");
 				balanceResultMap = new HashMap<String, Object>();
 				//余额账本标识
 				balanceResultMap.put("acctBalanceId", acctBalanceId);
@@ -247,13 +247,10 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			}
 			
 		} catch (NumberFormatException e) {
-			logger.error("格式化错误" + e.getMessage());
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			logger.error("空指针错误" + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("其他异常" + e.getMessage());
 			e.printStackTrace();
 		}
 		return balanceResultList;
@@ -267,7 +264,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public String balanceDraw(Map<String, Object> model) {
-		logger.info("-----余额支取----- balanceDraw().");
+		logger.debug("-----余额支取----- balanceDraw().");
 		Date currDate = new Date(); //当前时间
 		String flagHint = null;//返回值
 		long sumBalance = 0;
@@ -282,13 +279,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				for (AcctBalanceModel acctBalanceModel : acctBalanceModelList) {
 					Date balEffDate = acctBalanceModel.getEffDate();
 					Date balExpDate = acctBalanceModel.getExpDate();
-					logger.info("余额账本标识:" + acctBalanceModel.getAcctBalanceId());
+					logger.debug("余额账本标识:" + acctBalanceModel.getAcctBalanceId());
 					
 					//余额账本 有效状态
 					if (currDate.after(balEffDate) && currDate.before(balExpDate)) {
 						BalanceConfig balanceConfig =BalanceConfig.getInstance();
 						BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
-						logger.info("余额类型名称:" + balTypeModel.getBalanceTypeName() + 
+						logger.debug("余额类型名称:" + balTypeModel.getBalanceTypeName() + 
 									"-->是否专款专用:" + (balTypeModel.getSpePaymentId()==null || balTypeModel.getSpePaymentId()==0?"N":"Y"));
 						//专款专用余额 不能支取
 						if (balTypeModel.getSpePaymentId() == null || balTypeModel.getSpePaymentId() == 0) {
@@ -311,13 +308,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				boolean flag = true;
 				long balance = drawAmount;
 				long acctBalance = drawAmount;
-				logger.info("开始支取余额.");
+				logger.debug("开始支取余额.");
 				List<BalanceSourceModel> balanceSourceList = null;
 				BalanceSourceModel balSourceModel = null;
 				for (int i = 0; i < acctBalIdList.size() && flag; i++) {
 					long acctBalanceId = acctBalIdList.get(i);
 					
-					logger.info("更新余额账本余额.");
+					logger.debug("更新余额账本余额.");
 					long operAfterBalance = 0L;
 					long payoutBal = 0L;
 					AcctBalanceModel acctBalModel = new AcctBalanceModel();
@@ -335,11 +332,11 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 					acctBalModel.setBalance(operAfterBalance);
 					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalModel);
 					
-					logger.info("记录余额支出日志.");
+					logger.debug("记录余额支出日志.");
 					long operPayoutId = newBalancePayoutLog(acctBalanceId, requestId, 
 							acctBalList.get(i), operAfterBalance, "drawBalance",acctId);
 					
-					logger.info("查询余额来源信息,并更新余额来源表金额，记录余额账本日志.");
+					logger.debug("查询余额来源信息,并更新余额来源表金额，记录余额账本日志.");
 					balSourceModel = new BalanceSourceModel();
 					balSourceModel.setAcctBalanceId(acctBalanceId);
 					balSourceModel.setSliceKey(acctId);
@@ -373,15 +370,12 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			}else if(flagHint == null){
 				flagHint = "可支取余额不足，操作失败！";
 			}
-			logger.info(flagHint);
+			logger.debug(flagHint);
 		} catch (NumberFormatException e) {
-			logger.error("格式化参数异常." + e.getMessage());
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			logger.error("对象为空." + e.getMessage());
 			e.printStackTrace();
 		}catch (Exception e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		return flagHint;
@@ -392,7 +386,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public String balanceTransfer(Map<String, Object> map){
-		logger.info("balanceTransfer().");
+		logger.debug("balanceTransfer().");
 		String flagHint = null;
 		try {
 			long requestId = Long.parseLong(String.valueOf(map.get("requestId")));
@@ -425,7 +419,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 									if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId() == 0) {
 										long amount = Long.parseLong(String.valueOf(map.get("amount")));
 										if (orgiAcctBalModel.getBalance()>=amount) {
-											logger.info("余额转账更新源余额账本，并记录支出日志。");
+											logger.debug("余额转账更新源余额账本，并记录支出日志。");
 											String currDate = BaseUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
 											
 											AcctBalanceModel updateOrgiAcctBal = new AcctBalanceModel();
@@ -434,19 +428,19 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 											updateOrgiAcctBal.setRemark("paid Balance :" + (double)amount/100
 														+ " dollar.operation date:" + currDate);
 											iAcctBalanceMapper.updateByPrimaryKeySelective(updateOrgiAcctBal);
-											logger.info("更新余额来源，并记录余额账本日志！");
+											logger.debug("更新余额来源，并记录余额账本日志！");
 											long operPayoutId = newBalancePayoutLog(orgiAcctBalModel.getAcctBalanceId(), requestId, 
 													orgiAcctBalModel.getBalance(), orgiAcctBalModel.getBalance()-amount, "balance transfer", origAcctId);
 											updateBalanceSource(orgiAcctBalModel.getAcctBalanceId(), amount, operPayoutId, origAcctId);
 
-											logger.info("余额转账目的余额账本，并记录余额来源记录。");
+											logger.debug("余额转账目的余额账本，并记录余额来源记录。");
 											AcctBalanceModel updateGoalAcctBal = new AcctBalanceModel();
 											updateGoalAcctBal.setAcctBalanceId(goalAcctBalModel.getAcctBalanceId());
 											updateGoalAcctBal.setBalance(goalAcctBalModel.getBalance()+amount);
 											updateGoalAcctBal.setRemark("deposit Balance :" + (double)amount/100
 														+ " dollar.operation date:" + currDate);
 											iAcctBalanceMapper.updateByPrimaryKeySelective(updateGoalAcctBal);											
-											logger.info("记录来源记录.");
+											logger.debug("记录来源记录.");
 											newBalanceSource(goalAcctBalModel.getAcctBalanceId(), amount, amount, "balance transfer save.", acctId);
 											
 											flagHint = "余额转账成功！";
@@ -473,10 +467,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			}
 			
 		} catch (Exception e) {
-			logger.info(e.getMessage());
 			e.printStackTrace();
 		}
-		logger.info(flagHint);
+		logger.debug(flagHint);
 		return flagHint;
 	}
 	
@@ -488,17 +481,17 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		String hint = "";
 		Date currDate = new Date();
 		try {
-			logger.info("balanceReverse().");
-			logger.info("根据来源操作流水查询余额来源记录。");
+			logger.debug("balanceReverse().");
+			logger.debug("根据来源操作流水查询余额来源记录。");
 			BalanceSourceModel balSourceRecord = new BalanceSourceModel();
 			balSourceRecord.setOperIncomeId(operIncomeId);
 			BalanceSourceModel balSourceModel = iBalanceSourceMapper.selectByPrimaryKey(balSourceRecord);
 			if (balSourceModel != null) {
 				if (balSourceModel.getCurAmount() > 0 && balSourceModel.getAmount() == balSourceModel.getCurAmount()) {
 					//没有返销接口，暂时不做。
-					logger.info("调用返销账接口，进行账单返销。");
+					logger.debug("调用返销账接口，进行账单返销。");
 					
-					logger.info("修改余额账本余额.");
+					logger.debug("修改余额账本余额.");
 					AcctBalanceModel acctBalanceRecord = new AcctBalanceModel();
 					acctBalanceRecord.setAcctBalanceId(balSourceModel.getAcctBalanceId());
 					AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalanceRecord);
@@ -507,16 +500,16 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 								+ " dollar.operation date:" + currDate);
 					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalanceRecord);
 					
-					logger.info("修改账本余额来源记录.");
+					logger.debug("修改账本余额来源记录.");
 					balSourceRecord.setCurAmount(0L);
 					balSourceRecord.setOperDate(currDate);
 					iBalanceSourceMapper.updateByPrimaryKey(balSourceRecord);
 					
-					logger.info("记录余额支出日志.");
+					logger.debug("记录余额支出日志.");
 					long operPayoutId = newBalancePayoutLog(balSourceModel.getAcctBalanceId(), 0L, 
 							acctBalanceModel.getBalance(), acctBalanceModel.getBalance()-balSourceModel.getCurAmount(), 
 							"balance reverse", balSourceModel.getSliceKey());
-					logger.info("记录余额账本日志.");
+					logger.debug("记录余额账本日志.");
 					newAcctBalanceLog(balSourceModel, operPayoutId, balSourceModel.getCurAmount());
 					
 					hint = "余额冲正成功！";
@@ -533,10 +526,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			
 		} catch (Exception e) {
 			hint = "冲正出错！";
-			logger.info(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			logger.info(hint);
+			logger.debug(hint);
 		}
 		
 		return hint;
@@ -547,11 +539,11 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public List<Object> queryAcctBalanceLog(Map<String, Object> map) {
-		logger.info("acctBalanceLog().");
+		logger.debug("acctBalanceLog().");
 		List<Object> resultList = new ArrayList<Object>();
 		boolean acctBalFlag = true;
 		try {
-			logger.info("根据账户标识和余额类型查询余额账本。");
+			logger.debug("根据账户标识和余额类型查询余额账本。");
 			//根据账户标识和余额类型查询余额账本。
 			long acctId = Long.parseLong(String.valueOf(map.get("acctId")));
 			long balanceTypeId = Long.parseLong(String.valueOf(map.get("balanceTypeId")));
@@ -696,9 +688,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				hintMap.put("errorInfo", "余额账本日志不存在！");
 				resultList.add(hintMap);
 			}
-			logger.info(resultList);
+			logger.debug(resultList);
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			logger.debug(e.getMessage());
 			e.printStackTrace();
 		}
 		return resultList;
@@ -709,7 +701,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public List<Object> queryBalFrozen(long acctId){
-		logger.info("queryBalFrozen().");
+		logger.debug("queryBalFrozen().");
 		String hint = "";
 		Map<String, Object> hintMap = null;
 		List<Object> resultList = new ArrayList<Object>();
@@ -718,7 +710,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			Map<String, Object> acctBalMap = new HashMap<String, Object>();
 			acctBalMap.put("acctId", acctId);
 			acctBalMap.put("sliceKey", acctId);
-			logger.info("query Acct Bal Frozen list." + acctBalMap);
+			logger.debug("query Acct Bal Frozen list." + acctBalMap);
 			List<AcctBalanceModel> acctBalList = iAcctBalanceMapper.selectByAcctId(acctBalMap);
 			if (acctBalList == null || acctBalList.size() == 0) {
 				hint = "账本不存在！";
@@ -762,7 +754,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				hintMap.put("errorInfo", hint);
 				resultList.add(hintMap);
 			}
-			logger.info(resultList);
+			logger.debug(resultList);
 		}
 		
 		return resultList;
@@ -773,7 +765,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public String balanceFrozen(Map<String, Object> record) {
-		logger.info("balanceFrozen().");
+		logger.debug("balanceFrozen().");
 		String hint = "";
 		try {
 			long subAcctId = Long.parseLong(String.valueOf(record.get("subAcctId")));
@@ -783,13 +775,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			acctBalRecord.setAcctBalanceId(acctBalanceId);
 			acctBalRecord.setSubAcctId(subAcctId);
 			acctBalRecord.setSliceKey(subAcctId);
-			logger.info("acct balance query by id.");
+			logger.debug("acct balance query by id.");
 			AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalRecord);
 			if (acctBalanceModel != null) {
 				long frozenAmountSum = 0;
 				//statusCd=2账本冻结，其他为账本未冻结
 				if (acctBalanceModel.getStatusCd() != null && acctBalanceModel.getStatusCd().equals("2")) {
-					logger.info("acct balance is frozened.");
+					logger.debug("acct balance is frozened.");
 					Map<String, Object> frozenMap = new HashMap<String, Object>();
 					frozenMap.put("acctBalanceId", acctBalanceId);
 					frozenMap.put("acctId", subAcctId);
@@ -806,7 +798,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				if (balanceAmount>=0) {
 					Date currDate = new Date();
 					
-					logger.info("frozen acct balance.");
+					logger.debug("frozen acct balance.");
 					BalanceFrozenModel balFrozenModel = new BalanceFrozenModel();
 					balFrozenModel.setAcctBalanceId(acctBalanceId);
 					balFrozenModel.setAcctId(subAcctId);
@@ -837,7 +829,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			hint = e.getMessage();
 			e.printStackTrace();
 		} finally {
-			logger.info(hint);
+			logger.debug(hint);
 		}
 		
 		return hint;
@@ -848,14 +840,14 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 */
 	@Override
 	public String BalanceUnFrozen(String[] balanceFrozenIdArray) {
-		logger.info("BalanceUnFrozen().");
+		logger.debug("BalanceUnFrozen().");
 		String hint = "余额已解冻！";
 		boolean flag = true;
 		long acctBalanceId = 0;
 		long acctId = 0;
 		long sliceKey = 0;
 		try {
-			logger.info("query balance frozen by key.");
+			logger.debug("query balance frozen by key.");
 			for (int i = 0; i < balanceFrozenIdArray.length; i++) {
 				long balanceFrozenId = Long.parseLong(balanceFrozenIdArray[i]);
 				Map<String, Object> balFrozenMap = new HashMap<String, Object>();
@@ -876,7 +868,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				}
 			}
 			
-			logger.info("query balance frozen by acctBalanceId.");
+			logger.debug("query balance frozen by acctBalanceId.");
 			Map<String, Object> acctBalMap = new HashMap<String, Object>();
 			acctBalMap.put("acctBalanceId", acctBalanceId);
 			acctBalMap.put("acctId", acctId);
@@ -892,14 +884,14 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			}
 			//如果冻结记录中全部为未冻结，则更新余额账本为未冻结
 			if (balFrozenFlag) {
-				logger.info("query acct balance by acctBalanceId.");
+				logger.debug("query acct balance by acctBalanceId.");
 				AcctBalanceModel acctBalRecord = new AcctBalanceModel();
 				acctBalRecord.setAcctBalanceId(acctBalanceId);
 				acctBalRecord.setSubAcctId(acctId);
 				acctBalRecord.setSliceKey(sliceKey);
 				AcctBalanceModel acctBalModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalRecord);
 				
-				logger.info("update acct balance to unfrozen.");
+				logger.debug("update acct balance to unfrozen.");
 				acctBalModel.setStatusCd("1");
 				acctBalModel.setStatusDate(new Date());
 				iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalModel);
