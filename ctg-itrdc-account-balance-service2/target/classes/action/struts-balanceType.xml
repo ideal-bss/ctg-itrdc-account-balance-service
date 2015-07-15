@@ -21,6 +21,27 @@
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
- 
+ 		
+ 		<action name="importBalanceType" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="importBalanceType">
+ 			<result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="exportBalanceType" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="exportBalanceType">
+ 			<result name="success" type="stream">
+ 				<param name="contentType">text/x-msdownload</param>
+ 				<param name="inputName">inputStream</param>
+ 				<param name="contentDisposition">attachment;filename=${csvName}</param>
+ 				<param name="bufferSize">15097152</param>
+ 			</result>
+ 		</action>
+ 		<action name="modifyBalanceType" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="modifyBalanceType">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		
+ 		<action name="loadBalanceTypeSelect" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="loadBalanceTypeSelect">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
     </package>
 </struts>
