@@ -1,6 +1,10 @@
 package com.ctg.itrdc.account.balance.system;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -16,6 +20,7 @@ import com.ctg.itrdc.account.balance.model.AcctBalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 import com.ctg.itrdc.account.balance.repository.IBalanceTypeMapper;
+import com.ctg.itrdc.account.balance.util.BaseUtil;
 
 @Service
 public class AcctBalanceConfigLoader implements ServletContextListener {
@@ -29,8 +34,37 @@ public class AcctBalanceConfigLoader implements ServletContextListener {
 		iBalanceTypeMapper =(IBalanceTypeMapper) ctx.getBean("IBalanceTypeMapper");
 		AcctBalanceConfig.setBalanceTypeList(iBalanceTypeMapper.selectAllBalanceType());*/
 		BalanceConfig balanceConfig =BalanceConfig.getInstance();
-		BalanceTypeModel model=balanceConfig.getByTypeId((long)1);
-		System.out.println("=======================>"+model.getCreateDate());
+		BalanceTypeModel model=balanceConfig.getByTypeId((long)99);
+		/*Connection conn=null;
+		Statement state=null;
+		try {
+			conn=BaseUtil.getConnection();
+			String sql="insert into balance_type_mod(BALANCE_TYPE_ID, PRIORITY, SPE_PAYMENT_ID, MEASURE_METHOD_ID, BALANCE_TYPE_NAME) values(99,1,1,1,'999999')";
+			state=conn.createStatement();
+			state.execute(sql);
+			conn.commit();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally{
+			try {
+				if(state!=null)
+					state.close();
+				if(conn!=null)
+					conn.close();
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+			
+		}*/
+		
+//		balanceConfig.addBalanceType((long)99);
+		
+//		BalanceTypeModel model99=balanceConfig.getByTypeId((long)99);
+		System.out.println("=======================>"+model.getBalanceTypeName());
+//		System.out.println("++++++++++++++++++++:"+model.getSpecialPaymentModel().getSpecialPaymentDescModel().getSpePaymentDesc());
+//		System.out.println("=======================>"+model99.getBalanceTypeName());
 		logger.info(new Date()+"--->>>余额配置信息加载完毕<<<---");
 	}
 

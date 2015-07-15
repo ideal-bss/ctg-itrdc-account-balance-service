@@ -18,13 +18,10 @@ import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 @Controller
 public class BalanceTransferAction extends BaseAction {
 	Logger logger = Logger.getLogger(BalanceTransferAction.class);
+	private long acctBalanceId;
 	private int origBalanceTypeId;
 	private long origAcctId;
-	private long requestId;
-	private int origObjectType;
-	private String origObjectId;
 	private long amount;
-	private int balanceTypeId;
 	private long acctId;
 	private int objectType;
 	private String objectId;
@@ -52,23 +49,15 @@ public class BalanceTransferAction extends BaseAction {
 		String json = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("origBalanceTypeId", origBalanceTypeId);
+		map.put("acctBalanceId", acctBalanceId);
 		map.put("origAcctId", origAcctId);
-		map.put("requestId", requestId);
-		map.put("origObjectType", origObjectType);
-		map.put("origObjectId", origObjectId);
 		map.put("amount", amount);
-		map.put("balanceTypeId", balanceTypeId);
 		map.put("acctId", acctId);
 		map.put("objectType", objectType);
 		map.put("objectId", objectId);
 		logger.debug("map:" + map);
 		
-		if (balanceTypeId == origBalanceTypeId) {
-			json = iAcctBalanceService.balanceTransfer(map);
-		} else {
-			json = "源余额类型和目的余额类型不一致！";
-		}
-		
+		json = iAcctBalanceService.balanceTransfer(map);
 		
 		writeJson(json);
 		logger.debug("balanceTarnsfer() ......余额转账 end......");
@@ -85,52 +74,12 @@ public class BalanceTransferAction extends BaseAction {
 		this.origBalanceTypeId = origBalanceTypeId;
 	}
 
-	public long getOrigAcctId() {
-		return origAcctId;
-	}
-
-	public void setOrigAcctId(long origAcctId) {
-		this.origAcctId = origAcctId;
-	}
-
-	public long getRequestId() {
-		return requestId;
-	}
-
-	public void setRequestId(long requestId) {
-		this.requestId = requestId;
-	}
-
-	public int getOrigObjectType() {
-		return origObjectType;
-	}
-
-	public void setOrigObjectType(int origObjectType) {
-		this.origObjectType = origObjectType;
-	}
-
-	public String getOrigObjectId() {
-		return origObjectId;
-	}
-
-	public void setOrigObjectId(String origObjectId) {
-		this.origObjectId = origObjectId;
-	}
-
 	public long getAmount() {
 		return amount;
 	}
 
 	public void setAmount(long amount) {
 		this.amount = amount;
-	}
-
-	public int getBalanceTypeId() {
-		return balanceTypeId;
-	}
-
-	public void setBalanceTypeId(int balanceTypeId) {
-		this.balanceTypeId = balanceTypeId;
 	}
 
 	public long getAcctId() {
@@ -155,6 +104,22 @@ public class BalanceTransferAction extends BaseAction {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public long getAcctBalanceId() {
+		return acctBalanceId;
+	}
+
+	public void setAcctBalanceId(long acctBalanceId) {
+		this.acctBalanceId = acctBalanceId;
+	}
+
+	public long getOrigAcctId() {
+		return origAcctId;
+	}
+
+	public void setOrigAcctId(long origAcctId) {
+		this.origAcctId = origAcctId;
 	}
 
 	@Autowired

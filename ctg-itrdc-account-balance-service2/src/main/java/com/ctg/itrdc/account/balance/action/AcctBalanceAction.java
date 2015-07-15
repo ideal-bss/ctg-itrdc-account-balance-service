@@ -1,26 +1,15 @@
 package com.ctg.itrdc.account.balance.action;
 
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONArray;
-
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ModelDriven;
+
 /**
  * 余额账本
  * @author hxj
@@ -43,7 +32,7 @@ public class AcctBalanceAction extends BaseAction{
     private String acctId;
     private String effDate;
     private String expDate;
-    private String balance;
+    private String balanceDue;
     private String reserveBalance;
     private String cycleUpper;
     private String cycleLower;
@@ -53,6 +42,7 @@ public class AcctBalanceAction extends BaseAction{
     private String cycleType;
     private String remark;
     private String needInvoiceAmount;
+    
 	private IAcctBalanceService iAcctBalanceService;
 	
 	private String radio;
@@ -61,18 +51,24 @@ public class AcctBalanceAction extends BaseAction{
 	 * 余额账本查询
 	 */
 	public void balanceQueryGo(){
-		AcctBalanceModel model=new AcctBalanceModel();
-		System.out.println("radio:"+radio+"   acct_sub_id:"+acct_sub_id);
-		if(radio.equals("0")){
-			//设备号
-			
-			model.setAcctId(Long.parseLong(acct_sub_id));
-		}else{
-			//合同号
-			
-			model.setSubAcctId(Long.parseLong(acct_sub_id));
+		try {
+			AcctBalanceModel model=new AcctBalanceModel();
+			System.out.println("radio:"+radio+"   acct_sub_id:"+acct_sub_id);
+			if(radio.equals("0")){
+				//设备号
+				
+				model.setAcctId(Long.parseLong(acct_sub_id));
+			}else{
+				//合同号
+				
+				model.setSubAcctId(Long.parseLong(acct_sub_id));
+			}
+			writeJson(iAcctBalanceService.selectBalance(model));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-		writeJson(iAcctBalanceService.selectBalance(model));
+		
 	}
 	/**
 	 * 余额账本单条查询
@@ -109,15 +105,15 @@ public class AcctBalanceAction extends BaseAction{
 			acctBalanceModel.setAcctId(Long.parseLong(acctId));
 			acctBalanceModel.setEffDate(sdf.parse(effDate));
 			acctBalanceModel.setExpDate(sdf.parse(expDate));
-			acctBalanceModel.setBalance(Long.parseLong(balance));
+			acctBalanceModel.setBalance(balanceDue==""?0:Long.parseLong(balanceDue));
 			acctBalanceModel.setReserveBalance(Long.parseLong(reserveBalance));
 			acctBalanceModel.setCycleUpper(Long.parseLong(cycleUpper));
 			acctBalanceModel.setCycleLower(Long.parseLong(cycleLower));
 			acctBalanceModel.setStatusCd(statusCd);
 			acctBalanceModel.setStatusDate(sdf.parse(statusDate));
 			acctBalanceModel.setCycleType(cycleType);
-			acctBalanceModel.setRemark(remark);
-			acctBalanceModel.setNeedInvoiceAmount(Long.parseLong(needInvoiceAmount));
+			acctBalanceModel.setRemark(remark==null?"":remark);
+			acctBalanceModel.setNeedInvoiceAmount(needInvoiceAmount==""?null:Long.parseLong(needInvoiceAmount));
 			acctBalanceModel.setSliceKey(Long.parseLong(subAcctId));
 			
 			
@@ -143,6 +139,9 @@ public class AcctBalanceAction extends BaseAction{
 
 	public String deducBalance(){
 		
+		return "success";
+	}
+	public String queryBalance()throws Exception{
 		return "success";
 	}
 	
@@ -189,11 +188,12 @@ public class AcctBalanceAction extends BaseAction{
 	public void setExpDate(String expDate) {
 		this.expDate = expDate;
 	}
-	public String getBalance() {
-		return balance;
+	
+	public String getBalanceDue() {
+		return balanceDue;
 	}
-	public void setBalance(String balance) {
-		this.balance = balance;
+	public void setBalanceDue(String balanceDue) {
+		this.balanceDue = balanceDue;
 	}
 	public String getReserveBalance() {
 		return reserveBalance;

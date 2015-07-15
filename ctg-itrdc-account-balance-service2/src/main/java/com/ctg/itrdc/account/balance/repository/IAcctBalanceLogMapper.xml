@@ -151,8 +151,8 @@
     where BALANCE_LOG_ID = #{balanceLogId,jdbcType=BIGINT}
   </update>
   
-  <select id="selectLogByAcctBalId" parameterType="java.util.Map" resultMap="BaseResultMap">
-  	select <include refid="Base_Column_List"/>
+  <!-- <select id="selectSourceByAcctLogTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+  	select count(DISTINCT OPER_INCOME_ID)
   	from acct_balance_log_mod
   	<where>
   		ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
@@ -160,5 +160,5 @@
   			and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
   		</if>
   	</where>
-  </select>
+  </select> -->
 </mapper>

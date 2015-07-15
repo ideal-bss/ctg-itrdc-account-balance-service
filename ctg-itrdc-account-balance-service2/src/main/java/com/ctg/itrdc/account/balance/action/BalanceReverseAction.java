@@ -1,5 +1,8 @@
 package com.ctg.itrdc.account.balance.action;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +19,8 @@ import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 public class BalanceReverseAction extends BaseAction {
 	Logger logger = Logger.getLogger(BalanceReverseAction.class);
 	private IAcctBalanceService iAcctBalanceService;
-	private long operIncomeId;
+	private String operIncomeId;
+	private long acctId;
 	
 	/**
 	 * 
@@ -38,7 +42,10 @@ public class BalanceReverseAction extends BaseAction {
 	public String balanceReverse(){
 		logger.debug("balanceReverse start.");
 		String hint = null;
-		hint = iAcctBalanceService.balanceReverse(operIncomeId);
+		Map<String, Object> requestMap = new HashMap<String, Object>();
+		requestMap.put("operIncomeId", operIncomeId);
+		requestMap.put("sliceKey", acctId);
+		hint = iAcctBalanceService.balanceReverse(requestMap);
 		if (hint == null || hint.trim().length()==0) {
 			hint = "未知错误！";
 			logger.info(hint);
@@ -48,12 +55,20 @@ public class BalanceReverseAction extends BaseAction {
 		return "success";
 	}
 
-	public long getOperIncomeId() {
+	public String getOperIncomeId() {
 		return operIncomeId;
 	}
 
-	public void setOperIncomeId(long operIncomeId) {
+	public void setOperIncomeId(String operIncomeId) {
 		this.operIncomeId = operIncomeId;
+	}
+
+	public long getAcctId() {
+		return acctId;
+	}
+
+	public void setAcctId(long acctId) {
+		this.acctId = acctId;
 	}
 
 	public IAcctBalanceService getiAcctBalanceService() {

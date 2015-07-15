@@ -70,4 +70,51 @@
 			<if test="sliceKey != null">#{sliceKey,jdbcType=BIGINT},</if>
 		</trim>
 	</insert>
+	
+	<select id="selectPayOutByAcctBalLog" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from BALANCE_PAYOUT_MOD
+		<where> 1=1
+			and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+			and OPER_PAYOUT_ID in(
+				select OPER_PAYOUT_ID
+			  	from acct_balance_log_mod
+			  	<where> 1=1
+			  		and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+			  		and OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT}
+			  		<if test="sliceKey!=null">
+			  			and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+			  		</if>
+			  	</where>
+			)
+			<if test="sliceKey!=null">
+				and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+			</if>
+			<if test="rows != null and page != null">
+		    	limit #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+		    </if>
+		</where>
+	</select>
+	
+	<select id="selectPayOutByAcctBalLogTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(OPER_PAYOUT_ID)
+		from BALANCE_PAYOUT_MOD
+		<where> 1=1
+			and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+			and OPER_PAYOUT_ID in(
+				select OPER_PAYOUT_ID
+			  	from acct_balance_log_mod
+			  	<where> 1=1
+			  		and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+			  		and OPER_INCOME_ID = #{operIncomeId,jdbcType=BIGINT}
+			  		<if test="sliceKey!=null">
+			  			and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+			  		</if>
+			  	</where>
+			)
+			<if test="sliceKey!=null">
+				and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
 </mapper>

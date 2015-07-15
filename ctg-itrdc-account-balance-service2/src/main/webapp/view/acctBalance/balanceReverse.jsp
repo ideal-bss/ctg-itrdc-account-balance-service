@@ -15,7 +15,7 @@
 				dataType:"json",
 				data:$('#balance_reverse_form').serialize(),
 				success:function(datas){
-					$.messager.alert('结果提示',datas);
+					$.messager.alert('提示',datas);
 				}
 			});
 		}

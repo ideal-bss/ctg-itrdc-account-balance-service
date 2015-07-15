@@ -37,7 +37,12 @@
     <include refid="Base_Column_List" />
     from balance_type_mod
   </select>
-  
+  <select id="selectTypeById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+ 	 select 
+    <include refid="Base_Column_List" />
+    from balance_type_mod
+    where BALANCE_TYPE_ID = #{balanceTypeId,jdbcType=BIGINT}
+  </select>  
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from balance_type_mod
@@ -57,12 +62,9 @@
       #{createStaff,jdbcType=VARCHAR}, #{updateStaff,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
       #{statusDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" >
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.BalanceTypeModel" useGeneratedKeys="true" keyProperty="balanceTypeId">
     insert into balance_type_mod
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="balanceTypeId != null" >
-        BALANCE_TYPE_ID,
-      </if>
       <if test="priority != null" >
         PRIORITY,
       </if>
@@ -113,9 +115,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="balanceTypeId != null" >
-        #{balanceTypeId,jdbcType=BIGINT},
-      </if>
       <if test="priority != null" >
         #{priority,jdbcType=BIGINT},
       </if>
@@ -172,7 +171,9 @@
       <if test="priority != null" >
         PRIORITY = #{priority,jdbcType=BIGINT},
       </if>
-      SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
+      <if test="spePaymentId != null" >
+        SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
+      </if>
       <if test="measureMethodId != null" >
         MEASURE_METHOD_ID = #{measureMethodId,jdbcType=BIGINT},
       </if>

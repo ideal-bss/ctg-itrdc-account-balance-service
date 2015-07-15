@@ -70,11 +70,11 @@
  		</action>
  		<!-- 余额转账 ......end....... -->
  		
- 		<!-- 余额冲正......start...... -->
+ 		<!-- 余额冲正......start......
  		<action name="balanceReverseGo" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverseGo">
  			<result name="success">/view/acctBalance/balanceReverse.jsp</result>
  			<result name="error">/view/test/error.jsp</result>
- 		</action>
+ 		</action>-->
  		<action name="balanceReverse" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverse">
  			<result name="success">/view/test/success.jsp</result>
  			<result name="error">/view/test/error.jsp</result>
@@ -110,5 +110,16 @@
 			<result name="error">/view/test/error.jsp</result>
 		</action>
 		<!-- 余额冻结解冻管理......end...... -->
+		
+		<!-- 余额来源记录查询......start......-->
+		<action name="acctBalLogbalSourceQuery" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalLogbalSourceQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="acctBalLogbalPayOutQuery" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalLogbalPayOutQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额来源记录查询......end......-->
     </package>
 </struts>

@@ -17,4 +17,7 @@ public interface IBalanceTypeMapper extends Mapper<BalanceTypeModel>{
     int selectByBalanceTypeName(String balanceTypeName);
     
     int insertSelective(BalanceTypeModel record);
+    
+    BalanceTypeModel selectTypeById(long balanceTypeId);
+
 }

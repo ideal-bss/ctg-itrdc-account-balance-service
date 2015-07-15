@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
@@ -166,6 +167,34 @@ public class BaseUtil {
 		}
 		return true;
 	}
+	
+	/**
+	 * 
+	 * @desc double类型精确相加
+	 * @author ls
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	public static double add(double v1,double v2){
+		BigDecimal b1 = new BigDecimal(Double.toString(v1));
+		BigDecimal b2 = new BigDecimal(Double.toString(v2));
+		return b1.add(b2).doubleValue();
+	}
+	
+	/**
+	 * 
+	 * @desc double类型精确相减
+	 * @author ls
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	public static double sub(double v1,double v2){
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        return b1.subtract(b2).doubleValue();
+    }
 	
 	public static void main(String[] args) {
 //		System.out.println(getPropertyUrl("conf/menu.xml"));

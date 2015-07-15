@@ -54,8 +54,8 @@
   <div align="center">
   	<form id="balance_frozen_form_id">
   		<table>
-  			<tr><td>账户标识：</td><td><input name="subAcctId" id="subAcctId" class="easyui-numberbox"/></td>
-  				<td>余额账本标识：</td><td><input name="acctBalanceId" id="acctBalanceId" class="easyui-numberbox"/></td>
+  			<tr><td>账户标识：</td><td><input name="subAcctId" id="subAcctId" value="${param.acctId }" class="easyui-numberbox" data-options="editable:false"/></td>
+  				<td>余额账本标识：</td><td><input name="acctBalanceId" id="acctBalanceId" value="${param.acctBalanceId }" class="easyui-numberbox" data-options="editable:false"/></td>
   			</tr>
   			<tr><td>&nbsp;</td><td><font color="red" id="subAcctIdHint"></font></td>
   				<td>&nbsp;</td><td><font color="red" id="acctBalanceIdHint"></font></td>

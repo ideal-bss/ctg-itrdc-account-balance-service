@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.ctg.itrdc.account.balance.model.BalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalanceTypeModel;
 import com.ctg.itrdc.account.balance.service.IBalanceTypeService;
 
@@ -52,6 +53,7 @@ public class BalanceTypeAction extends BaseAction{
 	public int rows;
 	public int page;
 	
+	public int allFlag;
 	/**
 	 * 余额类型查询
 	 * @author ls
@@ -183,6 +185,31 @@ public class BalanceTypeAction extends BaseAction{
 		}
 		writeJson(hint);
 		logger.debug("modifyBalanceType()......end......");
+		return "success";
+	}
+	
+	/**
+	 * 
+	 * @desc 加载余额类型菜单
+	 * @author ls
+	 * @return
+	 */
+	public String loadBalanceTypeSelect(){
+		logger.debug("loadBalanceTypeSelect()......start......");
+		BalanceConfig balanceConfig = BalanceConfig.getInstance();
+		List<BalanceTypeModel> balTypeList = balanceConfig.getBalanceTypeList();
+		if (allFlag == 1) {
+			if (balTypeList == null || (balTypeList !=null && !((BalanceTypeModel)balTypeList.get(0)).getBalanceTypeName().equals("全部"))) {
+				BalanceTypeModel btm = new BalanceTypeModel();
+				btm.setBalanceTypeId(0L);
+				btm.setBalanceTypeName("全部");
+				balTypeList.add(0, btm);
+			}
+		}else if(balTypeList !=null && ((BalanceTypeModel)balTypeList.get(0)).getBalanceTypeName().equals("全部")){
+			balTypeList.remove(0);
+		}
+		writeJson(balTypeList);
+		logger.debug("loadBalanceTypeSelect()......end......");
 		return "success";
 	}
 	
@@ -370,6 +397,12 @@ public class BalanceTypeAction extends BaseAction{
 	}
 	public void setPage(int page) {
 		this.page = page;
+	}
+	public int getAllFlag() {
+		return allFlag;
+	}
+	public void setAllFlag(int allFlag) {
+		this.allFlag = allFlag;
 	}
 	
 	

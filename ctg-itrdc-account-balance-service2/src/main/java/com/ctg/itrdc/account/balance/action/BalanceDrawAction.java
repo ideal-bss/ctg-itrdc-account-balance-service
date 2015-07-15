@@ -1,11 +1,8 @@
 package com.ctg.itrdc.account.balance.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +18,9 @@ import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 @Controller
 public class BalanceDrawAction extends BaseAction {
 	private String acctId;
-	private String objectType;
 	private String drawAmount;
 	private String objectId;
-	private String requestId;
+	private String acctBalanceIdArray;
 	private IAcctBalanceService iAcctBalanceService;
 	
 	private static Logger logger = Logger.getLogger(BalanceDrawAction.class);
@@ -47,24 +43,19 @@ public class BalanceDrawAction extends BaseAction {
 	public String balanceDraw(){
 		logger.debug("balance draw start.");
 		String drawHint = "";
-		JSONArray json = new JSONArray();
-		List<String> responseList = new ArrayList<String>();
 		try {
 			Map<String, Object> model = new HashMap<String, Object>();
 			model.put("acctId", acctId);
-			model.put("objectType", objectType);
 			model.put("drawAmount", drawAmount);
 			model.put("objectId", objectId);
-			model.put("requestId", requestId);
+			model.put("acctBalanceIdArray", acctBalanceIdArray);
 			drawHint = iAcctBalanceService.balanceDraw(model);
-			responseList.add(drawHint);
 			
 		} catch (Exception e) {
-			responseList.add("余额支取失败：" + e.getMessage());
+			drawHint = "余额支取失败：" + e.getMessage();
 			e.printStackTrace();
 		} finally {
-			json.add(responseList);
-			writeJson(json);
+			writeJson(drawHint);
 			logger.debug("balance draw end.");
 		}
 		
@@ -79,14 +70,6 @@ public class BalanceDrawAction extends BaseAction {
 		this.acctId = acctId;
 	}
 	
-	public String getObjectType() {
-		return objectType;
-	}
-
-	public void setObjectType(String objectType) {
-		this.objectType = objectType;
-	}
-
 	public String getDrawAmount() {
 		return drawAmount;
 	}
@@ -103,13 +86,14 @@ public class BalanceDrawAction extends BaseAction {
 		this.objectId = objectId;
 	}
 
-	public String getRequestId() {
-		return requestId;
+	public String getAcctBalanceIdArray() {
+		return acctBalanceIdArray;
 	}
 
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
+	public void setAcctBalanceIdArray(String acctBalanceIdArray) {
+		this.acctBalanceIdArray = acctBalanceIdArray;
 	}
+
 	@Autowired
 	public void setiAcctBalanceService(IAcctBalanceService iAcctBalanceService) {
 		this.iAcctBalanceService = iAcctBalanceService;

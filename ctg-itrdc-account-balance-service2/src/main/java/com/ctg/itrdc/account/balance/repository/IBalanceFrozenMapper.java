@@ -16,7 +16,11 @@ public interface IBalanceFrozenMapper {
 	
 	List<BalanceFrozenModel> queryBalFrozenByAcctId(Map<String, Object> record);
 	
+	int queryBalFrozenByAcctIdCnt(Map<String, Object> record);
+	
 	int insertBalanceFrozen(BalanceFrozenModel record);
 	
 	int balanceUnFrozen(Map<String, Object> record);
+	
+	int queryAcctBalFrozenSum(Map<String, Object> record);
 }

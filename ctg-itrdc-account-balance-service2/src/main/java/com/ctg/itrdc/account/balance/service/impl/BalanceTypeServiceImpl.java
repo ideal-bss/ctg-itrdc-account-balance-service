@@ -69,7 +69,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 				map.put("ifPrincipal", balanceTypeModel.getIfPrincipal());
 				map.put("statusCd", balanceTypeModel.getStatusCd());
 				map.put("statusDate", balanceTypeModel.getStatusDate());
-				if (balanceTypeModel.getSpePaymentId() != null) {
+				if (balanceTypeModel.getBalanceTypeId() != null && balanceTypeModel.getSpePaymentId() != null) {
 					map.put("spePaymentName",BalanceConfig.getInstance().getByTypeId(balanceTypeModel.getBalanceTypeId()).getSpecialPaymentModel().getSpecialPaymentDescModel().getSpePaymentDesc());
 				}
 				
@@ -126,9 +126,9 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 			//判断余额类型是否已存在，根据余额类型名称校验
 			if (balanceTypeCnt == 0){
 				//插入新余额类型配置
-				if(iBalanceTypeMapper.insertSelective(balanceTypeModel)>0){
+				if((iBalanceTypeMapper.insertSelective(balanceTypeModel))>0){
 					message = "存入成功！";
-					BalanceConfig.getInstance().ReLoadCache();
+					BalanceConfig.getInstance().addBalanceType(balanceTypeModel.getBalanceTypeId());
 				}else{
 					message = "存入失败！";
 				}
@@ -434,7 +434,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 						balanceTypeModel.setAllowDraw(allowDraw);
 						iBalanceTypeMapper.insertSelective(balanceTypeModel);
 						succCnt++;
-						
+						BalanceConfig.getInstance().addBalanceType(balanceTypeModel.getBalanceTypeId());
 					} else {
 						sb.append(line).append(",").append(hint).append("\r\n");
 					}
@@ -449,9 +449,6 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 				list.add(2,fileName);
 				if (sumCnt == succCnt) {
 					list.add(3,"allSucced");
-				}
-				if (succCnt>0) {
-					BalanceConfig.getInstance().ReLoadCache();
 				}
 			}else{
 				list.add(0,hint);

@@ -1,6 +1,7 @@
 package com.ctg.itrdc.account.balance.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ctg.itrdc.account.balance.model.BalanceSourceModel;
 
@@ -20,4 +21,7 @@ public interface IBalanceSourceMapper {
 	
 	long insert(BalanceSourceModel record);
 	
+	List<BalanceSourceModel> selectSourceByAcctBalLog(Map<String, Object> record);
+	
+	int selectSourceByAcctBalLogTotal(Map<String, Object> record);
 }

@@ -1,7 +1,6 @@
 package com.ctg.itrdc.account.balance.action;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -23,36 +22,37 @@ public class QueryBalanceAction extends BaseAction {
 	private String balanceTypeId;
 	private String ObjectIdType;
 	private IAcctBalanceService iAcctBalanceService;
+	
+	private int rows;
+	private int page;
 	/**
 	 * 
 	 * @author ls
 	 * @return success
 	 */
 	public String queryBalanceGo() {
-		loggers.info("queryBalanceGo()");
+		loggers.debug("queryBalanceGo()");
 		return "success";
 	}
 	
 	public String queryBalance() {
-		loggers.info("queryBalance()");
+		loggers.debug("queryBalance()......start......");
 		
 		String resultFlag = "success";
 		try {
 			Map<String, Object> model = new HashMap<String, Object>();
-			model.put("objectId", objectId);
+			model.put("objectId", getObjectId());
 			model.put("balanceTypeId", balanceTypeId);
 			model.put("objectType", ObjectIdType);
-			List<Object> resultList = iAcctBalanceService.queryBalance(model);
-			if (resultList == null || resultList.isEmpty() ||((HashMap)resultList.get(0)).containsKey("errorInfo")) {
-				loggers.info("账本不存在！");
-				resultFlag = "error";
-			}
-			
-			writeJson(resultList);
+			model.put("rows", rows);
+			model.put("page", ((page-1)*rows));
+			Map<String, Object> map = iAcctBalanceService.queryBalance(model);
+			writeJson(map);
 			
 		} catch (Exception e) {
-			loggers.error(e.getMessage());
 			e.printStackTrace();
+		} finally {
+			loggers.debug("queryBalance()......end......");
 		}
 		return resultFlag;
 	}
@@ -65,6 +65,9 @@ public class QueryBalanceAction extends BaseAction {
 	}
 
 	public String getObjectId() {
+		if (objectId != null) {
+			objectId = objectId.trim();
+		}
 		return objectId;
 	}
 
@@ -86,6 +89,22 @@ public class QueryBalanceAction extends BaseAction {
 
 	public void setObjectIdType(String objectIdType) {
 		ObjectIdType = objectIdType;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
 	}
 	
 	

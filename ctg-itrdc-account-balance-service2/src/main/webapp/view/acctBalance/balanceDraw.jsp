@@ -26,22 +26,21 @@
 		/*校验支取条件*/
 		function check(){
 			var acctId = $("#acctId").val();
-			var objectType = $("#objectType").val();
+			var acctBalId = $("#acctBalanceIdArray").val();
 			var drawAmount = $("#drawAmount").val();
-			var requestId = $("#requestId").val();
 			var objectId = $("#objectId").val();
 			var flag = false;
-			if(acctId == null || $.trim(acctId) == "" || acctId==0){
+			if(acctId == null || $.trim(acctId) == ""){
 				$("#acctId_warn").html("请输入账户标识！");
 				flag = true;
 			}else{
 				$("#acctId_warn").html("");
 			}
-			if(objectType == null || $.trim(objectType) == "" || objectType==0){
-				$("#objectType_warn").html("请输入余额对象类型！");
+			if(acctBalId == null || $.trim(acctBalId) == ""){
+				$("#acctBalId_warn").html("请输入余额账本标识！");
 				flag = true;
 			}else{
-				$("#objectType_warn").html("");
+				$("#acctBalId_warn").html("");
 			}
 			if(drawAmount == null || $.trim(drawAmount) == "" || drawAmount==0){
 				$("#drawAmount_warn").html("请输入支取金额！");
@@ -49,13 +48,7 @@
 			}else{
 				$("#drawAmount_warn").html("");
 			}
-			if(requestId == null || $.trim(requestId) == "" || requestId==0){
-				$("#requestId_warn").html("请输入流水号！");
-				flag = true;
-			}else{
-				$("#requestId_warn").html("");
-			}
-			if(objectId == null || $.trim(objectId) == "" || objectId==0){
+			if(objectId == null || $.trim(objectId) == ""){
 				$("#objectId_warn").html("请输入余额对象标识！");
 				flag = true;
 			}else{
@@ -63,40 +56,42 @@
 			}
 			return flag;
 		}
+		
 	</script>
+	
     <div align="center">
     	<form id="balance_draw_view">
     		<table style="padding: 10px 10px 10px 10px;">
     			<tr>
-    				<td>账户标识：</td>
-    				<td><input id="acctId" name="acctId" value="" class="easyui-numberbox"/>&nbsp;</td>
-    				<td>余额对象类型：</td>
+    				<th>账户标识：</th>
+    				<td><input id="acctId" name="acctId" data-options="editable:false" value="${param.acctId }" class="easyui-numberbox"/>&nbsp;</td>
+    				<!-- <td>余额对象类型：</td>
     				<td>
-						<select id="objectType" name="objectType" class="easyui-combobox" style="width: 150px;" data-options="editable:false">
+						<select id="objectType" name="objectType" class="easyui-combobox" style="width: 150px;" data-options="editable:false,panelHeight:80">
 							<option value="1">账户</option>
 				 			<option value="2">设备</option>
 						</select>
+					</td> -->
+					<th>余额账本标识：</th>
+					<td>
+						<input id="acctBalanceIdArray" name="acctBalanceIdArray" data-options="editable:false,multiline:true"
+							style="width:150px;height:50px;" value="${param.acctBalanceId }" class="easyui-textbox"/>
 					</td>
     			</tr>
     			<tr><td></td><td>&nbsp;<font id="acctId_warn" color="red"></font></td>
-    				<td></td><td>&nbsp;<font id="objectType_warn" color="red"></font></td>
+    				<td></td><td>&nbsp;<font id="acctBalId_warn" color="red"></font></td>
     			</tr>
     			<tr>
-    				<td>支取金额：</td>
+    				<th>支取金额：</th>
     				<td><input id="drawAmount" name="drawAmount" value="" class="easyui-numberbox"/>&nbsp;</td>
-    				<td>余额对象标识：</td>
-    				<td><input id="objectId" name="objectId" value="" class="easyui-textbox"/></td>
+    				<th>余额对象标识：</th>
+    				<td><input id="objectId" name="objectId" data-options="editable:false" value="${param.objectId }" class="easyui-textbox"/></td>
     			</tr>
     			<tr><td></td><td>&nbsp;<font id="drawAmount_warn" color="red"></font></td>
     				<td></td><td>&nbsp;<font id="objectId_warn" color="red"></font></td>
     			</tr>
-    			<tr>
-    				<td>流&nbsp;水&nbsp;号：</td>
-    				<td colspan="3"><input id="requestId" name="requestId" value="" class="easyui-numberbox"/></td>
-    			</tr>
-    			<tr><td></td><td colspan="3">&nbsp;<font id="requestId_warn" color="red"></font></td></tr>
     			<tr align="center">
-    				<td colspan="2"><a href="#" class="easyui-linkbutton" onclick="form_submit_draw();" style="width:65px">支取</a></td>
+    				<td colspan="4"><a href="#" class="easyui-linkbutton" onclick="form_submit_draw();" style="width:65px">支取</a></td>
     			</tr>
     			
     		</table>

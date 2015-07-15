@@ -1,7 +1,6 @@
 package com.ctg.itrdc.account.balance.action;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -26,6 +25,9 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	private long frozenAmount;
 	private long subAcctId;
 	private String balFrozenId;
+	
+	private int rows;
+	private int page;
 	/**
 	 * 
 	 * @desc 余额冻结查询界面跳转
@@ -45,8 +47,13 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 	 */
 	public String balanceFrozenQuery(){
 		logger.debug("balanceFrozenQuery()......start......");
-		List<Object> resultList = iAcctBalanceService.queryBalFrozen(acctId);
-		writeJson(resultList);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("acctId", acctId);
+		map.put("acctBalanceId", acctBalanceId);
+		map.put("rows", rows);
+		map.put("page", ((page-1)*rows));
+		Map<String, Object> resultMap = iAcctBalanceService.queryBalFrozen(map);
+		writeJson(resultMap);
 		logger.debug("balanceFrozenQuery()......end......");
 		return "success";
 	}
@@ -136,6 +143,22 @@ public class BalanceFrozenUnfronzen extends BaseAction {
 
 	public void setBalFrozenId(String balFrozenId) {
 		this.balFrozenId = balFrozenId;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
 	}
 	
 	

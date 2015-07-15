@@ -117,7 +117,7 @@
       #{remark,jdbcType=VARCHAR}, #{needInvoiceAmount,jdbcType=BIGINT}, #{sliceKey,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" >
+  <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" useGeneratedKeys="true" keyProperty="acctBalanceId">
     insert into acct_balance_mod
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="acctBalanceId != null" >
@@ -321,6 +321,7 @@
    	select count(*) FROM acct_balance_mod WHERE ACCT_BALANCE_ID=#{ACCT_BALANCE_ID,jdbcType=DECIMAL} 
    	AND SLICE_KEY=#{SLICE_KEY,jdbcType=DECIMAL} 
    </select>
+   <!-- 修改余额账本 -->
    <update id="updateBalance" parameterType="map">
    	update acct_balance_mod 
    	set BALANCE = BALANCE+#{BALANCE,jdbcType=BIGINT}
@@ -456,6 +457,7 @@
       </if>
     </trim>
   </insert>
+  <!-- 余额对象账本关系新增 -->
    <insert id="insertRelation" parameterType="com.ctg.itrdc.account.balance.model.BalanceRelationModel" useGeneratedKeys="true" keyProperty="balanceRelationId">
     insert into balance_relation_mod
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -493,6 +495,7 @@
       </if>
     </trim>
   </insert>
+  <!-- 查询余额对象账本关系ID -->
    <select id="selectRelationId" parameterType="com.ctg.itrdc.account.balance.model.BalanceRelationModel" resultType="java.lang.Long">
 	select BALANCE_RELATION_ID
 	from balance_relation_mod
@@ -503,22 +506,89 @@
 	and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
    </select>
    
+   <!-- acctId查询 账本list -->
+   <select id="selectBalanceByAcctId" parameterType="map" resultType="java.lang.Integer">
+	select ACCT_BALANCE_ID from acct_balance_mod where
+		SUB_ACCT_ID=#{subAcctId,jdbcType=BIGINT}
+	and SLICE_KEY=#{subAcctId,jdbcType=BIGINT}
+   </select>
+   
+   <!-- 账本ID 查询余额共享规则设备级list -->
+   <select id="selectDevByBalanceId" parameterType="map" resultType="com.ctg.itrdc.account.balance.model.BalanceShareRuleModel">
+   	select * from balance_share_rule_mod where 
+   		ACCT_BALANCE_ID=#{acctBalanceId,jdbcType=BIGINT}
+   	and OBJECT_TYPE=#{objectType,jdbcType=VARCHAR}
+   	and SLICE_KEY=#{subAcctId,jdbcType=BIGINT}
+   </select>
+   <!-- 设备查询账本Id list -->
+   <select id="selectBalanceByDev" parameterType="map" resultType="java.lang.Integer">
+   	select ACCT_BALANCE_ID from balance_share_rule_mod where
+   		OBJECT_ID=#{objectId,jdbcType=BIGINT}
+   	and OBJECT_TYPE=#{objectType,jdbcType=VARCHAR}
+   	and SLICE_KEY=#{subAcctId,jdbcType=BIGINT}
+   </select>
+   <!-- 账本ID 查询账本 list-->
+   <select id="selectBalanceById" parameterType="map" resultType="com.ctg.itrdc.account.balance.model.AcctBalanceModel">
+   	select * from acct_balance_mod where 
+   		ACCT_BALANCE_ID=#{acctBalanceId,jdbcType=BIGINT}
+   	and SLICE_KEY=#{subAcctId,jdbcType=BIGINT}
+   </select>   
    <select id="selectByAcctId" parameterType="java.util.Map" resultMap="BaseResultMap">
    		select 
 	    <include refid="Base_Column_List" />
 	    from acct_balance_mod
-	    where SUB_ACCT_ID=#{acctId,jdbcType=BIGINT}
+	    where 1=1
+	    <if test="acctBalanceId != null" >
+          and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+        </if>
+	    <if test="acctId != null">
+	      and SUB_ACCT_ID=#{acctId,jdbcType=BIGINT}
+	    </if>
 	    <if test="sliceKey != null" >
 	      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
 	    </if>
-	    <if test="balanceTypeId != null" >
+	    <if test="balanceTypeId != null and balanceTypeId != '' and balanceTypeId != 0" >
 	      and BALANCE_TYPE_ID=#{balanceTypeId,jdbcType=BIGINT}
 	    </if>
 	    <if test="objectType != null and objectId != null">
 		    and ACCT_BALANCE_ID in(
 		    	select ACCT_BALANCE_ID from balance_share_rule_mod
-		    	where OBJECT_TYPE=#{objectType,jdbcType=BIGINT}
-		    	 and OBJECT_ID=#{objectId,jdbcType=BIGINT}
+		    	where OBJECT_ID=#{objectId,jdbcType=BIGINT}
+		    	<if test="objectType != null and objectType != '' and objectType != 0" >
+			      and OBJECT_TYPE=#{objectType,jdbcType=BIGINT}
+			     </if>
+		    	 <if test="sliceKey != null" >
+			      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+			     </if>
+		    )
+	    </if>
+	    <if test="rows != null and page != null">
+	    	limit #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+	    </if>
+   </select>
+   
+   <select id="selectByAcctIdSum" parameterType="java.util.Map" resultType="java.lang.Integer">
+   		select count(ACCT_BALANCE_ID) from acct_balance_mod
+	    where 1=1
+	    <if test="acctBalanceId != null" >
+          and ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+        </if>
+	    <if test="acctId != null">
+	      and SUB_ACCT_ID=#{acctId,jdbcType=BIGINT}
+	    </if>
+	    <if test="sliceKey != null" >
+	      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+	    </if>
+	    <if test="balanceTypeId != null and balanceTypeId != '' and balanceTypeId != 0" >
+	      and BALANCE_TYPE_ID=#{balanceTypeId,jdbcType=BIGINT}
+	    </if>
+	    <if test="objectType != null and objectId != null">
+		    and ACCT_BALANCE_ID in(
+		    	select ACCT_BALANCE_ID from balance_share_rule_mod
+		    	where OBJECT_ID=#{objectId,jdbcType=BIGINT}
+		    	 <if test="objectType != null and objectType != '' and objectType != 0" >
+			      and OBJECT_TYPE=#{objectType,jdbcType=BIGINT}
+			     </if>
 		    	 <if test="sliceKey != null" >
 			      and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
 			     </if>

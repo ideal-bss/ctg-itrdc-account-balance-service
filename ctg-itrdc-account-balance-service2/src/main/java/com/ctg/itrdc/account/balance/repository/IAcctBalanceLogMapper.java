@@ -8,5 +8,7 @@ import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 
 public interface IAcctBalanceLogMapper extends Mapper<AcctBalanceLogModel>{
 	int insertSelective(AcctBalanceLogModel log);
-    List<AcctBalanceLogModel> selectLogByAcctBalId(Map<String, Object> map);
+    List<AcctBalanceLogModel> selectSourceByAcctBalId(Map<String, Object> map);
+    
+    //int selectSourceByAcctLogTotal(Map<String, Object> record);
 }

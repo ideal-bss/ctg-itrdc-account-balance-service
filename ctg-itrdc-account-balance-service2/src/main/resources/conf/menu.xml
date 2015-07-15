@@ -43,7 +43,7 @@
 				<url>/acctBalance/balRealDistrGo.action</url>
 			</attributes>
 		</element>
-		
+		<!-- 
 		<element>
 			<id>5</id>
 			<text>余额支取</text>
@@ -61,7 +61,7 @@
 			<attributes>
 				<url>/acctBalance/balanceTransferGo.action</url>
 			</attributes>
-		</element>
+		</element> 
 		<element>
 			<id>7</id>
 			<text>余额冲正</text>
@@ -70,7 +70,7 @@
 			<attributes>
 				<url>/acctBalance/balanceReverseGo.action</url>
 			</attributes>
-		</element>
+		</element>-->
 		<element>
 			<id>8</id>
 			<text>账本日志查询</text>
@@ -80,6 +80,7 @@
 				<url>/acctBalance/acctBalanceLogGo.action</url>
 			</attributes>
 		</element>
+		<!--
 		<element>
 			<id>9</id>
 			<text>余额冻结解冻</text>
@@ -89,7 +90,7 @@
 				<url>/acctBalance/balanceFrozenQueryGo.action</url>
 			</attributes>
 		</element>
-		<!-- 
+		 
 		<element>
 			<id>10</id>
 			<text>测试</text>

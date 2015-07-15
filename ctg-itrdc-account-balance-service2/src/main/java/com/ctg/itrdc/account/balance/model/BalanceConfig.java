@@ -22,10 +22,10 @@ public class BalanceConfig {
     private static List<BalanceTypeModel> balanceTypeList=new ArrayList<BalanceTypeModel>();
     private static List<SpecialPaymentModel> specialPaymentList=new ArrayList<SpecialPaymentModel>();
     
-    SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
-	IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
-	ISpecialPaymentMapper iSpecialPaymentMapper=sqlSession.getMapper(ISpecialPaymentMapper.class);//专款专用
-	ISpecialPaymentDescMapper iSpecialPaymentDescMapper=sqlSession.getMapper(ISpecialPaymentDescMapper.class);//专款专用
+//    private static SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+//    private static IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
+//    private static ISpecialPaymentMapper iSpecialPaymentMapper=sqlSession.getMapper(ISpecialPaymentMapper.class);//专款专用
+//    private static ISpecialPaymentDescMapper iSpecialPaymentDescMapper=sqlSession.getMapper(ISpecialPaymentDescMapper.class);//专款专用
 	
     private BalanceConfig() {  
         this.LoadCache();// 加载缓存  
@@ -53,7 +53,11 @@ public class BalanceConfig {
      * 装载缓存 
      */  
     private void LoadCache() {  
-  
+      SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+      IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
+      ISpecialPaymentMapper iSpecialPaymentMapper=sqlSession.getMapper(ISpecialPaymentMapper.class);//专款专用
+      ISpecialPaymentDescMapper iSpecialPaymentDescMapper=sqlSession.getMapper(ISpecialPaymentDescMapper.class);//专款专用
+
         this.updateFlag = true;// 正在更新  
         
         List<BalanceTypeModel> typeList=iBalanceTypeMapper.selectAllBalanceType();
@@ -61,7 +65,7 @@ public class BalanceConfig {
         List<SpecialPaymentDescModel> specialDescList=iSpecialPaymentDescMapper.selectAll();
         for(SpecialPaymentModel special:specialList){
         	for(SpecialPaymentDescModel specialDesc:specialDescList){
-        		if(special.getSpePaymentId().equals(specialDesc.getSpePaymentId())){
+        		if(special.getSpePaymentId()!=null&&special.getSpePaymentId().equals(specialDesc.getSpePaymentId())){
         			special.setSpecialPaymentDescModel(specialDesc);
         			break;
         		}
@@ -71,7 +75,7 @@ public class BalanceConfig {
         
         for(BalanceTypeModel type:typeList){
         	for(SpecialPaymentModel specialmodel:specialPaymentList){
-        		if(type.getSpePaymentId() != null && type.getSpePaymentId().equals(specialmodel.getSpePaymentId())){
+        		if(type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(specialmodel.getSpePaymentId())){
         			type.setSpecialPaymentModel(specialmodel);
         			break;
         		}
@@ -83,59 +87,6 @@ public class BalanceConfig {
   
     }  
   
-     
-    
-    /** 
-     * 返回缓存 余额类型对象 
-     *  
-     * @return 
-     */ 
-    public List<BalanceTypeModel> getBalanceTypeList() {  
-    	  
-        long currentTime = System.currentTimeMillis();  
-  
-        if (this.updateFlag) {// 前缓存正在更新  
-            return null;  
-  
-        }  
-  
-        if (this.IsTimeOut(currentTime)) {// 如果当前缓存正在更新或者缓存超出时限，需重新加载  
-            synchronized (this) {  
-                this.ReLoadCache();  
-                this.updateTime = currentTime;  
-            }  
-        }  
-  
-        return this.balanceTypeList;  
-    }
-    /** 
-     * 返回缓存 专款专用对象 
-     *  
-     * @return 
-     */
-    public List<SpecialPaymentModel> getSpecialPaymentList() {  
-  	  
-        long currentTime = System.currentTimeMillis();  
-  
-        if (this.updateFlag) {// 前缓存正在更新  
-            return null;  
-  
-        }  
-  
-        if (this.IsTimeOut(currentTime)) {// 如果当前缓存正在更新或者缓存超出时限，需重新加载  
-            synchronized (this) {  
-                this.ReLoadCache();  
-                this.updateTime = currentTime;  
-            }  
-        }  
-  
-        return this.specialPaymentList;  
-    }
-  
-    private boolean IsTimeOut(long currentTime) {  
-  
-        return ((currentTime - this.updateTime) > 1000000);// 超过时限，超时  
-    }  
   
     /** 
      * 获取缓存项大小 
@@ -167,10 +118,11 @@ public class BalanceConfig {
     /** 
      * 重新装载 
      */  
-    private void ReLoadCache() {  
+    private List<BalanceTypeModel> ReLoadCache() {  
         this.balanceTypeList.clear();
         this.specialPaymentList.clear();
-        this.LoadCache();  
+//        this.LoadCache();  
+        return this.balanceTypeList;
     }  
     /**
      * 根据余额账本类型ID获取类型
@@ -179,13 +131,117 @@ public class BalanceConfig {
      */
     public BalanceTypeModel getByTypeId(Long typeId) {
 		BalanceTypeModel balanceTypeModel = null;
-		List<BalanceTypeModel> balanceTypeList=balanceConfig.getBalanceTypeList();
+		List<BalanceTypeModel> balanceTypeList=this.balanceTypeList;
 		for (BalanceTypeModel btm : balanceTypeList) {
-			if (btm.getBalanceTypeId() == typeId) {
+			if (btm.getBalanceTypeId()!=null&&btm.getBalanceTypeId() == typeId) {
 				balanceTypeModel = btm;
 				break;
 			}
 		}
 		return balanceTypeModel;
 	}
+    /**
+     * 新增余额类型
+     * @param balanceTypeId
+     */
+    public void addBalanceType(long balanceTypeId){
+      SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+      IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
+
+    	BalanceTypeModel type=iBalanceTypeMapper.selectTypeById(balanceTypeId);
+    	for(SpecialPaymentModel model:this.specialPaymentList){
+    		if(type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(model.getSpePaymentId())){
+    			type.setSpecialPaymentModel(model);
+    		}
+    	}
+    	this.balanceTypeList.add(type);
+    }
+    /**
+     * 新增专款专用
+     * @param spePaymentId
+     */
+    public void addSpecial(long spePaymentId){
+      SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+      ISpecialPaymentMapper iSpecialPaymentMapper=sqlSession.getMapper(ISpecialPaymentMapper.class);//专款专用
+      ISpecialPaymentDescMapper iSpecialPaymentDescMapper=sqlSession.getMapper(ISpecialPaymentDescMapper.class);//专款专用
+
+    	SpecialPaymentModel model=iSpecialPaymentMapper.selectSprcialById(spePaymentId);
+    	List<SpecialPaymentDescModel> specialDescList=iSpecialPaymentDescMapper.selectAll();
+    	for(SpecialPaymentDescModel specialDesc:specialDescList){
+    		if(model.getSpePaymentId()!=null&&model.getSpePaymentId().equals(specialDesc.getSpePaymentId())){
+    			model.setSpecialPaymentDescModel(specialDesc);
+    		}
+    	}
+    	this.specialPaymentList.add(model);
+    }
+    /**
+     * 修改余额类型
+     * @param balanceTypeId
+     */
+    public void  updateBalanceType(long balanceTypeId){
+    	SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+        IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
+        for(BalanceTypeModel balType:this.balanceTypeList){
+        	if(balType.getBalanceTypeId()==balanceTypeId){
+        		this.balanceTypeList.remove(balType);
+        	}
+        }
+    	BalanceTypeModel type=iBalanceTypeMapper.selectTypeById(balanceTypeId);
+    	for(SpecialPaymentModel model:this.specialPaymentList){
+    		if(type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(model.getSpePaymentId())){
+    			type.setSpecialPaymentModel(model);
+    		}
+    	}
+    	this.balanceTypeList.add(type);
+    }
+    /**
+     * 修改专款专用
+     * @param spePaymentId
+     */
+    public void updateSpecial(long spePaymentId){
+      SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+      ISpecialPaymentMapper iSpecialPaymentMapper=sqlSession.getMapper(ISpecialPaymentMapper.class);//专款专用
+      ISpecialPaymentDescMapper iSpecialPaymentDescMapper=sqlSession.getMapper(ISpecialPaymentDescMapper.class);//专款专用
+      for(SpecialPaymentModel speModel:this.specialPaymentList){
+    	  if(speModel.getSpePaymentId()==spePaymentId){
+    		  this.specialPaymentList.remove(speModel);
+    	  }
+      }
+      
+      SpecialPaymentModel model=iSpecialPaymentMapper.selectSprcialById(spePaymentId);
+    	List<SpecialPaymentDescModel> specialDescList=iSpecialPaymentDescMapper.selectAll();
+    	for(SpecialPaymentDescModel specialDesc:specialDescList){
+    		if(model.getSpePaymentId()!=null&&model.getSpePaymentId().equals(specialDesc.getSpePaymentId())){
+    			model.setSpecialPaymentDescModel(specialDesc);
+    		}
+    	}
+    	this.specialPaymentList.add(model);
+    }
+    /**
+     * 删除余额类型
+     * @param balanceTypeId 类型标识
+     */
+    public void deleteBalanceType(long balanceTypeId){
+        for(BalanceTypeModel balType:this.balanceTypeList){
+        	if(balType.getBalanceTypeId()==balanceTypeId){
+        		this.balanceTypeList.remove(balType);
+        	}
+        }
+    }
+    /**
+     * 删除专款专用
+     * @param spePaymentId 专款专用标识
+     */
+    public void deleteSpecial(long spePaymentId){
+        for(SpecialPaymentModel speModel:this.specialPaymentList){
+      	  if(speModel.getSpePaymentId()==spePaymentId){
+      		  this.specialPaymentList.remove(speModel);
+      	  }
+        }
+    }
+    
+    public List<BalanceTypeModel> getBalanceTypeList(){
+    	return this.balanceTypeList;
+    }
+    
 }

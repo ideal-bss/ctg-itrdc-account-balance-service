@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 
 import com.ctg.itrdc.account.balance.service.impl.TestCommitServiceImpl;
 /*import com.ctg.udal.index.GlobalIndexService;
+import com.ctg.udal.index.server.jdbc.JDBCClient;*/
+/*import com.ctg.udal.index.GlobalIndexService;
 import com.ctg.udal.index.IndexQuery;
 import com.ctg.udal.index.internal.IndexProvider;
 import com.ctg.udal.index.server.jdbc.JDBCClient;*/
@@ -59,7 +61,7 @@ public class TestAction extends ActionSupport{
 		System.out.println("seq:"+seq);*/
 		
 //		testCommitServiceImpl.testHit();
-		
+		testCommitServiceImpl.selectPrimaryKey();
 		return SUCCESS;
 	}
 	

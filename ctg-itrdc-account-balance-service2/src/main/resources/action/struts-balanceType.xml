@@ -38,5 +38,10 @@
  			<result name="success">/view/test/success.jsp</result>
  			<result name="error">/view/test/error.jsp</result>
  		</action>
+ 		
+ 		<action name="loadBalanceTypeSelect" class="com.ctg.itrdc.account.balance.action.BalanceTypeAction" method="loadBalanceTypeSelect">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
     </package>
 </struts>

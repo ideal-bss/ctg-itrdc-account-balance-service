@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ctg.itrdc.account.balance.entity.AcctModel;
+import com.ctg.itrdc.account.balance.entity.DevModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
-import com.ctg.itrdc.account.balance.model.BalanceAcctItemPayedModel;
 import com.ctg.itrdc.account.balance.model.BalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalanceFrozenModel;
 import com.ctg.itrdc.account.balance.model.BalancePayoutModel;
@@ -30,6 +31,7 @@ import com.ctg.itrdc.account.balance.repository.IBalancePayoutMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceShareRuleMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceTypeMapper;
+
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 import com.ctg.itrdc.account.balance.util.BaseUtil;
 @Service
@@ -44,14 +46,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IBalanceAcctItemPayedMapper iBalanceAcctItemPayedMapper;
 	private IBalanceSourceTypeMapper iBalanceSourceTypeMapper;
 	private IBalanceFrozenMapper iBalanceFrozenMapper;
-	
-	/*SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
-	IAcctBalanceMapper iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);//余额账目
-	IBalanceShareRuleMapper iBalanceShareRuleMapper=sqlSession.getMapper(IBalanceShareRuleMapper.class);//共享规则类型
-	IAcctBalanceLogMapper iAcctBalanceLogMapper=sqlSession.getMapper(IAcctBalanceLogMapper.class);//余额账本日志
-*/	
 	@Override
 	public void insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel) {
+		// TODO Auto-generated method stub
 		try {
 			int count=iBalanceShareRuleMapper.selectRuleByObjectId(shareModel);
 			if(count>0){
@@ -102,9 +99,129 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				
 			}
 		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 		
+	}
+	@Override
+	public void insertBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel){
+		long objectId=shareModel.getObjectId();
+		String objectType=shareModel.getObjectType();
+		long subAcctId=model.getSubAcctId();
+		AcctModel acct=null;
+		List<AcctBalanceModel> balanceList=null;
+		boolean devBool=false; 
+		boolean balanceBool=false;
+		try {
+			acct=setAcct(subAcctId);
+			if(acct!=null){
+				acct=setDev(acct, objectId, objectType, subAcctId);
+				List<DevModel> devList=acct.getDevModelList();
+				if(devList!=null&&devList.size()>0){
+					
+					for(DevModel dev:devList){
+						if(dev.getObjectId()==objectId&&dev.getObjectType().equals(objectType)){
+							devBool=true;
+							balanceList=dev.getBalanceList();
+							for(AcctBalanceModel balance:balanceList){
+								if(balance.getBalanceTypeId()==model.getBalanceTypeId()
+										&&balance.getCycleLower()==model.getCycleLower()
+										&&balance.getCycleUpper()==model.getCycleUpper()
+										&&balance.getCycleType()==model.getCycleType()){
+									//修改账本金额
+									balanceBool=true;
+									updateBalance(balance.getAcctBalanceId(), model.getBalance(), balance.getSliceKey());
+									//日志
+									insertSource(balance, selectRelationId(balance.getAcctBalanceId(), objectId, objectType, subAcctId), model.getBalance());
+								}
+							}
+						}
+					}
+					//对象标识和对象类型都不相同
+					if(devBool==false||balanceBool==false){
+						insertBalanceRuleLog(model, shareModel);
+					}
+				}else{
+					insertBalanceRuleLog(model, shareModel);
+				}
+			}else{
+				insertBalanceRuleLog(model, shareModel);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 新增 账本  共享规则  日志
+	 * @param model
+	 * @param shareModel
+	 * @throws Exception
+	 */
+	public void insertBalanceRuleLog(AcctBalanceModel model,BalanceShareRuleModel shareModel)throws Exception{
+		//新增账本
+		long balanceIdAdd=insertBalance(model);
+		//新增共享规则
+		shareModel.setAcctBalanceId(balanceIdAdd);
+		long ruleIdAdd=insertShareRule(shareModel);
+		//日志
+		//余额对象账本关系
+		BalanceRelationModel relation=insertRelation(shareModel);
+		//余额来源记录表
+		insertSource(model,relation.getBalanceRelationId(),model.getBalance());
+	}
+	/**
+	 * 新增账本
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	public long insertBalance(AcctBalanceModel model)throws Exception{
+		iAcctBalanceMapper.insertSelective(model);
+		return model.getAcctBalanceId();
+	}
+	/**
+	 * 共享规则新增
+	 * @param shareModel
+	 * @throws Exception
+	 */
+	public long insertShareRule(BalanceShareRuleModel shareModel) throws Exception{
+		iBalanceShareRuleMapper.insertSelective(shareModel);
+		return shareModel.getShareRuleId();
+	}
+	/**
+	 * 余额账本金额修改
+	 * @param acctBalanceId 账本ID
+	 * @param balance 金额
+	 * @param subAcctId 账户ID
+	 * @throws Exception
+	 */
+	public void updateBalance(long acctBalanceId,long balance,long subAcctId)throws Exception{
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("ACCT_BALANCE_ID", acctBalanceId);
+		map.put("BALANCE", balance);
+		map.put("SLICE_KEY", subAcctId);
+		iAcctBalanceMapper.updateBalance(map);
+	}
+	/**
+	 * 查询余额对象关系标识
+	 * @param acctBalanceId 账本ID
+	 * @param objectId 对象标识
+	 * @param objectType 对象类型
+	 * @param subAcctId 账户ID
+	 * @return 关系标识
+	 * @throws Exception
+	 */
+	public long selectRelationId(long acctBalanceId,long  objectId,String objectType,long subAcctId)throws Exception{
+		BalanceRelationModel relation=new BalanceRelationModel();
+		relation.setAcctBalanceId(acctBalanceId);
+		relation.setObjectId(objectId);
+		relation.setObjectType(objectType);
+		relation.setSliceKey(subAcctId);
+		long balanceRelationId=iAcctBalanceMapper.selectRelationId(relation);
+		return balanceRelationId;
 	}
 	/**
 	 * 余额对象账本关系表新增
@@ -156,22 +273,79 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		log.setSliceKey(model.getSliceKey());
 		iAcctBalanceLogMapper.insertSelective(log);
 	}
+	/**
+	 * 账户查询设备
+	 * @param subAcctId 账户ID
+	 * @throws Exception
+	 */
+	public AcctModel setAcct(long subAcctId)throws Exception{
+		AcctModel acct=new AcctModel();
+		acct.setAcctId(subAcctId);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("subAcctId", subAcctId);
+		Integer balanceId=iAcctBalanceMapper.selectBalanceByAcctId(map);
+		map.clear();
+		map.put("subAcctId", subAcctId);
+		map.put("objectType", 0);
+		map.put("acctBalanceId", balanceId);
+		List<BalanceShareRuleModel> rule=iAcctBalanceMapper.selectDevByBalanceId(map);
+		List<DevModel> devList=new ArrayList<DevModel>();
+		for(BalanceShareRuleModel ruleModel:rule){
+			DevModel dev=new DevModel();
+			dev.setObjectId(ruleModel.getObjectId());
+			dev.setObjectType(ruleModel.getObjectType());
+			devList.add(dev);
+		}
+		acct.setDevModelList(devList);
+		return acct;
+	}
+	/**
+	 * 设备查询账本
+	 * @param objectId 设备ID
+	 * @param objectType 设备类型
+	 * @param subAcctId 账户ID
+	 * @throws Exception
+	 */
+	public AcctModel setDev(AcctModel acct,long objectId,String objectType,long subAcctId)throws Exception{
+		List<DevModel> devList=acct.getDevModelList();
+		for(DevModel dev:devList){
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("objectId", dev.getObjectId());
+			map.put("objectType", dev.getObjectType());
+			map.put("subAcctId", subAcctId);
+			List<Integer> balanceIdList=iAcctBalanceMapper.selectBalanceByDev(map);
+			List<AcctBalanceModel> balanceList=new ArrayList<AcctBalanceModel>();
+			for(Integer balanceId: balanceIdList){
+				map.clear();
+				map.put("acctBalanceId", balanceId);
+				map.put("subAcctId", subAcctId);
+				AcctBalanceModel balance=iAcctBalanceMapper.selectBalanceById(map);
+				balanceList.add(balance);
+			}
+			dev.setBalanceList(balanceList);
+		}
+		return acct;
+	}
 	@Override
 	public void selectAcctBalance(Map<String, String> map) {
+		// TODO Auto-generated method stub
 		iAcctBalanceMapper.selectAcctBalance(map);
 	}
 	@Override
 	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model) {
+		// TODO Auto-generated method stub
 		List<AcctBalanceModel> list=new ArrayList<AcctBalanceModel>();
 		try {
 			list=iAcctBalanceMapper.selectBalanceByAcct(model);
 		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return list;
 	}
 	@Override
 	public AcctBalanceModel selectBalanceById(AcctBalanceModel model) {
+		// TODO Auto-generated method stub
 		AcctBalanceModel acctModel=iAcctBalanceMapper.selectByPrimaryKey(model);
 		return acctModel;
 	}
@@ -184,68 +358,81 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 * @return
 	 */
 	@Override
-	public List<Object> queryBalance(Map<String, Object> model) {
+	public Map<String, Object> queryBalance(Map<String, Object> model) {
 		
 		logger.debug("queryBalance()");
 		
-		List<Map<String, Object>> shareRuleList = null;
 		List<Object> balanceResultList = new ArrayList<Object>();
 		Map<String, Object> balanceResultMap = null;
-		
-		AcctBalanceModel acctBalanceModelQuery = null;
-		
+		Map<String, Object> balanceFrozenMap = new HashMap<String, Object>();
+		Map<String, Object> returnResult = new HashMap<String, Object>();
+		BalanceTypeModel balTypeModel = null;
+		int balFrozenAmount = 0;
+		long balanceSum = 0;
+		long frozenAmountSum = 0;
 		try {
+			logger.debug("查询余额类型信息。");
+			BalanceConfig balanceConfig =BalanceConfig.getInstance();
 			
-			logger.debug("query balance share rule."+model);
-			shareRuleList = iBalanceShareRuleMapper.selectRuleList(model);
-			
-			logger.debug("query share rule result." + shareRuleList);
-			
-			for(Map<String, Object> shareRule:shareRuleList){
-				Long acctBalanceId = Long.parseLong(shareRule.get("ACCT_BALANCE_ID").toString());
-				Long sliceKey = Long.parseLong(shareRule.get("SLICE_KEY").toString());
+			logger.debug("查询余额账本信息。输入参数：" + model);
+			List<AcctBalanceModel> acctBalList = iAcctBalanceMapper.selectByAcctId(model);
+			for (AcctBalanceModel acctBalanceModel : acctBalList) {
+				balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+				//查询余额冻结记录 2 代表冻结，1未冻结
+				balanceFrozenMap.clear();
+				balanceFrozenMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+				balanceFrozenMap.put("frozenState", 2);
+				balanceFrozenMap.put("acctId", acctBalanceModel.getSubAcctId());
+				balanceFrozenMap.put("sliceKey", acctBalanceModel.getSliceKey());
+				balFrozenAmount = iBalanceFrozenMapper.queryAcctBalFrozenSum(balanceFrozenMap);
 				
-				logger.debug("query acct balance.");
-				acctBalanceModelQuery = new AcctBalanceModel();
-				acctBalanceModelQuery.setAcctBalanceId(acctBalanceId);
-				acctBalanceModelQuery.setSliceKey(sliceKey);
-				AcctBalanceModel acctBalanceModel= iAcctBalanceMapper.selectByPrimaryKey(acctBalanceModelQuery);
-				Long balanceTypeId = acctBalanceModel.getBalanceTypeId();
-				if (!model.get("balanceTypeId").equals("0")
-						&& !model.get("balanceTypeId").equals(String.valueOf(balanceTypeId))) {
-					continue;
-				}
-				
-				logger.debug("query balance type.");
-				BalanceConfig balanceConfig =BalanceConfig.getInstance();
-				BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(balanceTypeId);
-				logger.debug("balance query result.");
 				balanceResultMap = new HashMap<String, Object>();
 				//余额账本标识
-				balanceResultMap.put("acctBalanceId", acctBalanceId);
+				balanceResultMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
 				//余额类型标识
-				balanceResultMap.put("balanceTypeId", balanceTypeId);
+				balanceResultMap.put("balanceTypeId", acctBalanceModel.getBalanceTypeId());
 				//余额类型名称
 				balanceResultMap.put("balanceTypeName", balTypeModel.getBalanceTypeName());
 				//生效时间
-				balanceResultMap.put("effDate", acctBalanceModel.getEffDate());
+				balanceResultMap.put("effDate", BaseUtil.dateToString(acctBalanceModel.getEffDate(), "yyyy-MM-dd"));
 				//失效时间
-				balanceResultMap.put("expDate", acctBalanceModel.getExpDate());
-				//单个账本余额
-				balanceResultMap.put("balance", acctBalanceModel.getBalance());
+				balanceResultMap.put("expDate", BaseUtil.dateToString(acctBalanceModel.getExpDate(), "yyyy-MM-dd"));
 				//余额对象标识
-				balanceResultMap.put("objectId", shareRule.get("OBJECT_ID"));
+				balanceResultMap.put("objectId", model.get("objectId"));
+				//单个账本余额
+				balanceResultMap.put("balance", Double.parseDouble(String.valueOf(acctBalanceModel.getBalance()))/100);
 				//冻结余额
-				balanceResultMap.put("freezeBalance", 0);
+				balanceResultMap.put("frozenAmount", Double.parseDouble(String.valueOf(balFrozenAmount))/100);
+				//账户ID
+				balanceResultMap.put("acctId", acctBalanceModel.getSubAcctId());
+				balanceResultList.add(balanceResultMap);
 				
-				balanceResultList.add(balanceResultMap);
+				balanceSum +=acctBalanceModel.getBalance();
+				frozenAmountSum +=balFrozenAmount;
 			}
-			if (balanceResultList.size() == 0) {
-				balanceResultMap = new HashMap<String, Object>();
-				balanceResultMap.put("errorInfo", "账本不存在！");
-				balanceResultList.add(balanceResultMap);
+			int pageSize = balanceResultList.size();
+			Map<String, Object> amountSumMap = new HashMap<String, Object>();
+			amountSumMap.put("acctBalanceId", "账本余额总和：");
+			amountSumMap.put("balanceTypeId", Double.parseDouble(String.valueOf(balanceSum))/100+" 元");
+			amountSumMap.put("balanceTypeName", "冻结余额总和：");
+			amountSumMap.put("effDate", Double.parseDouble(String.valueOf(frozenAmountSum))/100+" 元");
+			amountSumMap.put("expDate", "平均账本余额：");
+			amountSumMap.put("balance", "平均冻结余额：");
+			if (pageSize>0) {
+				amountSumMap.put("objectId", (Double.parseDouble(String.valueOf(balanceSum))/balanceResultList.size())/100+" 元");
+				amountSumMap.put("frozenAmount", (Double.parseDouble(String.valueOf(frozenAmountSum))/balanceResultList.size())/100+" 元");
+			}else{
+				amountSumMap.put("objectId", Double.parseDouble(String.valueOf(balanceSum))/100+" 元");
+				amountSumMap.put("frozenAmount", Double.parseDouble(String.valueOf(frozenAmountSum))/100+" 元");
 			}
 			
+			List<Map<String, Object>> sumList = new ArrayList<Map<String,Object>>();
+			sumList.add(amountSumMap);
+			int total = iAcctBalanceMapper.selectByAcctIdSum(model);
+			returnResult.put("total", total);
+			returnResult.put("rows", balanceResultList);
+			returnResult.put("footer", sumList);
+			logger.debug(returnResult);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -253,7 +440,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return balanceResultList;
+		return returnResult;
 	}
 	
 	/**
@@ -272,36 +459,38 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		List<Long> acctBalList = new ArrayList<Long>();
 		try {
 			long acctId = Long.parseLong(String.valueOf(model.get("acctId")));
+			String []acctBalanceIdArray = String.valueOf(model.get("acctBalanceIdArray")).split(",");
 			model.put("sliceKey", acctId);
 			//根据余额对象、余额对象类型、账户标识  查询余额账本
-			List<AcctBalanceModel> acctBalanceModelList = iAcctBalanceMapper.selectByAcctId(model);
-			if (acctBalanceModelList!=null && acctBalanceModelList.size()>0) {
-				for (AcctBalanceModel acctBalanceModel : acctBalanceModelList) {
-					Date balEffDate = acctBalanceModel.getEffDate();
-					Date balExpDate = acctBalanceModel.getExpDate();
-					logger.debug("余额账本标识:" + acctBalanceModel.getAcctBalanceId());
-					
-					//余额账本 有效状态
-					if (currDate.after(balEffDate) && currDate.before(balExpDate)) {
-						BalanceConfig balanceConfig =BalanceConfig.getInstance();
-						BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
-						logger.debug("余额类型名称:" + balTypeModel.getBalanceTypeName() + 
-									"-->是否专款专用:" + (balTypeModel.getSpePaymentId()==null || balTypeModel.getSpePaymentId()==0?"N":"Y"));
-						//专款专用余额 不能支取
-						if (balTypeModel.getSpePaymentId() == null || balTypeModel.getSpePaymentId() == 0) {
-							acctBalIdList.add(acctBalanceModel.getAcctBalanceId());
-							acctBalList.add(acctBalanceModel.getBalance());
-							sumBalance += acctBalanceModel.getBalance();
-						}
+			AcctBalanceModel acctBalModelParam = new AcctBalanceModel();
+			acctBalModelParam.setSubAcctId(acctId);
+			acctBalModelParam.setSliceKey(acctId);
+			for (int i = 0; i < acctBalanceIdArray.length; i++) {
+				long acctBalanceId = Long.parseLong(acctBalanceIdArray[i]);
+				acctBalModelParam.setAcctBalanceId(acctBalanceId);
+				AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalModelParam);
+				Date balEffDate = acctBalanceModel.getEffDate();
+				Date balExpDate = acctBalanceModel.getExpDate();
+				logger.debug("余额账本标识:" + acctBalanceModel.getAcctBalanceId());
+				
+				//余额账本 有效状态
+				if (currDate.after(balEffDate) && currDate.before(balExpDate)) {
+					BalanceConfig balanceConfig =BalanceConfig.getInstance();
+					BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+					logger.debug("余额类型名称:" + balTypeModel.getBalanceTypeName() + 
+								"-->是否专款专用:" + (balTypeModel.getSpePaymentId()==null || balTypeModel.getSpePaymentId()==0?"N":"Y"));
+					//专款专用余额 不能支取
+					if (balTypeModel.getSpePaymentId() == null || balTypeModel.getSpePaymentId() == 0) {
+						acctBalIdList.add(acctBalanceModel.getAcctBalanceId());
+						acctBalList.add(acctBalanceModel.getBalance());
+						sumBalance += acctBalanceModel.getBalance();
 					}
 				}
-			}else{
-				flagHint="余额账本不存在！";
 			}
+			
 			
 			//支取金额
 			long drawAmount = Long.parseLong(String.valueOf(model.get("drawAmount")));
-			long requestId = Long.parseLong(String.valueOf(model.get("requestId")));
 			
 			//支取金额大于等于账本总余额，才可以支取。否则不能支取
 			if (sumBalance>=drawAmount) {
@@ -327,13 +516,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 						operAfterBalance = acctBalList.get(i) - acctBalance;
 						payoutBal = acctBalance;
 					}
-					acctBalModel.setRemark("paid acct Balance :" + (double)payoutBal/100
-									+ " dollar.operation date:" + BaseUtil.dateToString(currDate, "yyyy-MM-dd HH:mm:ss"));
+					acctBalModel.setRemark("支取 :" + (double)payoutBal/100
+									+ " 元。操作时间:" + BaseUtil.dateToString(currDate, "yyyy-MM-dd HH:mm:ss"));
 					acctBalModel.setBalance(operAfterBalance);
 					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalModel);
 					
 					logger.debug("记录余额支出日志.");
-					long operPayoutId = newBalancePayoutLog(acctBalanceId, requestId, 
+					long operPayoutId = newBalancePayoutLog(acctBalanceId, null, 
 							acctBalList.get(i), operAfterBalance, "drawBalance",acctId);
 					
 					logger.debug("查询余额来源信息,并更新余额来源表金额，记录余额账本日志.");
@@ -389,78 +578,71 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		logger.debug("balanceTransfer().");
 		String flagHint = null;
 		try {
-			long requestId = Long.parseLong(String.valueOf(map.get("requestId")));
+			long orgiAcctBalId = Long.parseLong(String.valueOf(map.get("acctBalanceId")));
 			long origAcctId = Long.parseLong(String.valueOf(map.get("origAcctId")));
-			//根据账户标识、余额类型、余额对象、余额对象类型查询唯一源余额账本
-			Map<String, Object> orgiMap = new HashMap<String, Object>();
-			orgiMap.put("acctId", origAcctId);
-			orgiMap.put("balanceTypeId", map.get("origBalanceTypeId"));
-			orgiMap.put("objectType", map.get("origObjectType"));
-			orgiMap.put("objectId", map.get("origObjectId"));
-			
-			List<AcctBalanceModel> orgiAcctBalModelList = iAcctBalanceMapper.selectByAcctId(orgiMap);
-			if (orgiAcctBalModelList != null && orgiAcctBalModelList.size()>0) {
-				for (AcctBalanceModel orgiAcctBalModel : orgiAcctBalModelList) {
-					//根据账户标识、余额类型、余额对象、余额对象类型查询唯一目的余额账本
-					Map<String, Object> goalMap = new HashMap<String, Object>();
-					long acctId = Long.parseLong(String.valueOf(map.get("acctId")));
-					goalMap.put("acctId", acctId);
-					goalMap.put("balanceTypeId", map.get("balanceTypeId"));
-					goalMap.put("objectType", map.get("objectType"));
-					goalMap.put("objectId", map.get("objectId"));
-					List<AcctBalanceModel> goalAcctBalModelList = iAcctBalanceMapper.selectByAcctId(goalMap);
-					if (goalAcctBalModelList!= null && goalAcctBalModelList.size()>0) {
-						for (AcctBalanceModel goalAcctBalModel : goalAcctBalModelList) {
-							if (orgiAcctBalModel.getAcctBalanceId() != goalAcctBalModel.getAcctBalanceId()) {
-								BalanceConfig balanceConfig =BalanceConfig.getInstance();
-								BalanceTypeModel orgiBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
-								if (orgiBalTypeModel.getSpePaymentId() == null || orgiBalTypeModel.getSpePaymentId() == 0) {
-									BalanceTypeModel goalBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
-									if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId() == 0) {
-										long amount = Long.parseLong(String.valueOf(map.get("amount")));
-										if (orgiAcctBalModel.getBalance()>=amount) {
-											logger.debug("余额转账更新源余额账本，并记录支出日志。");
-											String currDate = BaseUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
-											
-											AcctBalanceModel updateOrgiAcctBal = new AcctBalanceModel();
-											updateOrgiAcctBal.setAcctBalanceId(orgiAcctBalModel.getAcctBalanceId());
-											updateOrgiAcctBal.setBalance(orgiAcctBalModel.getBalance()-amount);
-											updateOrgiAcctBal.setRemark("paid Balance :" + (double)amount/100
-														+ " dollar.operation date:" + currDate);
-											iAcctBalanceMapper.updateByPrimaryKeySelective(updateOrgiAcctBal);
-											logger.debug("更新余额来源，并记录余额账本日志！");
-											long operPayoutId = newBalancePayoutLog(orgiAcctBalModel.getAcctBalanceId(), requestId, 
-													orgiAcctBalModel.getBalance(), orgiAcctBalModel.getBalance()-amount, "balance transfer", origAcctId);
-											updateBalanceSource(orgiAcctBalModel.getAcctBalanceId(), amount, operPayoutId, origAcctId);
+			AcctBalanceModel orgiRecord = new AcctBalanceModel();
+			orgiRecord.setAcctBalanceId(orgiAcctBalId);
+			AcctBalanceModel orgiAcctBalModel = iAcctBalanceMapper.selectByPrimaryKey(orgiRecord);
+			if (orgiAcctBalModel != null) {
+				Map<String, Object> goalMap = new HashMap<String, Object>();
+				long acctId = Long.parseLong(String.valueOf(map.get("acctId")));
+				goalMap.put("acctId", acctId);
+				goalMap.put("balanceTypeId", map.get("origBalanceTypeId"));
+				goalMap.put("objectType", map.get("objectType"));
+				goalMap.put("objectId", map.get("objectId"));
+				List<AcctBalanceModel> goalAcctBalModelList = iAcctBalanceMapper.selectByAcctId(goalMap);
+				if (goalAcctBalModelList!= null && goalAcctBalModelList.size()>0) {
+					for (AcctBalanceModel goalAcctBalModel : goalAcctBalModelList) {
+						if (orgiAcctBalModel.getAcctBalanceId() != goalAcctBalModel.getAcctBalanceId()) {
+							BalanceConfig balanceConfig =BalanceConfig.getInstance();
+							BalanceTypeModel orgiBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
+							if (orgiBalTypeModel.getSpePaymentId() == null || orgiBalTypeModel.getSpePaymentId() == 0) {
+								BalanceTypeModel goalBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
+								if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId() == 0) {
+									long amount = Long.parseLong(String.valueOf(map.get("amount")));
+									if (orgiAcctBalModel.getBalance()>=amount) {
+										logger.debug("余额转账更新源余额账本，并记录支出日志。");
+										String currDate = BaseUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
+										
+										AcctBalanceModel updateOrgiAcctBal = new AcctBalanceModel();
+										updateOrgiAcctBal.setAcctBalanceId(orgiAcctBalModel.getAcctBalanceId());
+										updateOrgiAcctBal.setBalance(orgiAcctBalModel.getBalance()-amount);
+										updateOrgiAcctBal.setRemark("paid Balance :" + (double)amount/100
+													+ " dollar.operation date:" + currDate);
+										iAcctBalanceMapper.updateByPrimaryKeySelective(updateOrgiAcctBal);
+										logger.debug("更新余额来源，并记录余额账本日志！");
+										long operPayoutId = newBalancePayoutLog(orgiAcctBalModel.getAcctBalanceId(), null, 
+												orgiAcctBalModel.getBalance(), orgiAcctBalModel.getBalance()-amount, "balance transfer", origAcctId);
+										updateBalanceSource(orgiAcctBalModel.getAcctBalanceId(), amount, operPayoutId, origAcctId);
 
-											logger.debug("余额转账目的余额账本，并记录余额来源记录。");
-											AcctBalanceModel updateGoalAcctBal = new AcctBalanceModel();
-											updateGoalAcctBal.setAcctBalanceId(goalAcctBalModel.getAcctBalanceId());
-											updateGoalAcctBal.setBalance(goalAcctBalModel.getBalance()+amount);
-											updateGoalAcctBal.setRemark("deposit Balance :" + (double)amount/100
-														+ " dollar.operation date:" + currDate);
-											iAcctBalanceMapper.updateByPrimaryKeySelective(updateGoalAcctBal);											
-											logger.debug("记录来源记录.");
-											newBalanceSource(goalAcctBalModel.getAcctBalanceId(), amount, amount, "balance transfer save.", acctId);
-											
-											flagHint = "余额转账成功！";
-										}else {
-											flagHint = "源账本余额不足！";
-										}
-									}else{
-										flagHint = "目的账本为专款专用账本！";
+										logger.debug("余额转账目的余额账本，并记录余额来源记录。");
+										AcctBalanceModel updateGoalAcctBal = new AcctBalanceModel();
+										updateGoalAcctBal.setAcctBalanceId(goalAcctBalModel.getAcctBalanceId());
+										AcctBalanceModel updateGoalAcctBalById = iAcctBalanceMapper.selectByPrimaryKey(updateGoalAcctBal);
+										updateGoalAcctBalById.setBalance(goalAcctBalModel.getBalance()+amount);
+										updateGoalAcctBalById.setRemark("deposit Balance :" + (double)amount/100
+													+ " dollar.operation date:" + currDate);
+										iAcctBalanceMapper.updateByPrimaryKeySelective(updateGoalAcctBalById);											
+										logger.debug("记录来源记录.");
+										newBalanceSource(goalAcctBalModel.getAcctBalanceId(), amount, amount, "balance transfer save.", acctId);
+										
+										flagHint = "余额转账成功！";
+									}else {
+										flagHint = "源账本余额不足！";
 									}
 								}else{
-									flagHint = "源账本为专款专用账本！";
+									flagHint = "目的账本为专款专用账本！";
 								}
-								
 							}else{
-								flagHint = "同一账本之间不能进行转账！";
+								flagHint = "源账本为专款专用账本！";
 							}
+							
+						}else{
+							flagHint = "同一账本之间不能进行转账！";
 						}
-					}else{
-						flagHint = "目的账本不存在！";
 					}
+				}else{
+					flagHint = "目的账本不存在！";
 				}
 			}else{
 				flagHint = "源账本不存在！";
@@ -477,53 +659,54 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 * 余额冲正
 	 */
 	@Override
-	public String balanceReverse(long operIncomeId) {
+	public String balanceReverse(Map<String, Object> record) {
+		logger.debug("balanceReverse().");
 		String hint = "";
 		Date currDate = new Date();
+		int successCnt = 0;
+		int totalCnt = 0;
 		try {
-			logger.debug("balanceReverse().");
-			logger.debug("根据来源操作流水查询余额来源记录。");
+			logger.debug("余额冲正参数：" + record);
 			BalanceSourceModel balSourceRecord = new BalanceSourceModel();
-			balSourceRecord.setOperIncomeId(operIncomeId);
-			BalanceSourceModel balSourceModel = iBalanceSourceMapper.selectByPrimaryKey(balSourceRecord);
-			if (balSourceModel != null) {
-				if (balSourceModel.getCurAmount() > 0 && balSourceModel.getAmount() == balSourceModel.getCurAmount()) {
-					//没有返销接口，暂时不做。
-					logger.debug("调用返销账接口，进行账单返销。");
-					
-					logger.debug("修改余额账本余额.");
-					AcctBalanceModel acctBalanceRecord = new AcctBalanceModel();
-					acctBalanceRecord.setAcctBalanceId(balSourceModel.getAcctBalanceId());
-					AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalanceRecord);
-					acctBalanceRecord.setBalance(acctBalanceModel.getBalance()-balSourceModel.getCurAmount());
-					acctBalanceRecord.setRemark("balance reverse." + (double)balSourceModel.getCurAmount()/100
-								+ " dollar.operation date:" + currDate);
-					iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalanceRecord);
-					
-					logger.debug("修改账本余额来源记录.");
-					balSourceRecord.setCurAmount(0L);
-					balSourceRecord.setOperDate(currDate);
-					iBalanceSourceMapper.updateByPrimaryKey(balSourceRecord);
-					
-					logger.debug("记录余额支出日志.");
-					long operPayoutId = newBalancePayoutLog(balSourceModel.getAcctBalanceId(), 0L, 
-							acctBalanceModel.getBalance(), acctBalanceModel.getBalance()-balSourceModel.getCurAmount(), 
-							"balance reverse", balSourceModel.getSliceKey());
-					logger.debug("记录余额账本日志.");
-					newAcctBalanceLog(balSourceModel, operPayoutId, balSourceModel.getCurAmount());
-					
-					hint = "余额冲正成功！";
-				} else if (balSourceModel.getCurAmount() <= 0){
-					hint = "余额来源金额不足，不能冲正操作！";
-				} else if(balSourceModel.getAmount() != balSourceModel.getCurAmount()){
-					hint = "余额来源金额已发生变化，不能冲正操作！";
-				} else {
-					hint = "余额来源金额异常，不能冲正操作！";
+			long sliceKey = Long.parseLong(String.valueOf(record.get("sliceKey")));
+			String operIncomeId[] = String.valueOf(record.get("operIncomeId")).split("-");
+			for (int i = 0; i < operIncomeId.length; i++) {
+				totalCnt ++;
+				logger.debug("根据来源操作流水查询余额来源记录。operIncomeId:" + operIncomeId[i]);
+				balSourceRecord.setOperIncomeId(Long.parseLong(operIncomeId[i]));
+				balSourceRecord.setSliceKey(sliceKey);
+				BalanceSourceModel balSourceModel = iBalanceSourceMapper.selectByPrimaryKey(balSourceRecord);
+				if (balSourceModel != null) {
+					if (balSourceModel.getCurAmount() > 0 && balSourceModel.getAmount() == balSourceModel.getCurAmount()) {
+						//没有返销接口，暂时不做。
+						logger.debug("调用返销账接口，进行账单返销。");
+						
+						logger.debug("修改余额账本余额.");
+						AcctBalanceModel acctBalanceRecord = new AcctBalanceModel();
+						acctBalanceRecord.setAcctBalanceId(balSourceModel.getAcctBalanceId());
+						acctBalanceRecord.setSliceKey(sliceKey);
+						AcctBalanceModel acctBalanceModel = iAcctBalanceMapper.selectByPrimaryKey(acctBalanceRecord);
+						acctBalanceModel.setBalance(acctBalanceModel.getBalance()-balSourceModel.getCurAmount());
+						acctBalanceModel.setRemark("balance reverse." + (double)balSourceModel.getCurAmount()/100
+									+ " dollar.operation date:" + currDate);
+						iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalanceModel);
+						
+						logger.debug("修改账本余额来源记录.");
+						balSourceRecord.setCurAmount(0L);
+						balSourceRecord.setOperDate(currDate);
+						iBalanceSourceMapper.updateByPrimaryKey(balSourceRecord);
+						
+						logger.debug("记录余额支出日志.");
+						long operPayoutId = newBalancePayoutLog(balSourceModel.getAcctBalanceId(), 0L, 
+								acctBalanceModel.getBalance(), acctBalanceModel.getBalance()-balSourceModel.getCurAmount(), 
+								"balance reverse", sliceKey);
+						logger.debug("记录余额账本日志.");
+						newAcctBalanceLog(balSourceModel, operPayoutId, balSourceModel.getCurAmount());
+						successCnt ++;
+					}
 				}
-			} else {
-				hint = "此余额来源不存在！";
 			}
-			
+			hint = "冲正已完成，其中成功：" + successCnt + "条,失败：" + (totalCnt-successCnt) + "条！";
 		} catch (Exception e) {
 			hint = "冲正出错！";
 			e.printStackTrace();
@@ -538,10 +721,10 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 * 查询余额账本日志
 	 */
 	@Override
-	public List<Object> queryAcctBalanceLog(Map<String, Object> map) {
+	public Map<String, Object> queryAcctBalanceLog(Map<String, Object> map) {
 		logger.debug("acctBalanceLog().");
 		List<Object> resultList = new ArrayList<Object>();
-		boolean acctBalFlag = true;
+		Map<String, Object> resultMap = null;
 		try {
 			logger.debug("根据账户标识和余额类型查询余额账本。");
 			//根据账户标识和余额类型查询余额账本。
@@ -551,15 +734,27 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			acctBalMap.put("acctId", acctId);
 			acctBalMap.put("balanceTypeId", balanceTypeId);
 			acctBalMap.put("sliceKey", acctId);
+			acctBalMap.put("sliceKey", acctId);
+			acctBalMap.put("sliceKey", acctId);
 			List<AcctBalanceModel> acctBalModelList = iAcctBalanceMapper.selectByAcctId(acctBalMap);
+			double sumBalance = 0;
+			List<Object> acctBalList = new ArrayList<Object>();
 			if (acctBalModelList != null && acctBalModelList.size() > 0) {
+				Map<String, Object> acctBalMapResult = null;
 				for (AcctBalanceModel acctBalanceModel : acctBalModelList) {
 					//余额类型查询
 					BalanceConfig balanceConfig =BalanceConfig.getInstance();
 					BalanceTypeModel balanceTypeModel=balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
-					
-					
-					//根据账本标识查询余额账本日志
+					double balance = Double.parseDouble(String.valueOf(acctBalanceModel.getBalance()))/100;
+					acctBalMapResult = new HashMap<String, Object>();
+					acctBalMapResult.put("acctId", acctId);
+					acctBalMapResult.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+					acctBalMapResult.put("acctBalance", balance);
+					acctBalMapResult.put("balanceTypeId", acctBalanceModel.getBalanceTypeId());
+					acctBalMapResult.put("balanceTypeName", balanceTypeModel.getBalanceTypeName());
+					acctBalList.add(acctBalMapResult);
+					sumBalance += balance;
+					/*//根据账本标识查询余额账本日志
 					Map<String, Object> mapLog = new HashMap<String, Object>();
 					mapLog.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
 					mapLog.put("sliceKey", acctId);
@@ -675,89 +870,238 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 						}
 						resultList.add(resultMap);
 						acctBalFlag = false;
-					}
+					}*/
 				}
-			} else {
-				Map<String, Object> hintMap = new HashMap<String, Object>();
-				hintMap.put("errorInfo", "余额账本不存在！");
-				resultList.add(hintMap);
-				acctBalFlag = false;
 			}
-			if (acctBalFlag) {
+			int total = iAcctBalanceMapper.selectByAcctIdSum(acctBalMap);
+			Map<String, Object> footerMap = new HashMap<String, Object>();
+			footerMap.put("acctBalance","总余额：" + sumBalance + "元");
+			if (acctBalList != null && acctBalList.size()>0) {
+				footerMap.put("balanceTypeName","平均余额：" + sumBalance/acctBalList.size() + "元");
+			}else{
+				footerMap.put("balanceTypeName","平均余额：" + 0 + "元");
+			}
+			List<Map<String, Object>> footerList = new ArrayList<Map<String,Object>>();
+			footerList.add(footerMap);
+
+			resultMap = new HashMap<String, Object>();
+			resultMap.put("rows", acctBalList);
+			resultMap.put("total", total);
+			resultMap.put("footer", footerList);
+			/*if (acctBalFlag) {
 				Map<String, Object> hintMap = new HashMap<String, Object>();
 				hintMap.put("errorInfo", "余额账本日志不存在！");
 				resultList.add(hintMap);
-			}
+			}*/
 			logger.debug(resultList);
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
 			e.printStackTrace();
 		}
-		return resultList;
+		return resultMap;
+	}
+	
+	/**
+	 * 余额来源记录查询
+	 */
+	@Override
+	public Map<String, Object> acctBalLogbalSourceQuery(Map<String, Object> record) {
+		logger.debug("acctBalLogbalSourceQuery().");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			logger.debug("根据账本标识查询余额来源记录.参数：" + record);
+			List<Map<String, Object>> rowsList = new ArrayList<Map<String,Object>>();
+			Map<String, Object> rowsMap = null;
+			double amountSum = 0;
+			double curAmountSum = 0;
+			List<BalanceSourceModel> balSourceList = iBalanceSourceMapper.selectSourceByAcctBalLog(record);
+			for (BalanceSourceModel balSourceRecord : balSourceList) {
+				double amount = Double.parseDouble(String.valueOf(balSourceRecord.getAmount()))/100;
+				double curAmount = Double.parseDouble(String.valueOf(balSourceRecord.getCurAmount()))/100;
+				//余额来源类型
+				BalanceSourceTypeModel balSourceTypeModel = 
+							iBalanceSourceTypeMapper.selectByPrimaryKey(balSourceRecord.getBalanceSourceTypeId());
+				rowsMap = new HashMap<String, Object>();
+				rowsMap.put("operIncomeId", balSourceRecord.getOperIncomeId());
+				rowsMap.put("operType", balSourceRecord.getOperType());
+				rowsMap.put("staffId", balSourceRecord.getStaffId());
+				if (balSourceRecord.getOperDate() == null) {
+					rowsMap.put("operDate", null);
+				}else{
+					rowsMap.put("operDate", BaseUtil.dateToString(balSourceRecord.getOperDate(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				
+				rowsMap.put("amount", amount);
+				rowsMap.put("curAmount", curAmount);
+				rowsMap.put("balanceSourceTypeId", balSourceRecord.getBalanceSourceTypeId());
+				rowsMap.put("balanceSourceTypeDesc", balSourceTypeModel.getBalanceSourceTypeDesc());
+				rowsList.add(rowsMap);
+				amountSum = BaseUtil.add(amountSum, amount);
+				curAmountSum = BaseUtil.add(curAmountSum, curAmount);
+			}
+			List<Map<String, Object>> footerList = new ArrayList<Map<String,Object>>();
+			Map<String, Object> footerMap = new HashMap<String, Object>();
+			footerMap.put("operIncomeId", "原总金额：");
+			footerMap.put("operType", amountSum + "元");
+			footerMap.put("amount", "余剩余总金额：");
+			footerMap.put("curAmount", curAmountSum + "元");
+			footerMap.put("staffId", "源平均金额：");
+			footerMap.put("balanceSourceTypeId", "剩余平均金额：");
+			if (rowsList != null && rowsList.size()>0) {
+				footerMap.put("operDate", amountSum/rowsList.size() + "元");
+				footerMap.put("balanceSourceTypeDesc", curAmountSum/rowsList.size() + "元");
+			}else{
+				footerMap.put("curAmount", amountSum + "元");
+				footerMap.put("balanceSourceTypeDesc", curAmountSum + "元");
+			}
+			
+			footerList.add(footerMap);
+			int total = iBalanceSourceMapper.selectSourceByAcctBalLogTotal(record);
+			resultMap.put("rows", rowsList);
+			resultMap.put("total", total);
+			resultMap.put("footer", footerList);
+			logger.debug(resultMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultMap;
+	}
+	
+	/**
+	 * 余额支出记录
+	 */
+	@Override
+	public Map<String, Object> acctBalLogbalPayOutQuery(Map<String, Object> record) {
+		logger.debug("acctBalLogbalPayOutQuery().");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			logger.debug("根据余额账本日志和余额来源记录查询余额支出记录。");
+			List<Map<String, Object>> rowsList = new ArrayList<Map<String,Object>>();
+			Map<String, Object> rowsMap = null;
+			double altAmountSum = 0;
+			double balanceSum = 0;
+			
+			List<BalancePayoutModel> balPayOutList = iBalancePayoutMapper.selectPayOutByAcctBalLog(record);
+			for (BalancePayoutModel balancePayoutModel : balPayOutList) {
+				double amount = Double.parseDouble(String.valueOf(balancePayoutModel.getAmount()))/100;
+				double balance = Double.parseDouble(String.valueOf(balancePayoutModel.getBalance()))/100;
+				double altAmount = BaseUtil.sub(amount, balance);
+				rowsMap = new HashMap<String, Object>();
+				rowsMap.put("operPayoutId", balancePayoutModel.getOperPayoutId());
+				rowsMap.put("altAmount", altAmount);
+				rowsMap.put("billId", balancePayoutModel.getBillId());
+				rowsMap.put("extSerialId", balancePayoutModel.getExtSerialId());
+				rowsMap.put("operType", balancePayoutModel.getOperType());
+				rowsMap.put("staffId", balancePayoutModel.getStaffId());
+				rowsMap.put("operDate", BaseUtil.dateToString(balancePayoutModel.getOperDate(), "yyyy-MM-dd HH:mm:ss"));
+				rowsMap.put("balance", balance);
+				rowsList.add(rowsMap);
+				altAmountSum = BaseUtil.add(altAmountSum, altAmount);
+				balanceSum = BaseUtil.add(balanceSum, balance);
+			}
+			
+			List<Map<String, Object>> footerList = new ArrayList<Map<String,Object>>();
+			Map<String, Object> footerMap = new HashMap<String, Object>();
+			footerMap.put("operPayoutId", "补退总金额：");
+			footerMap.put("altAmount", altAmountSum + "元");
+			footerMap.put("operType", "支出后总余额：");
+			footerMap.put("staffId", balanceSum + "元");
+			footerMap.put("billId", "补退平均金额：");
+			footerMap.put("operDate", "支出后平均余额：");
+			if (rowsList != null && rowsList.size()>0) {
+				footerMap.put("extSerialId", altAmountSum/rowsList.size() + "元");
+				footerMap.put("balance", balanceSum/rowsList.size() + "元");
+			}else{
+				footerMap.put("extSerialId", altAmountSum + "元");
+				footerMap.put("balance", balanceSum + "元");
+			}
+			
+			footerList.add(footerMap);
+			int total = iBalancePayoutMapper.selectPayOutByAcctBalLogTotal(record);
+			resultMap.put("rows", rowsList);
+			resultMap.put("total", total);
+			resultMap.put("footer", footerList);
+			logger.debug(resultMap);
+		} catch (Exception e) {
+			
+		}
+		return resultMap;
 	}
 	
 	/**
 	 * 查询余额冻结记录
 	 */
 	@Override
-	public List<Object> queryBalFrozen(long acctId){
+	public Map<String, Object> queryBalFrozen(Map<String,Object> mapQuery){
 		logger.debug("queryBalFrozen().");
-		String hint = "";
-		Map<String, Object> hintMap = null;
 		List<Object> resultList = new ArrayList<Object>();
-		boolean flag = true;
+		Map<String, Object> mapResult = new HashMap<String, Object>();
+		int total = 0;
+		long frozenAmountSum = 0L;
 		try {
+			long acctId = Long.parseLong(String.valueOf(mapQuery.get("acctId")));
+			long acctBalanceId = Long.parseLong(String.valueOf(mapQuery.get("acctBalanceId")));
+			int rows = Integer.parseInt(String.valueOf(mapQuery.get("rows")));
+			int page = Integer.parseInt(String.valueOf(mapQuery.get("page")));
+			
 			Map<String, Object> acctBalMap = new HashMap<String, Object>();
 			acctBalMap.put("acctId", acctId);
 			acctBalMap.put("sliceKey", acctId);
-			logger.debug("query Acct Bal Frozen list." + acctBalMap);
+			acctBalMap.put("acctBalanceId", acctBalanceId);
+			logger.debug("query Acct Bal Frozen Map." + acctBalMap);
 			List<AcctBalanceModel> acctBalList = iAcctBalanceMapper.selectByAcctId(acctBalMap);
-			if (acctBalList == null || acctBalList.size() == 0) {
-				hint = "账本不存在！";
-			}
+			logger.debug("query Acct Bal Frozen result." + acctBalList);
 			for (AcctBalanceModel acctBalanceModel : acctBalList) {
 				String statusCd = acctBalanceModel.getStatusCd();
-				if (statusCd != null && statusCd.equals("2")) { //2账本冻结，其他为账本未冻结
+				if (statusCd != null && statusCd.equals("2")) { //2账本冻结，1为账本未冻结
 					acctBalMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
+					acctBalMap.put("rows", rows);
+					acctBalMap.put("page", page);
+					acctBalMap.put("frozenState", 2);
+					logger.debug("query balance frozen by acctBalanceId:" + acctBalMap);
 					List<BalanceFrozenModel> list = iBalanceFrozenMapper.queryBalFrozenByAcctId(acctBalMap);
+					
 					for (BalanceFrozenModel balanceFrozenModel : list) {
 						if (balanceFrozenModel.getFrozenState() != null && balanceFrozenModel.getFrozenState().equals("2")) {
+							long frozenAmount = balanceFrozenModel.getFrozenAmount();
 							Map<String, Object> map = new HashMap<String, Object>();
 							map.put("balanceFrozenId", balanceFrozenModel.getBalanceFrozenId());
-							map.put("frozenAmount", balanceFrozenModel.getFrozenAmount());
+							map.put("frozenAmount", Double.parseDouble(String.valueOf(frozenAmount))/100);
 							resultList.add(map);
-							flag = false;
+							frozenAmountSum += frozenAmount;
 						}
 					}
+					total = iBalanceFrozenMapper.queryBalFrozenByAcctIdCnt(acctBalMap);
 					//没有账本冻结记录，则修改账本状态为未冻结，否则输出冻结记录
 					if (list == null || list.size() == 0) {
 						acctBalMap.put("statusCd", 1);
 						acctBalMap.put("statusDate", new Date());
 						iAcctBalanceMapper.updateBalanceByAcctBalId(acctBalMap);
-						hint = "不存在账本冻结记录，更新账本为未冻结状态！";
 					}
-				}else{
-					hint = "账本未被冻结！";
 				}
 			}
-			if (flag && (hint == null || hint.equals(""))) {
-				hint = "余额冻结记录不存在！";
-			}
 			
+			int pageSize = resultList.size();
+			
+			List<Map<String, Object>> sumList = new ArrayList<Map<String,Object>>();
+			Map<String, Object> mapRooter = new HashMap<String, Object>();
+			mapRooter.put("balanceFrozenId", "总冻结金额：" + Double.parseDouble(String.valueOf(frozenAmountSum))/100+" 元");
+			if (pageSize>0) {
+				mapRooter.put("frozenAmount", "平均冻结金额：" + (Double.parseDouble(String.valueOf(frozenAmountSum))/pageSize)/100+" 元");
+			}else{
+				mapRooter.put("frozenAmount", "平均冻结金额：" + Double.parseDouble(String.valueOf(frozenAmountSum))/100+" 元");
+			}
+			sumList.add(mapRooter);
+			mapResult.put("total", total);
+			mapResult.put("rows", resultList);
+			mapResult.put("footer", sumList);
 		} catch (Exception e) {
-			hint = e.getMessage();
 			e.printStackTrace();
 		} finally {
-			
-			if (resultList.size() == 0) {
-				hintMap = new HashMap<String, Object>();
-				hintMap.put("errorInfo", hint);
-				resultList.add(hintMap);
-			}
-			logger.debug(resultList);
+			logger.debug(mapResult);
 		}
 		
-		return resultList;
+		return mapResult;
 	}
 	
 	/**
@@ -872,18 +1216,12 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			Map<String, Object> acctBalMap = new HashMap<String, Object>();
 			acctBalMap.put("acctBalanceId", acctBalanceId);
 			acctBalMap.put("acctId", acctId);
-			acctBalMap.put("sliceKey", sliceKey);System.out.println(acctBalMap);
-			List<BalanceFrozenModel> balFrozenModelList = iBalanceFrozenMapper.queryBalFrozenByAcctId(acctBalMap);
-			boolean balFrozenFlag = true;
-			for (BalanceFrozenModel balanceFrozenModel : balFrozenModelList) {
-				//2 代表冻结，1未冻结
-				if(balanceFrozenModel.getFrozenState() != null && balanceFrozenModel.getFrozenState().equals("2")){
-					balFrozenFlag = false;
-					break;
-				}
-			}
+			acctBalMap.put("sliceKey", sliceKey);
+			acctBalMap.put("frozenState", 2);
+			int unfrozenCnt = iBalanceFrozenMapper.queryBalFrozenByAcctIdCnt(acctBalMap);
+			
 			//如果冻结记录中全部为未冻结，则更新余额账本为未冻结
-			if (balFrozenFlag) {
+			if (unfrozenCnt == 0) {
 				logger.debug("query acct balance by acctBalanceId.");
 				AcctBalanceModel acctBalRecord = new AcctBalanceModel();
 				acctBalRecord.setAcctBalanceId(acctBalanceId);
@@ -1002,13 +1340,15 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 * @param balSourceId 来源类型标识
 	 * @param sliceKey 账户ID，分片ID
 	 */
-	public long newBalancePayoutLog(long acctBalanceId,long billId,long amount,long balance,String payoutDesc,long sliceKey){
+	public long newBalancePayoutLog(long acctBalanceId,Long billId,long amount,long balance,String payoutDesc,long sliceKey){
 		Date payoutDate = new Date();
 		BalancePayoutModel balPayout = new BalancePayoutModel();
 		balPayout.setBalance(balance);
 		balPayout.setAmount(amount);
 		balPayout.setAcctBalanceId(acctBalanceId);
-		balPayout.setBillId(billId);
+		if (billId != null) {
+			balPayout.setBillId(billId);
+		}
 		balPayout.setOperDate(payoutDate);
 		balPayout.setStaffId("system");
 		balPayout.setStatusCd("1");

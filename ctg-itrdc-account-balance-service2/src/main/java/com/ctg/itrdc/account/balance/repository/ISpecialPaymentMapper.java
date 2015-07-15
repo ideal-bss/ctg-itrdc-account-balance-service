@@ -9,5 +9,7 @@ public interface ISpecialPaymentMapper extends Mapper<SpecialPaymentModel>{
 
     List<SpecialPaymentModel> selectAllSpecial();
     
+    SpecialPaymentModel selectSprcialById(long spePaymentId);
     SpecialPaymentModel selectByPrimaryKey(Long spePaymentId);
+    
 }

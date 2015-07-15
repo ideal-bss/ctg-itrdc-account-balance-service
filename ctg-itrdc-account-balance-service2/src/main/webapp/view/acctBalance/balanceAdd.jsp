@@ -25,7 +25,10 @@ function myparser(s){
 		textField : 'text',
 		data : [ {
 			"id" : 1,
-			"text" : "1"
+			"text" : "账户"
+		},{
+			"id" : 2,
+			"text" : "设备"
 		} ]
 	}); 
 	$('#shareRuleTypeId').combobox( {
@@ -33,7 +36,13 @@ function myparser(s){
 		textField : 'text',
 		data : [ {
 			"id" : 1,
-			"text" : "1"
+			"text" : "高"
+		},{
+			"id" : 2,
+			"text" : "中"
+		},{
+			"id" : 3,
+			"text" : "低"
 		} ]
 	}); 
 	$('#shareRuleTypePri').combobox( {
@@ -41,7 +50,13 @@ function myparser(s){
 		textField : 'text',
 		data : [ {
 			"id" : 1,
-			"text" : "1"
+			"text" : "高"
+		},{
+			"id" : 2,
+			"text" : "中"
+		},{
+			"id" : 3,
+			"text" : "低"
 		} ]
 	}); 
 	$('#shareRuleTypeId').combobox( {
@@ -50,7 +65,13 @@ function myparser(s){
 		data : [ {
 			"id" : 1,
 			"text" : "1"
-		} ]
+		}, {
+			"id" : 2,
+			"text" : "2"
+		} , {
+			"id" : 3,
+			"text" : "3"
+		}  ]
 	}); 
  	$('#balanceTypeId').combobox( {
 		valueField : 'id',
@@ -58,6 +79,12 @@ function myparser(s){
 		data : [ {
 			"id" : 1,
 			"text" : "1"
+		},{
+			"id" : 2,
+			"text" : "2"
+		},{
+			"id" :3,
+			"text" : "3"
 		} ]
 	}); 
 	$('#statusCd').combobox( {
@@ -65,7 +92,10 @@ function myparser(s){
 		textField : 'text',
 		data : [ {
 			"id" : 1,
-			"text" : "1"
+			"text" : "未冻结"
+		},{
+			"id" : 2,
+			"text" : "冻结"
 		} ]
 	}); 
 	$('#cycleType').combobox( {
@@ -73,12 +103,92 @@ function myparser(s){
 		textField : 'text',
 		data : [ {
 			"id" : 1,
-			"text" : "1"
+			"text" : "赠款"
+		},{
+			"id" : 2,
+			"text" : "分月返还"
 		} ]
 	}); 
  });
- 
+ function isNumber( s ){ 
+	   var regu = "^[0-9]+$"; 
+	   var re = new RegExp(regu); 
+	   if (s.search(re) != -1) { 
+	   return true; 
+	   } else { 
+	   return false; 
+	   } 
+	}
  function submit_balanceAdd_form(){
+  	if($('#objectId').textbox('getValue')==""||!isNumber($('#objectId').textbox('getValue'))){
+	 	$.messager.alert("警告","余额对象标识不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#objectType').combobox('getValue')==""){
+	 	$.messager.alert("警告","余额对象类型不能为空!","warning");
+	 	return;
+	 }
+	 if($('#shareRuleTypeId').combobox('getValue')==""){
+	 	$.messager.alert("警告","共享规则类型不能为空!","warning");
+	 	return;
+	 }
+	 if($('#shareRuleTypePri').combobox('getValue')==""){
+	 	$.messager.alert("警告","共享规则优先级不能为空!","warning");
+	 	return;
+	 }
+	 if($('#upperAmount').textbox('getValue')==""||!isNumber($('#upperAmount').textbox('getValue'))){
+	 	$.messager.alert("警告","扣费上限不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#lowerAmount').textbox('getValue')==""||!isNumber($('#lowerAmount').textbox('getValue'))){
+	 	$.messager.alert("警告","扣费下限不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#balanceTypeId').combobox('getValue')==""){
+	 	$.messager.alert("警告","余额类型标识不能为空!","warning");
+	 	return;
+	 }
+	 
+	  if($('#paymentRuleId').textbox('getValue')==""||!isNumber($('#paymentRuleId').textbox('getValue'))){
+	 	$.messager.alert("警告","支付规则标识不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#subAcctId').textbox('getValue')==""||!isNumber($('#subAcctId').textbox('getValue'))){
+	 	$.messager.alert("警告","拥有子账户标识不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#acctId').textbox('getValue')==""||!isNumber($('#acctId').textbox('getValue'))){
+	 	$.messager.alert("警告","账户标识不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#balanceDue').textbox('getValue')==""||!isNumber($('#balanceDue').textbox('getValue'))){
+	 	$.messager.alert("警告","余额不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#reserveBalance').textbox('getValue')==""||!isNumber($('#reserveBalance').textbox('getValue'))){
+	 	$.messager.alert("警告","预留余额不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#cycleUpper').textbox('getValue')==""||!isNumber($('#cycleUpper').textbox('getValue'))){
+	 	$.messager.alert("警告","扣费上限余额不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#cycleLower').textbox('getValue')==""||!isNumber($('#cycleLower').textbox('getValue'))){
+	 	$.messager.alert("警告","扣费下限余额不能为空且为数字!","warning");
+	 	return;
+	 }
+	 if($('#statusCd').combobox('getValue')==""){
+	 	$.messager.alert("警告","状态不能为空!","warning");
+	 	return;
+	 }
+	 if($('#cycleType').combobox('getValue')==""){
+	 	$.messager.alert("警告","限额类型不能为空!","warning");
+	 	return;
+	 }
+	 if($('#needInvoiceAmount').textbox('getValue')==""||!isNumber($('#needInvoiceAmount').textbox('getValue'))){
+	 	$.messager.alert("警告","需要打印发票的余额不能为空且为数字!","warning");
+	 	return;
+	 }
  	$.ajax({  
         async:false,  
         type:"POST",  
@@ -89,7 +199,6 @@ function myparser(s){
         success:function(data){
         	$.messager.alert("提示", "存入成功!");
         	$('#view_acctBalance_balanceQuery_Add').dialog({closed:true});
-        //	$('#view_acctBalance_balanceQuery_result').datagrid('reload');  
         }
     }); 
  }
@@ -165,7 +274,7 @@ function myparser(s){
 			<tr>
 				<td width="10%">余额</td>
 				<td width="20%">
-					<input id="balance" name="balance" class="easyui-textbox" >
+					<input id="balanceDue" name="balanceDue" class="easyui-textbox" >
 					</td>
 				<td width="10%">&nbsp;预留余额:</td>
 				<td width="20%">
@@ -213,21 +322,5 @@ function myparser(s){
 		</table>
 		</form>
 		</div>
-		
-		<!-- $('#effDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	}); 
- 	$('#expDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	});
- 	$('#statusDate').datebox({  
-		formatter: function(date){ 
-			return date.getFullYear()+'-'+((date.getMonth()+1) < 10 ? ("0" + (date.getMonth()+1)) : (date.getMonth()+1))+'-'+((date.getDate()) < 10 ? ("0" + (date.getDate())) : (date.getDate())); 
-		}
- 	}); -->
 </body>
 </html>

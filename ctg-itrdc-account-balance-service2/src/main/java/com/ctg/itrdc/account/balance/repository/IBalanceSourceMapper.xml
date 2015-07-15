@@ -100,4 +100,24 @@
 			<if test="sliceKey != null">#{sliceKey,jdbcType=BIGINT},</if>
 		</trim>
 	</insert>
+	
+	<select id="selectSourceByAcctBalLog" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from BALANCE_SOURCE_MOD
+		where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+		<if test="sliceKey != null">
+			and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+		</if>
+		<if test="rows != null and page != null">
+	    	limit #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+	    </if>
+	</select>
+	<select id="selectSourceByAcctBalLogTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(OPER_INCOME_ID)
+		from BALANCE_SOURCE_MOD
+		where ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
+		<if test="sliceKey != null">
+			and SLICE_KEY=#{sliceKey,jdbcType=BIGINT}
+		</if>
+	</select>
 </mapper>

@@ -24,13 +24,13 @@
  	var balanceTypeNameClass = $(".balanceTypeNameClass");
  	var statusDate_add = $("#statusDate_add").datebox("getValue");
  	var statusDateClass = $(".statusDateClass");
- 	if(balanceTypeName.val() == null || balanceTypeName.val() == ''){
+ 	if(balanceTypeName.val() == null || $.trim(balanceTypeName.val()) == ''){
  		balanceTypeNameClass.html('<font color="red">余额类型名称不能为空！</font>');
  		flag = false;
  	}else{
  		balanceTypeNameClass.html('');
  	}
- 	if(statusDate_add == null || statusDate_add == ''){
+ 	if(statusDate_add == null || $.trim(statusDate_add) == ''){
  		statusDateClass.html('<font color="red">状态时间不能为空！</font>');
  		flag = false;
  	}else{
