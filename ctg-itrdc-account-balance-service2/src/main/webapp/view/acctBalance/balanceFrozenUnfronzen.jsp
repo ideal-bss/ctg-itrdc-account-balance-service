@@ -39,6 +39,9 @@
 			if (acctBalanceIdFrozen == null || $.trim(acctBalanceIdFrozen) == "" || acctBalanceIdFrozen == 0) {
 				flag = true;
 				$("#acctBalanceIdFrozenHint").html("请输入余额账本标识！");
+			}else if(acctBalanceIdFrozen.length>15){
+				flag = true;
+				$("#acctBalanceIdFrozenHint").html("账本标识长度不能超过15位！");
 			}else{
 				$("#acctBalanceIdFrozenHint").html("");
 			}
@@ -79,7 +82,7 @@
 	   				<th>账户标识：</th>
 	   				<td><input id="acctIdFrozen" name="acctId" class="easyui-numberbox" value="${param.acctId }" data-options="editable:false"/></td>
 	   				<th>余额账本标识：</th>
-	   				<td><input id="acctBalanceIdFrozen" name="acctBalanceId" class="easyui-numberbox" value="${param.acctBalanceId }"/></td>
+	   				<td><input id="acctBalanceIdFrozen" name="acctBalanceId" validtype="length[1,15]" invalidMessage="有效长度1-15位数字" class="easyui-numberbox" value="${param.acctBalanceId }"/></td>
 	   			</tr>
 	   			<tr><td colspan="3">&nbsp;</td><td><font color="red" id="acctBalanceIdFrozenHint"></font></td></tr>
 	   			<tr>

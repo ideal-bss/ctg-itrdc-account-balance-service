@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -196,13 +197,27 @@ public class BaseUtil {
         return b1.subtract(b2).doubleValue();
     }
 	
+	
+	public static String formatDouble(double v1,int bit){
+		StringBuffer format = new StringBuffer("#");
+		for (int i = 0; i < bit; i++) {
+			if (i == 0) {
+				format.append(".0");
+			}else{
+				format.append("0");
+			}
+			
+		}
+		DecimalFormat df = new DecimalFormat(format.toString());
+        return v1<1?"0"+df.format(v1):df.format(v1);
+	}
 	public static void main(String[] args) {
 //		System.out.println(getPropertyUrl("conf/menu.xml"));
 		//清空目录中的文件
-		File[] fileList = (new File("D:/logs/balance/balanceTypeFail/")).listFiles();
+		/*File[] fileList = (new File("D:/logs/balance/balanceTypeFail/")).listFiles();
 		for (File rmFile : fileList) {
 			rmFile.delete();
-		}
+		}*/
 		
 	}
 }

@@ -25,34 +25,19 @@
 		
 		/*校验支取条件*/
 		function check(){
-			var acctId = $("#acctId").val();
-			var acctBalId = $("#acctBalanceIdArray").val();
 			var drawAmount = $("#drawAmount").val();
-			var objectId = $("#objectId").val();
 			var flag = false;
-			if(acctId == null || $.trim(acctId) == ""){
-				$("#acctId_warn").html("请输入账户标识！");
-				flag = true;
-			}else{
-				$("#acctId_warn").html("");
-			}
-			if(acctBalId == null || $.trim(acctBalId) == ""){
-				$("#acctBalId_warn").html("请输入余额账本标识！");
-				flag = true;
-			}else{
-				$("#acctBalId_warn").html("");
-			}
 			if(drawAmount == null || $.trim(drawAmount) == "" || drawAmount==0){
 				$("#drawAmount_warn").html("请输入支取金额！");
 				flag = true;
-			}else{
-				$("#drawAmount_warn").html("");
-			}
-			if(objectId == null || $.trim(objectId) == ""){
-				$("#objectId_warn").html("请输入余额对象标识！");
+			}else if(drawAmount.length > 10){
+				$("#drawAmount_warn").html("支取金额不能超过10位！");
+				flag = true;
+			}else if(isNaN(drawAmount)){
+				$("#drawAmount_warn").html("支取金额只能是数字！");
 				flag = true;
 			}else{
-				$("#objectId_warn").html("");
+				$("#drawAmount_warn").html("");
 			}
 			return flag;
 		}
@@ -63,7 +48,7 @@
     	<form id="balance_draw_view">
     		<table style="padding: 10px 10px 10px 10px;">
     			<tr>
-    				<th>账户标识：</th>
+    				<th>账&nbsp;&nbsp;户&nbsp;&nbsp;标&nbsp;&nbsp;识&nbsp;&nbsp;：</th>
     				<td><input id="acctId" name="acctId" data-options="editable:false" value="${param.acctId }" class="easyui-numberbox"/>&nbsp;</td>
     				<!-- <td>余额对象类型：</td>
     				<td>
@@ -82,8 +67,8 @@
     				<td></td><td>&nbsp;<font id="acctBalId_warn" color="red"></font></td>
     			</tr>
     			<tr>
-    				<th>支取金额：</th>
-    				<td><input id="drawAmount" name="drawAmount" value="" class="easyui-numberbox"/>&nbsp;</td>
+    				<th>支取金额（分）：</th>
+    				<td><input id="drawAmount" name="drawAmount" validtype="length[1,10]" invalidMessage="有效长度1-10位数字" value="" class="easyui-numberbox"/>&nbsp;</td>
     				<th>余额对象标识：</th>
     				<td><input id="objectId" name="objectId" data-options="editable:false" value="${param.objectId }" class="easyui-textbox"/></td>
     			</tr>

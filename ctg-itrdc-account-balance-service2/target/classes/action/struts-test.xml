@@ -14,10 +14,5 @@
             <result name="success">/view/test/balanceManage.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
-        <action name="queryBalance" class="com.ctg.itrdc.account.balance.action.TestAction" method="queryBalance">
-            <result name="success">/view/test/queryBalance.jsp</result>
-            <result name="error">/view/test/error.jsp</result>
-        </action>
- 
     </package>
 </struts>

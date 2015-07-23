@@ -33,7 +33,7 @@
 				<url>/balanceType/balanceTypeQueryGo.action</url>
 			</attributes>
 		</element>
-
+		<!--
 		<element>
 			<id>4</id>
 			<text>余额分配</text>
@@ -43,7 +43,7 @@
 				<url>/acctBalance/balRealDistrGo.action</url>
 			</attributes>
 		</element>
-		<!-- 
+		 
 		<element>
 			<id>5</id>
 			<text>余额支取</text>

@@ -21,19 +21,10 @@
 	 
 	 function checkParas(){
 	 	var flag = false;
-	 	var acctId = $("#subAcctId").val(); 
-	 	var acctIdHint = $("#subAcctIdHint");
 	 	var acctBalanceId = $("#acctBalanceId").val(); 
 	 	var acctBalanceIdHint = $("#acctBalanceIdHint");
 	 	var frozenAmount = $("#frozenAmount").val(); 
 	 	var frozenAmountHint = $("#frozenAmountHint");
-	 	if(acctId == null || acctId == ''){
-	 		acctIdHint.html('账户标识不能为空！');
-	 		flag = false;
-	 	}else{
-	 		acctIdHint.html('&nbsp;');
-	 		flag = true;
-	 	}
 	 	if(acctBalanceId == null || acctBalanceId == ''){
 	 		acctBalanceIdHint.html('余额账本标识不能为空！');
 	 		flag = false;
@@ -43,6 +34,9 @@
 	 	}
 	 	if(frozenAmount == null || frozenAmount == ''){
 	 		frozenAmountHint.html('冻结金额不能为空！');
+	 		flag = false;
+	 	} else if(frozenAmount.length>10){
+	 		frozenAmountHint.html('冻结金额长度不能超过10位！');
 	 		flag = false;
 	 	}else{
 	 		frozenAmountHint.html('&nbsp;');
@@ -60,7 +54,7 @@
   			<tr><td>&nbsp;</td><td><font color="red" id="subAcctIdHint"></font></td>
   				<td>&nbsp;</td><td><font color="red" id="acctBalanceIdHint"></font></td>
   			</tr>
-  			<tr><td>冻结金额：</td><td><input name="frozenAmount" id="frozenAmount" class="easyui-numberbox"/></td>
+  			<tr><td>冻结金额：</td><td><input name="frozenAmount" validtype="length[1,10]" invalidMessage="有效长度1-10位数字" id="frozenAmount" class="easyui-numberbox"/></td>
   				<td colspan="2">&nbsp;</td>
   			</tr>
   			<tr><td>&nbsp;</td><td><font color="red" id="frozenAmountHint"></font></td>

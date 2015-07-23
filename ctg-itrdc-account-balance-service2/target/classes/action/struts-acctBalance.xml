@@ -4,7 +4,10 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="acctBalance" namespace="/acctBalance" extends="struts-default">
- 
+ 		<action name="queryBalance" class="com.ctg.itrdc.account.balance.action.TestAction" method="queryBalance">
+            <result name="success">/view/acctBalance/balanceQuery.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
         <action name="balanceAddGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceAddGo">
             <result name="success">/view/acctBalance/balanceAdd.jsp</result>
             <result name="error">/view/test/error.jsp</result>
@@ -13,11 +16,110 @@
             <result name="success">/view/acctBalance/acctBalanceAdd.jsp</result>
             <result name="error">/view/test/error.jsp</result>
         </action>
+        <!-- 
         <action name="balanceQueryGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceQueryGo">
             <result name="success">/view/test/success.jsp</result>
             <result name="error">/view/test/error.jsp</result>
+        </action> -->
+		<action name="balanceQueryById" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="balanceQueryById">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
         </action>
-
+        <action name="deducBalance" class="com.ctg.itrdc.account.balance.action.AcctBalanceAction" method="deducBalance">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+ 		<!-- 余额查询  start -->
+        <action name="balanceQueryGo" class="com.ctg.itrdc.account.balance.action.QueryBalanceAction" method="queryBalanceGo">
+            <result name="success">/view/acctBalance/balanceQuery.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <action name="balanceQuery" class="com.ctg.itrdc.account.balance.action.QueryBalanceAction" method="queryBalance">
+            <result name="success">/view/test/success.jsp</result>
+            <result name="error">/view/test/error.jsp</result>
+        </action>
+        <!-- 余额查询  end -->
+        
+        <!-- 余额分配 ......start 
+		<action name="balRealDistrGo" class="com.ctg.itrdc.account.balance.action.BalRealDistrAction" method="balRealDistrGo">
+			<result name="success">/view/acctBalance/balRealDistr.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>-->
+		
+		<!-- 余额分配...... end -->
  		
+ 		<!-- 余额支取 ......start-->
+ 		<action name="balanceDrawGo" class="com.ctg.itrdc.account.balance.action.BalanceDrawAction" method="balanceDrawGo">
+ 			<result name="success">/view/acctBalance/balanceDraw.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="balanceDraw" class="com.ctg.itrdc.account.balance.action.BalanceDrawAction" method="balanceDraw">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action> 
+ 		<!-- 余额支取 ......end -->
+ 		
+ 		<!-- 余额转账 ......start....... -->
+ 		<action name="balanceTransferGo" class="com.ctg.itrdc.account.balance.action.BalanceTransferAction" method="balanceTarnsferGo">
+ 			<result name="success">/view/acctBalance/balanceTransfer.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<action name="balanceTransfer" class="com.ctg.itrdc.account.balance.action.BalanceTransferAction" method="balanceTarnsfer">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<!-- 余额转账 ......end....... -->
+ 		
+ 		<!-- 余额冲正......start......
+ 		<action name="balanceReverseGo" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverseGo">
+ 			<result name="success">/view/acctBalance/balanceReverse.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>-->
+ 		<action name="balanceReverse" class="com.ctg.itrdc.account.balance.action.BalanceReverseAction" method="balanceReverse">
+ 			<result name="success">/view/test/success.jsp</result>
+ 			<result name="error">/view/test/error.jsp</result>
+ 		</action>
+ 		<!-- 余额冲正......end...... -->
+ 		
+ 		<!-- 余额账本日志......start...... -->
+ 		<action name="acctBalanceLogGo" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalanceLogGo">
+			<result name="success">/view/acctBalance/acctBalanceLog.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="acctBalanceLog" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalanceLog">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额账本日志......end...... -->
+		
+		<!-- 余额冻结解冻管理......start...... -->
+		<action name="balanceFrozenQueryGo" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozenQueryGo">
+			<result name="success">/view/acctBalance/balanceFrozenUnfronzen.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceFrozenQuery" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozenQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceFrozen" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceFrozen">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="balanceUnFrozen" class="com.ctg.itrdc.account.balance.action.BalanceFrozenUnfronzen" method="balanceUnFrozen">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额冻结解冻管理......end...... -->
+		
+		<!-- 余额来源记录查询......start......-->
+		<action name="acctBalLogbalSourceQuery" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalLogbalSourceQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<action name="acctBalLogbalPayOutQuery" class="com.ctg.itrdc.account.balance.action.AcctBalanceLogAction" method="acctBalLogbalPayOutQuery">
+			<result name="success">/view/test/success.jsp</result>
+			<result name="error">/view/test/error.jsp</result>
+		</action>
+		<!-- 余额来源记录查询......end......-->
     </package>
 </struts>

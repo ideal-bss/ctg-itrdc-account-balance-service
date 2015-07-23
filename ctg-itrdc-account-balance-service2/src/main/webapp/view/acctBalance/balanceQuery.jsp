@@ -11,9 +11,9 @@
     	fit : true,
     	url : '${pageContext.request.contextPath}/acctBalance/balanceQuery.action',
     	queryParams : {
-    		objectId : $('#objectId').val(),
-    		balanceTypeId : $('#acctBalbalanceTypeId').combobox('getValue'),
-    		ObjectIdType : $('#ObjectIdType').combobox('getValue')
+    		objectId : $('#objectIdQuery').val(),
+    		balanceTypeId : $('#acctBalbalanceTypeIdQuery').combobox('getValue'),
+    		ObjectIdType : $('#ObjectIdTypeQuery').combobox('getValue')
     	}
     });
  	//设置分页控件
@@ -30,10 +30,13 @@
  
  function checkParamBalQuery(){
  	var flag = true;
- 	var objectId = $("#objectId"); 
+ 	var objectId = $("#objectIdQuery").val(); 
  	var objectIdClass = $(".objectIdClass");
- 	if(objectId.val() == null || $.trim(objectId.val()) == ''){
- 		objectIdClass.html('<font color="red">余额对象标识不能为空！</font>');
+ 	if(objectId == null || $.trim(objectId) == ''){
+ 		objectIdClass.html('<font color="red">余额对象号码不能为空！</font>');
+ 		flag = false;
+ 	}else if(objectId.length>15){
+ 		objectIdClass.html('<font color="red">余额对象号码不能超过15位！</font>');
  		flag = false;
  	}else{
  		objectIdClass.html('');
@@ -45,7 +48,7 @@
 
   //加载余额类型下拉框
   $(function(){
-  	  $('#acctBalbalanceTypeId').combobox({
+  	  $('#acctBalbalanceTypeIdQuery').combobox({
 		  	url : '${pageContext.request.contextPath}/balanceType/loadBalanceTypeSelect.action?allFlag=1',
 		  	valueField : 'balanceTypeId',
 		  	textField : 'balanceTypeName',
@@ -177,18 +180,18 @@
 			<tr>
 				<td width="10%">余额对象号码:</td>
 				<td width="20%">
-					<input id="objectId" name="objectId" value="" class="easyui-textbox" style="width: 150px">
+					<input id="objectIdQuery" name="objectId" validtype="length[1,15]" invalidMessage="有效长度1-15个字符" value="" class="easyui-textbox" style="width: 150px">
 				</td>
 				<td width="10%">余额类型:</td>
 				<td width="20%">
-				<input id="acctBalbalanceTypeId" name="balanceTypeId" value="" style="width: 150px" data-options="editable:false,panelHeight:150">
+				<input id="acctBalbalanceTypeIdQuery" name="balanceTypeId" value="" style="width: 150px" data-options="editable:false,panelHeight:150">
 				</td>
 			</tr>
 			<tr><td>&nbsp;</td><td><span class="objectIdClass">&nbsp;</span></td><td colspan="2"></td></tr>
 			<tr>
 				<td width="10%">余额对象类型:</td>
 				<td width="20%">
-				 <select id="ObjectIdType" name="ObjectIdType" class="easyui-combobox" style="width: 150px" data-options="editable:false,panelHeight:100">
+				 <select id="ObjectIdTypeQuery" name="ObjectIdType" class="easyui-combobox" style="width: 150px" data-options="editable:false,panelHeight:100">
 				 	<option value="0">全部</option>
 				 	<option value="1">账户</option>
 				 	<option value="2">设备</option>

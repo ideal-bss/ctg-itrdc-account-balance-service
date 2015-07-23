@@ -34,17 +34,26 @@
 			if (acctId == null || $.trim(acctId)=="" || acctId==0) {
 				$("#goalAcctIdHint").html("目的账户标识不能为空！");
 				flag = true;
+			} else if(acctId.length>15){
+				$("#goalAcctIdHint").html("账户标识不能超过15位！");
+				flag = true;
 			} else {
 				$("#goalAcctIdHint").html("");
 			}
 			if (objectId == null || $.trim(objectId)=="") {
 				$("#goalObjectIdHint").html("目的余额对象不能为空！");
 				flag = true;
+			} else if(objectId.length>15){
+				$("#goalObjectIdHint").html("余额对象不能超过15位！");
+				flag = true;
 			} else {
 				$("#goalObjectIdHint").html("");
 			}
 			if (amount == null || $.trim(amount)=="" || amount==0) {
 				$("#transferAmountHint").html("转账金额不能为空！");
+				flag = true;
+			} else if(amount.length>10){
+				$("#transferAmountHint").html("转账金额不能超过10位！");
 				flag = true;
 			} else {
 				$("#transferAmountHint").html("");
@@ -73,8 +82,8 @@
 						<input id="origBalanceTypeId" name="origBalanceTypeId" value="${param.balanceTypeId }" hidden="true"/>
 						<input id="origAcctId" name="origAcctId" value="${param.acctId }" hidden="true">
 					</td>
-					<td>转账金额：</td>
-					<td><input id="transferAmount" name="amount" class="easyui-numberbox"/></td>
+					<td>转账金额(分)：</td>
+					<td><input id="transferAmount" name="amount" validtype="length[1,10]" invalidMessage="有效长度1-10位数字" class="easyui-numberbox"/></td>
 				</tr>
 				<tr align="left">
 					<td>&nbsp;</td><td><font id="origAcctBalanceIdHint" color="red">&nbsp;</font></td>
@@ -85,7 +94,7 @@
 					<td><input id="goalBalanceTypeId" name="balanceTypeId" data-options="editable:false,panelHeight:150,disabled:true"/>
 					</td>
 					<td>目的账户标识：</td>
-					<td><input id="goalAcctId" name="acctId" class="easyui-numberbox"/></td>
+					<td><input id="goalAcctId" name="acctId" validtype="length[1,15]" invalidMessage="有效长度1-15位数字" class="easyui-numberbox"/></td>
 				</tr>
 				<tr align="left">
 					<td></td><td><font id="goalBalanceTypeIdHint" color="red">&nbsp;</font></td>
@@ -99,7 +108,7 @@
 						</select>
 					</td>
 					<td>目的余额对象：</td>
-					<td><input id="goalObjectId" name="objectId" class="easyui-textbox"/></td>
+					<td><input id="goalObjectId" name="objectId" validtype="length[1,15]" invalidMessage="有效长度1-15位字符"  class="easyui-textbox"/></td>
 				</tr>
 				<tr align="left">
 					<td></td><td><font id="goalObjectTypeHint" color="red">&nbsp;</font></td>
