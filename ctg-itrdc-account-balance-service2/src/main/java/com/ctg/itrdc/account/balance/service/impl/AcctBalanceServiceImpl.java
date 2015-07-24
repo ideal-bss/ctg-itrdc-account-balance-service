@@ -1226,7 +1226,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	public long newBalancePayoutLog(long acctBalanceId,Long billId,long amount,long balance,String payoutDesc,long sliceKey){
 		Date payoutDate = new Date();
 		BalancePayoutModel balPayout = new BalancePayoutModel();
-		balPayout.setBalance(balance);
+		balPayout.setBalance(balance<0?0:balance);
 		balPayout.setAmount(amount);
 		balPayout.setAcctBalanceId(acctBalanceId);
 		if (billId != null) {
