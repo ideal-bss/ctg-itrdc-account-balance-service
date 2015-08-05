@@ -141,4 +141,5 @@
       UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
     where SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT}
   </update>
+  
 </mapper>
