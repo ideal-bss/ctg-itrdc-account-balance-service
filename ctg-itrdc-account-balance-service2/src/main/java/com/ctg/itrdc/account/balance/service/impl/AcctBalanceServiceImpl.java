@@ -47,10 +47,12 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IBalanceSourceTypeMapper iBalanceSourceTypeMapper;
 	private IBalanceFrozenMapper iBalanceFrozenMapper;
 	@Override
-	public void insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel) {
-		// TODO Auto-generated method stub
+	public Map<String, Object> insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel) {
+		int status = 0;
+		String failReason = "存入成功！";
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int count=iBalanceShareRuleMapper.selectRuleByObjectId(shareModel);
+			/*int count=iBalanceShareRuleMapper.selectRuleByObjectId(shareModel);
 			if(count>0){
 				//余额规则中，余额对象存在
 				Map<String, Object> mapObject=iBalanceShareRuleMapper.selectRuleType(shareModel);
@@ -97,12 +99,60 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				//余额来源记录表
 				insertSource(model,relation.getBalanceRelationId(),model.getBalance());
 				
+			}*/
+			//余额规则中，余额对象存在
+			Map<String, Object> mapObject=iBalanceShareRuleMapper.selectRuleType(shareModel);
+			shareModel.setCreateDate(new Date());
+			shareModel.setCreateStaff("system");
+			shareModel.setEffDate(model.getEffDate());
+			shareModel.setExpDate(model.getExpDate());
+			if (mapObject != null && mapObject.size()>0) {//存在余额共享规则
+				model.setAcctBalanceId((Long) mapObject.get("ACCT_BALANCE_ID"));
+				
+				//查询余额账本
+				AcctBalanceModel abm = iAcctBalanceMapper.selectByPrimaryKey(model);
+				
+				//余额使用规则是否一致
+				if (abm != null) {
+					//余额对象存在，且余额对象类型相同;修改该共享对象账本金额
+					mapObject.put("BALANCE", model.getBalance());
+					mapObject.put("SLICE_KEY", model.getSubAcctId());
+					iAcctBalanceMapper.updateBalance(mapObject);
+					/*//查询余额对象账本关系标识
+					BalanceRelationModel relation=new BalanceRelationModel();
+					relation.setAcctBalanceId(Long.parseLong(mapObject.get("ACCT_BALANCE_ID").toString()));
+					relation.setObjectId(shareModel.getObjectId());
+					relation.setObjectType(shareModel.getObjectType());
+					relation.setSliceKey(shareModel.getSliceKey());
+					long balanceRelationId=iAcctBalanceMapper.selectRelationId(relation);*/
+					//记录余额账本日志
+					insertSource(model, null, model.getBalance());
+				}else{
+					status = 1;
+					failReason = "对象号码和子账户标识匹配失败！共享规则中已存在另一种配置信息。";
+				}
+			}else{//不存在余额共享规则
+				//查询余额账本
+				Long abi = iAcctBalanceMapper.selectAcctBalanceId(model);
+				if (abi != null && abi>0) {
+					status = 1;
+					failReason = "对象号码和子账户标识匹配失败！余额账本中已存在另一种配置信息。";
+				}else{
+					long acctBalanceId = insertBalance(model);
+					shareModel.setAcctBalanceId(acctBalanceId);
+					iBalanceShareRuleMapper.insertSelective(shareModel);
+					//余额对象账本关系
+					//BalanceRelationModel relation=insertRelation(shareModel);
+					//余额来源记录表
+					insertSource(model,null,model.getBalance());
+				}
 			}
+			resultMap.put("status", status);
+			resultMap.put("failReason", failReason);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
-		
+		return resultMap;
 	}
 	@Override
 	public void insertBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel){
@@ -245,17 +295,23 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	 * @param balanceRelationId
 	 * @throws Exception
 	 */
-	public void insertSource(AcctBalanceModel model,long balanceRelationId,long amount)throws Exception{
+	public void insertSource(AcctBalanceModel model,Long balanceRelationId,long amount)throws Exception{
+		Date curDate = new Date();
 		BalanceSourceModel source=new BalanceSourceModel();
 		source.setAcctBalanceId(model.getAcctBalanceId());
 		source.setAmount(amount);
 		source.setCurAmount(model.getBalance());
-		source.setBalanceRelationId(balanceRelationId);
+		//source.setBalanceRelationId(balanceRelationId);
 		source.setBalanceSourceTypeId(model.getBalanceTypeId());
 		source.setSliceKey(model.getSliceKey());
+		source.setOperType("");
+		source.setStaffId("system");
+		source.setOperDate(curDate);
+		source.setCurStatusDate(curDate);
+		source.setStatusCd("1");
+		source.setStatusDate(curDate);
+		source.setSourceDesc("balanceAdd");
 		iAcctBalanceMapper.insertSourceSelective(source);
-		
-		long operIncomeId=source.getOperIncomeId();
 		
 		insertBalanceSourceLog(source);
 	}
@@ -271,6 +327,8 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		log.setSliceKey(model.getSliceKey());
 		log.setSrcAmount(model.getCurAmount());
 		log.setSliceKey(model.getSliceKey());
+		log.setStatusCd("1");
+		log.setStatusDate(new Date());
 		iAcctBalanceLogMapper.insertSelective(log);
 	}
 	/**

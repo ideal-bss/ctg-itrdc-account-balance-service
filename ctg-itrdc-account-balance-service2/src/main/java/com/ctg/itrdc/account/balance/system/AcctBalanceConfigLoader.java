@@ -71,5 +71,7 @@ public class AcctBalanceConfigLoader implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 	}
-
+	public static void main(String[] args) {
+		new AcctBalanceConfigLoader().contextInitialized(null);
+	}
 }

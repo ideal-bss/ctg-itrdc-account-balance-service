@@ -25,7 +25,7 @@ public interface IAcctBalanceMapper extends Mapper<AcctBalanceModel>{
     
     int insertRelation(BalanceRelationModel model);
     
-    long selectRelationId(BalanceRelationModel model);
+    Long selectRelationId(BalanceRelationModel model);
     
     Integer selectBalanceByAcctId(Map<String, Object> map);
     

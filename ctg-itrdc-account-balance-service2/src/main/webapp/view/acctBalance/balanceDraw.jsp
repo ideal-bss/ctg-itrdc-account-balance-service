@@ -59,8 +59,7 @@
 					</td> -->
 					<th>余额账本标识：</th>
 					<td>
-						<input id="acctBalanceIdArray" name="acctBalanceIdArray" data-options="editable:false,multiline:true"
-							style="width:150px;height:50px;" value="${param.acctBalanceId }" class="easyui-textbox"/>
+						<input id="acctBalanceIdArray" name="acctBalanceIdArray" data-options="editable:false" value="${param.acctBalanceId }" class="easyui-textbox"/>
 					</td>
     			</tr>
     			<tr><td></td><td>&nbsp;<font id="acctId_warn" color="red"></font></td>

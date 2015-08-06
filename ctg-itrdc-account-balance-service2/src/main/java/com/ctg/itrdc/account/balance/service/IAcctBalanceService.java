@@ -7,7 +7,7 @@ import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
 import com.ctg.itrdc.account.balance.model.BalanceShareRuleModel;
 
 public interface IAcctBalanceService {
-	public void insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel);
+	public Map<String, Object> insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel);
 	public void insertBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel);
 	public void selectAcctBalance(Map<String, String> map);
 	public List<AcctBalanceModel> selectBalance(AcctBalanceModel model);

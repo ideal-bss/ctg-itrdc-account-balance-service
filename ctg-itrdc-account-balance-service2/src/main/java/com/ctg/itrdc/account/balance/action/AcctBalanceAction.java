@@ -2,6 +2,7 @@ package com.ctg.itrdc.account.balance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -127,8 +128,8 @@ public class AcctBalanceAction extends BaseAction{
 			shareModel.setLowerAmount(Long.parseLong(lowerAmount));
 			shareModel.setSliceKey(Long.parseLong(subAcctId));
 			
-			iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
-			writeJson(new ArrayList());
+			Map<String, Object> resultMap = iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
+			writeJson(resultMap);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

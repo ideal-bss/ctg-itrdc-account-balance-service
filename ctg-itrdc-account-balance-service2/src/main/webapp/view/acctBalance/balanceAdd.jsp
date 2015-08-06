@@ -148,6 +148,10 @@ function myparser(s){
 	 	$.messager.alert("警告","余额类型标识不能为空!","warning");
 	 	return;
 	 }
+	 if($('#balanceTypeId').combobox('getValue')=="0"){
+	 	$.messager.alert("警告","余额类型标识不能为全部!","warning");
+	 	return;
+	 }
 	 
 	  if($('#paymentRuleId').textbox('getValue')==""||!isNumber($('#paymentRuleId').textbox('getValue'))){
 	 	$.messager.alert("警告","支付规则标识不能为空且为数字!","warning");
@@ -197,11 +201,21 @@ function myparser(s){
         cache: false,
         data:$('#view_acctBalance_balanceAdd_form').serialize(),  
         success:function(data){
-        	$.messager.alert("提示", "存入成功!");
+        	$.messager.alert("提示", data.failReason);
         	$('#view_acctBalance_balanceQuery_Add').dialog({closed:true});
         }
     }); 
  }
+ 
+ //加载余额类型下拉框
+  $(function(){
+  	  $('#balanceTypeId').combobox({
+		  	url : '${pageContext.request.contextPath}/balanceType/loadBalanceTypeSelect.action?allFlag=1',
+		  	valueField : 'balanceTypeId',
+		  	textField : 'balanceTypeName',
+		  	value : 0
+	  });
+  });
  </script>
 <div> 
 		<form id="view_acctBalance_balanceAdd_form" >
@@ -243,7 +257,7 @@ function myparser(s){
 				
 				<td width="10%">&nbsp;余额类型标识:</td>
 				<td width="20%">
-					<input id="balanceTypeId" name="balanceTypeId"  class="easyui-combo" >
+					<input id="balanceTypeId" name="balanceTypeId" value="" style="width: 150px" data-options="editable:false,panelHeight:150">
 				</td>
 				<td width="10%">&nbsp;支付规则标识:</td>
 				<td width="20%">

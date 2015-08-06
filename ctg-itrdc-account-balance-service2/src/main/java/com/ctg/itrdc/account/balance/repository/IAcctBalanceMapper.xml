@@ -120,9 +120,9 @@
   <insert id="insertSelective" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" useGeneratedKeys="true" keyProperty="acctBalanceId">
     insert into acct_balance_mod
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="acctBalanceId != null" >
+     <!--  <if test="acctBalanceId != null" >
         ACCT_BALANCE_ID,
-      </if>
+      </if> -->
       <if test="balanceTypeId != null" >
         BALANCE_TYPE_ID,
       </if>
@@ -176,9 +176,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="acctBalanceId != null" >
+      <!-- <if test="acctBalanceId != null" >
         #{acctBalanceId,jdbcType=BIGINT},
-      </if>
+      </if> -->
       <if test="balanceTypeId != null" >
         #{balanceTypeId,jdbcType=BIGINT},
       </if>
@@ -330,9 +330,11 @@
    </update>
    <select id="selectAcctBalanceId" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel" resultType="java.lang.Long">
    	select ACCT_BALANCE_ID from acct_balance_mod 
-   	where ACCT_ID = #{acctId,jdbcType=BIGINT} 
-   	and SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT}
+   	where SUB_ACCT_ID = #{subAcctId,jdbcType=BIGINT}
    	and SLICE_KEY = #{subAcctId,jdbcType=BIGINT}
+   <!-- 	<if test="acctId != null and acctId>0">
+   	and	ACCT_ID = #{acctId,jdbcType=BIGINT} 
+   	</if> -->
    
    </select>
    <delete id="deleteAcctBalanceById" parameterType="com.ctg.itrdc.account.balance.model.AcctBalanceModel">

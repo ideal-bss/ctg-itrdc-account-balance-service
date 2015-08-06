@@ -89,6 +89,10 @@
   			$.messager.alert('提示','请选择要支取余额的账本！','info');
   			return;
   		}
+  		if(rows.length>1){
+  			$.messager.alert('提示','支取时只能选择一个账本！','info');
+  			return;
+  		}
   		var acctBalanceId = '';
   		for(var i=0;i<rows.length;i++){
   			var abi = rows[i].acctBalanceId;
