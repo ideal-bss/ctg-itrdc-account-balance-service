@@ -121,7 +121,7 @@ function myparser(s){
 	}
  function submit_balanceAdd_form(){
   	if($('#objectId').textbox('getValue')==""||!isNumber($('#objectId').textbox('getValue'))){
-	 	$.messager.alert("警告","余额对象标识不能为空且为数字!","warning");
+	 	$.messager.alert("警告","余额对象号码不能为空且为数字!","warning");
 	 	return;
 	 }
 	 if($('#objectType').combobox('getValue')==""){
@@ -145,11 +145,11 @@ function myparser(s){
 	 	return;
 	 }
 	 if($('#balanceTypeId').combobox('getValue')==""){
-	 	$.messager.alert("警告","余额类型标识不能为空!","warning");
+	 	$.messager.alert("警告","余额类型不能为空!","warning");
 	 	return;
 	 }
 	 if($('#balanceTypeId').combobox('getValue')=="0"){
-	 	$.messager.alert("警告","余额类型标识不能为全部!","warning");
+	 	$.messager.alert("警告","余额类型不能为全部!","warning");
 	 	return;
 	 }
 	 
@@ -222,7 +222,7 @@ function myparser(s){
 		<table style="padding: 10px 10px 10px 10px;">
 			<tr>
 				
-				<td width="10%">&nbsp;余额对象标识:</td>
+				<td width="10%">&nbsp;余额对象号码:</td>
 				<td width="20%">
 					<input id="objectId" name="objectId"  class="easyui-textbox" >
 				</td>
@@ -255,7 +255,7 @@ function myparser(s){
 			
 			<tr>
 				
-				<td width="10%">&nbsp;余额类型标识:</td>
+				<td width="10%">&nbsp;余额类型:</td>
 				<td width="20%">
 					<input id="balanceTypeId" name="balanceTypeId" value="" style="width: 150px" data-options="editable:false,panelHeight:150">
 				</td>
