@@ -129,28 +129,25 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 					insertSource(model, null, model.getBalance());
 				}else{
 					status = 1;
-					failReason = "对象号码和子账户标识匹配失败！共享规则中已存在另一种配置信息。";
+					failReason = "此余额对象标识已经存在余额信息，但子账户标识和当前输入不一致，余额存入失败！";
 				}
 			}else{//不存在余额共享规则
 				//查询余额账本
-				Long abi = iAcctBalanceMapper.selectAcctBalanceId(model);
-				if (abi != null && abi>0) {
-					status = 1;
-					failReason = "对象号码和子账户标识匹配失败！余额账本中已存在另一种配置信息。";
-				}else{
-					long acctBalanceId = insertBalance(model);
-					shareModel.setAcctBalanceId(acctBalanceId);
-					iBalanceShareRuleMapper.insertSelective(shareModel);
-					//余额对象账本关系
-					//BalanceRelationModel relation=insertRelation(shareModel);
-					//余额来源记录表
-					insertSource(model,null,model.getBalance());
-				}
+				long acctBalanceId = insertBalance(model);
+				shareModel.setAcctBalanceId(acctBalanceId);
+				iBalanceShareRuleMapper.insertSelective(shareModel);
+				//余额对象账本关系
+				//BalanceRelationModel relation=insertRelation(shareModel);
+				//余额来源记录表
+				insertSource(model,null,model.getBalance());
 			}
+			
+		} catch (Exception e) {
+			failReason = "其他异常！";
+			e.printStackTrace();
+		}finally {
 			resultMap.put("status", status);
 			resultMap.put("failReason", failReason);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return resultMap;
 	}

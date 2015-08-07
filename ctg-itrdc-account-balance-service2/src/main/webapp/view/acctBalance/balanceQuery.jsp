@@ -224,7 +224,7 @@
 		<div id="bal_draw_result"></div>
 		<div id="view_acctBalance_balanceQuery_result" >
 			<table class="easyui-datagrid" id="acct_bal_list_data"
-				data-options="rownumbers:true,fitColumns:true,height:400,singleSelect:false,pagination:true,striped:true,showFooter:true">
+				data-options="rownumbers:true,fitColumns:true,height:400,singleSelect:true,pagination:true,striped:true,showFooter:true">
 				<thead>
 					<tr><th data-options="field:'',checkbox:true"></th>
 						<th data-options="field:'acctBalanceId'">余额帐本标识</th>

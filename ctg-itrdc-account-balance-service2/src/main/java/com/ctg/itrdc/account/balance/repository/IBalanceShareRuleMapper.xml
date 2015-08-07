@@ -243,7 +243,7 @@
   	where 
   		OBJECT_ID=#{objectId,jdbcType=BIGINT}
   	and OBJECT_TYPE = #{objectType,jdbcType=VARCHAR}
-  	and SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
+  	<!-- and SLICE_KEY = #{sliceKey,jdbcType=BIGINT} -->
   </select>
   <delete id="deleteRuleByAcctBalanceId" parameterType="com.ctg.itrdc.account.balance.model.BalanceShareRuleModel"> 
   	delete from balance_share_rule_mod 

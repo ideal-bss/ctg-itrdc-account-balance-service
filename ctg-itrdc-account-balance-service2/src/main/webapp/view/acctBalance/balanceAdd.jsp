@@ -228,26 +228,26 @@ function myparser(s){
 				</td>
 				<td width="10%">&nbsp;余额对象类型:</td>
 				<td width="20%">
-					<input id="objectType" name="objectType" class="easyui-combo" >
+					<input id="objectType" name="objectType" data-options="editable:false,panelHeight:100" class="easyui-combo" >
 				</td>
 				
 				<td width="10%">&nbsp;共享规则类型:</td>
 				<td width="20%">
-					<input id="shareRuleTypeId" name="shareRuleTypeId" class="easyui-combo" >
+					<input id="shareRuleTypeId" name="shareRuleTypeId" data-options="editable:false,panelHeight:100" class="easyui-combo" >
 				</td>
 			</tr>
 			<tr>
 				
 				<td width="10%">&nbsp;共享规则优先级:</td>
 				<td width="20%">
-					<input id="shareRuleTypePri" name="shareRuleTypePri"  class="easyui-combo" >
+					<input id="shareRuleTypePri" name="shareRuleTypePri" data-options="editable:false,panelHeight:100" class="easyui-combo" >
 				</td>
-				<td width="10%">&nbsp;扣费上限:</td>
+				<td width="10%">&nbsp;扣费上限（分）:</td>
 				<td width="20%">
 					<input id="upperAmount" name="upperAmount" class="easyui-textbox" >
 				</td>
 				
-				<td width="10%">&nbsp;扣费下限:</td>
+				<td width="10%">&nbsp;扣费下限（分）:</td>
 				<td width="20%">
 					<input id="lowerAmount" name="lowerAmount" class="easyui-textbox" >
 				</td>
@@ -265,7 +265,7 @@ function myparser(s){
 				</td>
 			</tr>
 			<tr>
-				<td width="10%">拥有子帐户标识:</td>
+				<td width="10%">&nbsp;拥有子帐户标识:</td>
 				<td width="20%">
 					<input id="subAcctId" name="subAcctId" class="easyui-textbox" >
 				</td>
@@ -286,30 +286,30 @@ function myparser(s){
 				</td>
 			</tr> 
 			<tr>
-				<td width="10%">余额</td>
+				<td width="10%">&nbsp;余额（分）:</td>
 				<td width="20%">
 					<input id="balanceDue" name="balanceDue" class="easyui-textbox" >
 					</td>
-				<td width="10%">&nbsp;预留余额:</td>
+				<td width="10%">&nbsp;预留余额（分）:</td>
 				<td width="20%">
 					<input id="reserveBalance" name="reserveBalance" class="easyui-textbox" >
 				</td>
-				<td width="10%">&nbsp;扣费上限金额:</td>
+				<td width="10%">&nbsp;扣费上限金额（分）:</td>
 				<td width="20%">
 					<input id="cycleUpper" name="cycleUpper" class="easyui-textbox" >
 				</td>
 			</tr>
 			<tr>
-				<td width="10%">扣费下限金额</td>
+				<td width="10%">&nbsp;扣费下限金额（分）:</td>
 				<td width="20%">
 					<input id="cycleLower" name="cycleLower" class="easyui-textbox" >
 					</td>
 				
 			</tr>
 			<tr>
-				<td width="10%">状态</td>
+				<td width="10%">&nbsp;状态:</td>
 				<td width="20%">
-					<input id="statusCd" name="statusCd" class="easyui-combo" >
+					<input id="statusCd" name="statusCd" data-options="editable:false,panelHeight:100" class="easyui-combo" >
 					</td>
 				<td width="10%">&nbsp;状态时间:</td>
 				<td width="20%">
@@ -317,15 +317,15 @@ function myparser(s){
 				</td>
 				<td width="10%">&nbsp;限额类型:</td>
 				<td width="20%">
-					<input id="cycleType" name="cycleType" class="easyui-combo" >
+					<input id="cycleType" name="cycleType" data-options="editable:false,panelHeight:100" class="easyui-combo" >
 				</td>
 			</tr>
 			<tr>
-				<td width="10%">备注</td>
+				<td width="10%">&nbsp;备注:</td>
 				<td width="20%">
 					<input id="remark" name="remark" class="easyui-textbox" >
 					</td>
-				<td width="10%">&nbsp;需要打印发票的金额:</td>
+				<td width="10%">&nbsp;打印发票金额（分）:</td>
 				<td width="20%">
 					<input id="needInvoiceAmount" name="needInvoiceAmount" class="easyui-textbox" >
 				</td>
