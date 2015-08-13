@@ -133,7 +133,7 @@ public class BalanceConfig {
 		BalanceTypeModel balanceTypeModel = null;
 		List<BalanceTypeModel> balanceTypeList=this.balanceTypeList;
 		for (BalanceTypeModel btm : balanceTypeList) {
-			if (btm.getBalanceTypeId()!=null&&btm.getBalanceTypeId() == typeId) {
+			if (btm != null && btm.getBalanceTypeId()!=null&&btm.getBalanceTypeId() == typeId) {
 				balanceTypeModel = btm;
 				break;
 			}
@@ -150,7 +150,7 @@ public class BalanceConfig {
 
     	BalanceTypeModel type=iBalanceTypeMapper.selectTypeById(balanceTypeId);
     	for(SpecialPaymentModel model:this.specialPaymentList){
-    		if(type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(model.getSpePaymentId())){
+    		if(type!= null && type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(model.getSpePaymentId())){
     			type.setSpecialPaymentModel(model);
     		}
     	}

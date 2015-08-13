@@ -171,9 +171,9 @@
       <if test="priority != null" >
         PRIORITY = #{priority,jdbcType=BIGINT},
       </if>
-      <if test="spePaymentId != null" >
+     <!--  <if test="spePaymentId != null" > -->
         SPE_PAYMENT_ID = #{spePaymentId,jdbcType=BIGINT},
-      </if>
+      <!-- </if> -->
       <if test="measureMethodId != null" >
         MEASURE_METHOD_ID = #{measureMethodId,jdbcType=BIGINT},
       </if>
