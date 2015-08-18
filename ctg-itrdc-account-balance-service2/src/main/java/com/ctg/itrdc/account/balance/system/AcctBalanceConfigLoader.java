@@ -34,7 +34,7 @@ public class AcctBalanceConfigLoader implements ServletContextListener {
 		iBalanceTypeMapper =(IBalanceTypeMapper) ctx.getBean("IBalanceTypeMapper");
 		AcctBalanceConfig.setBalanceTypeList(iBalanceTypeMapper.selectAllBalanceType());*/
 		BalanceConfig balanceConfig =BalanceConfig.getInstance();
-		BalanceTypeModel model=balanceConfig.getByTypeId((long)99);
+		BalanceTypeModel model=balanceConfig.getByTypeId((long)1);
 		/*Connection conn=null;
 		Statement state=null;
 		try {

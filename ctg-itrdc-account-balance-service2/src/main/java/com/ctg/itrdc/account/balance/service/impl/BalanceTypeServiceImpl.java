@@ -128,7 +128,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 				//插入新余额类型配置
 				if((iBalanceTypeMapper.insertSelective(balanceTypeModel))>0){
 					message = "存入成功！";
-					BalanceConfig.getInstance().addBalanceType(balanceTypeModel.getBalanceTypeId());
+					BalanceConfig.getInstance().addBalanceType(balanceTypeModel);
 				}else{
 					message = "存入失败！";
 				}
@@ -434,7 +434,7 @@ public class BalanceTypeServiceImpl implements IBalanceTypeService {
 						balanceTypeModel.setAllowDraw(allowDraw);
 						iBalanceTypeMapper.insertSelective(balanceTypeModel);
 						succCnt++;
-						BalanceConfig.getInstance().addBalanceType(balanceTypeModel.getBalanceTypeId());
+						BalanceConfig.getInstance().addBalanceType(balanceTypeModel);
 					} else {
 						sb.append(line).append(",").append(hint).append("\r\n");
 					}

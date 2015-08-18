@@ -9,6 +9,18 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<repositories>
+		<repository>
+			<id>ctg.internal.releases</id>
+			<name>Internal Releases</name>
+			<url>http://132.122.1.152:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>ctg.internal.snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://132.122.1.152:8081/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -62,11 +74,13 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.34</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
@@ -131,12 +145,12 @@
 			<groupId>com.ctg.udal</groupId>
 			<artifactId>ctg-udal-daopub-jdbc</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
-			<exclusions>
+		    <exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>log4j-over-slf4j</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions> 
 		</dependency>
 		
 		<!--jsoup-->
@@ -145,6 +159,15 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.7.3</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.ctg.itrdc.account</groupId>
+			<artifactId>ctg-itrdc-account-bill-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ctg.itrdc.account</groupId>
+			<artifactId>ctg-itrdc-account-bill-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

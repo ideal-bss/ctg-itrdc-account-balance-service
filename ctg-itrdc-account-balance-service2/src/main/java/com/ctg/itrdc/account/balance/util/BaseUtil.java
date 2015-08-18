@@ -12,6 +12,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BaseUtil {
 	public static String getPropertyUrl(String confUrl) {
@@ -211,6 +213,24 @@ public class BaseUtil {
 		DecimalFormat df = new DecimalFormat(format.toString());
         return v1<1?"0"+df.format(v1):df.format(v1);
 	}
+	
+	/**
+	 * 
+	 * @desc 提示内容处理
+	 * @author ls
+	 * @param str
+	 * @return
+	 */
+	public static String hintResult(String str){
+		Pattern p = Pattern.compile("[0-9]");
+		Matcher m = p.matcher(str);
+		String status = "0";
+		if (!m.find()) {
+			status = str;
+		}
+		return status;
+	}
+	
 	public static void main(String[] args) {
 //		System.out.println(getPropertyUrl("conf/menu.xml"));
 		//清空目录中的文件
@@ -218,6 +238,5 @@ public class BaseUtil {
 		for (File rmFile : fileList) {
 			rmFile.delete();
 		}*/
-		
 	}
 }

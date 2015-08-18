@@ -59,7 +59,7 @@ function myparser(s){
 			"text" : "低"
 		} ]
 	}); 
-	$('#shareRuleTypeId').combobox( {
+	/* $('#shareRuleTypeId').combobox( {
 		valueField : 'id',
 		textField : 'text',
 		data : [ {
@@ -72,7 +72,7 @@ function myparser(s){
 			"id" : 3,
 			"text" : "3"
 		}  ]
-	}); 
+	});  */
  	$('#balanceTypeId').combobox( {
 		valueField : 'id',
 		textField : 'text',

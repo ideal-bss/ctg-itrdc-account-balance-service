@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ import com.ctg.itrdc.account.balance.entity.AcctModel;
 import com.ctg.itrdc.account.balance.entity.DevModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceLogModel;
 import com.ctg.itrdc.account.balance.model.AcctBalanceModel;
-import com.ctg.itrdc.account.balance.model.BalanceConfig;
+//import com.ctg.itrdc.account.balance.model.BalanceConfig;
 import com.ctg.itrdc.account.balance.model.BalanceFrozenModel;
 import com.ctg.itrdc.account.balance.model.BalancePayoutModel;
 import com.ctg.itrdc.account.balance.model.BalanceRelationModel;
@@ -31,9 +33,11 @@ import com.ctg.itrdc.account.balance.repository.IBalancePayoutMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceShareRuleMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceMapper;
 import com.ctg.itrdc.account.balance.repository.IBalanceSourceTypeMapper;
+import com.ctg.itrdc.account.balance.repository.IBalanceTypeMapper;
 
 import com.ctg.itrdc.account.balance.service.IAcctBalanceService;
 import com.ctg.itrdc.account.balance.util.BaseUtil;
+import com.ctg.itrdc.account.balance.util.SpringUtil;
 @Service
 @Transactional
 public class AcctBalanceServiceImpl implements IAcctBalanceService{
@@ -46,6 +50,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	private IBalanceAcctItemPayedMapper iBalanceAcctItemPayedMapper;
 	private IBalanceSourceTypeMapper iBalanceSourceTypeMapper;
 	private IBalanceFrozenMapper iBalanceFrozenMapper;
+	private IBalanceTypeMapper iBalanceTypeMapper;
 	@Override
 	public Map<String, Object> insertAcctBalance(AcctBalanceModel model,BalanceShareRuleModel shareModel) {
 		int status = 0;
@@ -427,12 +432,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		long frozenAmountSum = 0;
 		try {
 			logger.debug("查询余额类型信息。");
-			BalanceConfig balanceConfig =BalanceConfig.getInstance();
+//			BalanceConfig balanceConfig =BalanceConfig.getInstance();
 			
 			logger.debug("查询余额账本信息。输入参数：" + model);
 			List<AcctBalanceModel> acctBalList = iAcctBalanceMapper.selectByAcctId(model);
 			for (AcctBalanceModel acctBalanceModel : acctBalList) {
-				balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+				balTypeModel = iBalanceTypeMapper.selectTypeById(acctBalanceModel.getBalanceTypeId());
+//				balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
 				//查询余额冻结记录 2 代表冻结，1未冻结
 				balanceFrozenMap.clear();
 				balanceFrozenMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
@@ -530,8 +536,8 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				
 				//余额账本 有效状态
 				if (currDate.after(balEffDate) && currDate.before(balExpDate)) {
-					BalanceConfig balanceConfig =BalanceConfig.getInstance();
-					BalanceTypeModel balTypeModel = balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+					//BalanceConfig balanceConfig =BalanceConfig.getInstance();
+					BalanceTypeModel balTypeModel = iBalanceTypeMapper.selectTypeById(acctBalanceModel.getBalanceTypeId());
 					logger.debug("余额类型名称:" + balTypeModel.getBalanceTypeName() + 
 								"-->是否专款专用:" + (balTypeModel.getSpePaymentId()==null || balTypeModel.getSpePaymentId()==0?"N":"Y"));
 					//专款专用余额 不能支取
@@ -610,7 +616,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 					
 				}
 				
-				flagHint = "成功支取金额：" + Double.valueOf(drawAmount)/100 + "元。";
+				flagHint = "成功支取金额：" + Double.valueOf(drawAmount) + "元。";
 			}else if(flagHint == null){
 				flagHint = "可支取余额不足，操作失败！";
 			}
@@ -649,10 +655,10 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				if (goalAcctBalModelList!= null && goalAcctBalModelList.size()>0) {
 					for (AcctBalanceModel goalAcctBalModel : goalAcctBalModelList) {
 						if (orgiAcctBalModel.getAcctBalanceId() != goalAcctBalModel.getAcctBalanceId()) {
-							BalanceConfig balanceConfig =BalanceConfig.getInstance();
-							BalanceTypeModel orgiBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
+							//BalanceConfig balanceConfig =BalanceConfig.getInstance();
+							BalanceTypeModel orgiBalTypeModel = iBalanceTypeMapper.selectTypeById(orgiAcctBalModel.getBalanceTypeId());
 							if (orgiBalTypeModel.getSpePaymentId() == null || orgiBalTypeModel.getSpePaymentId() == 0) {
-								BalanceTypeModel goalBalTypeModel = balanceConfig.getByTypeId(orgiAcctBalModel.getBalanceTypeId());
+								BalanceTypeModel goalBalTypeModel = iBalanceTypeMapper.selectTypeById(goalAcctBalModel.getBalanceTypeId());
 								if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId() == 0) {
 									long amount = Long.parseLong(String.valueOf(map.get("amount")));
 									if (orgiAcctBalModel.getBalance()>=amount) {
@@ -798,8 +804,8 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				Map<String, Object> acctBalMapResult = null;
 				for (AcctBalanceModel acctBalanceModel : acctBalModelList) {
 					//余额类型查询
-					BalanceConfig balanceConfig =BalanceConfig.getInstance();
-					BalanceTypeModel balanceTypeModel=balanceConfig.getByTypeId(acctBalanceModel.getBalanceTypeId());
+					//BalanceConfig balanceConfig =BalanceConfig.getInstance();
+					BalanceTypeModel balanceTypeModel=iBalanceTypeMapper.selectTypeById(acctBalanceModel.getBalanceTypeId());
 					double balance = Double.parseDouble(String.valueOf(acctBalanceModel.getBalance()))/100;
 					acctBalMapResult = new HashMap<String, Object>();
 					acctBalMapResult.put("acctId", acctId);
@@ -872,7 +878,10 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				rowsMap.put("amount", amount);
 				rowsMap.put("curAmount", curAmount);
 				rowsMap.put("balanceSourceTypeId", balSourceRecord.getBalanceSourceTypeId());
-				rowsMap.put("balanceSourceTypeDesc", balSourceTypeModel.getBalanceSourceTypeDesc());
+				if (balSourceTypeModel != null) {
+					rowsMap.put("balanceSourceTypeDesc", balSourceTypeModel.getBalanceSourceTypeDesc());
+				}
+				
 				rowsList.add(rowsMap);
 				amountSum = BaseUtil.add(amountSum, amount);
 				curAmountSum = BaseUtil.add(curAmountSum, curAmount);
@@ -979,8 +988,9 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 		try {
 			long acctId = Long.parseLong(String.valueOf(mapQuery.get("acctId")));
 			long acctBalanceId = Long.parseLong(String.valueOf(mapQuery.get("acctBalanceId")));
-			int rows = Integer.parseInt(String.valueOf(mapQuery.get("rows")));
-			int page = Integer.parseInt(String.valueOf(mapQuery.get("page")));
+			
+			String rows = String.valueOf(mapQuery.get("rows"));
+			String page = String.valueOf(mapQuery.get("page"));
 			
 			Map<String, Object> acctBalMap = new HashMap<String, Object>();
 			acctBalMap.put("acctId", acctId);
@@ -1124,7 +1134,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	public String BalanceUnFrozen(String[] balanceFrozenIdArray) {
 		logger.debug("BalanceUnFrozen().");
 		String hint = "余额已解冻！";
-		boolean flag = true;
+		int succCnt = 0;
 		long acctBalanceId = 0;
 		long acctId = 0;
 		long sliceKey = 0;
@@ -1135,19 +1145,22 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				Map<String, Object> balFrozenMap = new HashMap<String, Object>();
 				balFrozenMap.put("balanceFrozenId", balanceFrozenId);
 				BalanceFrozenModel balFrozenModel = iBalanceFrozenMapper.selectByPrimaryKey(balFrozenMap);
-				acctBalanceId = balFrozenModel.getAcctBalanceId();
-				acctId = balFrozenModel.getAcctId();
-				sliceKey = balFrozenModel.getSliceKey();
 				if (balFrozenModel != null) {
-					Map<String, Object> balFrozenRecord = new HashMap<String, Object>();
-					balFrozenRecord.put("frozenState", "1");
-					balFrozenRecord.put("reason", "balance unfrozen.");
-					balFrozenRecord.put("updateDate", new Date());
-					balFrozenRecord.put("balanceFrozenId", balanceFrozenId);
-					balFrozenRecord.put("sliceKey", sliceKey);
-					iBalanceFrozenMapper.balanceUnFrozen(balFrozenRecord);
-					flag = false;
+					acctBalanceId = balFrozenModel.getAcctBalanceId();
+					acctId = balFrozenModel.getAcctId();
+					sliceKey = balFrozenModel.getSliceKey();
+					if (balFrozenModel != null) {
+						Map<String, Object> balFrozenRecord = new HashMap<String, Object>();
+						balFrozenRecord.put("frozenState", "1");
+						balFrozenRecord.put("reason", "balance unfrozen.");
+						balFrozenRecord.put("updateDate", new Date());
+						balFrozenRecord.put("balanceFrozenId", balanceFrozenId);
+						balFrozenRecord.put("sliceKey", sliceKey);
+						iBalanceFrozenMapper.balanceUnFrozen(balFrozenRecord);
+						succCnt++;
+					}
 				}
+				
 			}
 			
 			logger.debug("query balance frozen by acctBalanceId.");
@@ -1159,7 +1172,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			int unfrozenCnt = iBalanceFrozenMapper.queryBalFrozenByAcctIdCnt(acctBalMap);
 			
 			//如果冻结记录中全部为未冻结，则更新余额账本为未冻结
-			if (unfrozenCnt == 0) {
+			if (unfrozenCnt == 0 && succCnt>0) {
 				logger.debug("query acct balance by acctBalanceId.");
 				AcctBalanceModel acctBalRecord = new AcctBalanceModel();
 				acctBalRecord.setAcctBalanceId(acctBalanceId);
@@ -1172,7 +1185,7 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				acctBalModel.setStatusDate(new Date());
 				iAcctBalanceMapper.updateByPrimaryKeySelective(acctBalModel);
 			}
-			if (flag) {
+			if (succCnt == 0) {
 				hint = "冻结记录不存在！";
 			}
 		} catch (Exception e) {
@@ -1244,6 +1257,15 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 	@Autowired
 	public void setiBalanceFrozenMapper(IBalanceFrozenMapper iBalanceFrozenMapper) {
 		this.iBalanceFrozenMapper = iBalanceFrozenMapper;
+	}
+	
+
+	public IBalanceTypeMapper getiBalanceTypeMapper() {
+		return iBalanceTypeMapper;
+	}
+	@Autowired
+	public void setiBalanceTypeMapper(IBalanceTypeMapper iBalanceTypeMapper) {
+		this.iBalanceTypeMapper = iBalanceTypeMapper;
 	}
 	/**
 	 * 
@@ -1363,6 +1385,35 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			}
 		}
 		
+	}
+	
+	
+	public AcctBalanceServiceImpl(){}
+	
+	public AcctBalanceServiceImpl(boolean flag){
+		if (flag) {
+			synchronized (AcctBalanceServiceImpl.class) {
+				sessionInit();
+			}
+		}
+		
+	}
+	
+	/**
+	 * @desc 接口调用
+	 * @author ls
+	 * @return
+	 */
+	public void sessionInit(){
+		SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+		iAcctBalanceMapper=sqlSession.getMapper(IAcctBalanceMapper.class);
+		iBalanceShareRuleMapper=sqlSession.getMapper(IBalanceShareRuleMapper.class);
+		iAcctBalanceLogMapper=sqlSession.getMapper(IAcctBalanceLogMapper.class);
+		iBalanceSourceMapper=sqlSession.getMapper(IBalanceSourceMapper.class);
+		iBalancePayoutMapper=sqlSession.getMapper(IBalancePayoutMapper.class);
+		iBalanceSourceTypeMapper=sqlSession.getMapper(IBalanceSourceTypeMapper.class);
+		iBalanceFrozenMapper=sqlSession.getMapper(IBalanceFrozenMapper.class);
+		iBalanceTypeMapper = sqlSession.getMapper(IBalanceTypeMapper.class);
 	}
 	
 }
