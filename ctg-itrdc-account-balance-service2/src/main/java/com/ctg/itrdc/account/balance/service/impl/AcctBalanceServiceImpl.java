@@ -654,14 +654,14 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 				List<AcctBalanceModel> goalAcctBalModelList = iAcctBalanceMapper.selectByAcctId(goalMap);
 				if (goalAcctBalModelList!= null && goalAcctBalModelList.size()>0) {
 					for (AcctBalanceModel goalAcctBalModel : goalAcctBalModelList) {
-						if (orgiAcctBalModel.getAcctBalanceId() != goalAcctBalModel.getAcctBalanceId()) {
+						if (orgiAcctBalModel.getAcctBalanceId().longValue() != goalAcctBalModel.getAcctBalanceId().longValue()) {
 							//BalanceConfig balanceConfig =BalanceConfig.getInstance();
 							BalanceTypeModel orgiBalTypeModel = iBalanceTypeMapper.selectTypeById(orgiAcctBalModel.getBalanceTypeId());
-							if (orgiBalTypeModel.getSpePaymentId() == null || orgiBalTypeModel.getSpePaymentId() == 0) {
+							if (orgiBalTypeModel.getSpePaymentId() == null || orgiBalTypeModel.getSpePaymentId().longValue() == 0) {
 								BalanceTypeModel goalBalTypeModel = iBalanceTypeMapper.selectTypeById(goalAcctBalModel.getBalanceTypeId());
-								if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId() == 0) {
+								if (goalBalTypeModel.getSpePaymentId() == null || goalBalTypeModel.getSpePaymentId().longValue() == 0) {
 									long amount = Long.parseLong(String.valueOf(map.get("amount")));
-									if (orgiAcctBalModel.getBalance()>=amount) {
+									if (orgiAcctBalModel.getBalance().longValue()>=amount) {
 										logger.debug("余额转账更新源余额账本，并记录支出日志。");
 										String currDate = BaseUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
 										
@@ -1002,10 +1002,13 @@ public class AcctBalanceServiceImpl implements IAcctBalanceService{
 			for (AcctBalanceModel acctBalanceModel : acctBalList) {
 				String statusCd = acctBalanceModel.getStatusCd();
 				if (statusCd != null && statusCd.equals("2")) { //2账本冻结，1为账本未冻结
-					acctBalMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId());
-					acctBalMap.put("rows", rows);
-					acctBalMap.put("page", page);
-					acctBalMap.put("frozenState", 2);
+					//acctBalMap.put("acctBalanceId", acctBalanceModel.getAcctBalanceId().longValue());
+					if (rows != null && page != null && !rows.equals("null") && !page.equals("null")) {
+						acctBalMap.put("rows", Long.parseLong(rows));
+						acctBalMap.put("page", Long.parseLong(page));
+					}
+					
+					acctBalMap.put("frozenState", "2");
 					logger.debug("query balance frozen by acctBalanceId:" + acctBalMap);
 					List<BalanceFrozenModel> list = iBalanceFrozenMapper.queryBalFrozenByAcctId(acctBalMap);
 					

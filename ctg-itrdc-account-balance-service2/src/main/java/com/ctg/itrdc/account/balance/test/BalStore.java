@@ -16,10 +16,14 @@ public class BalStore {
 		
 		try {
 			BalStore bs = new BalStore();
-			bs.balAdd();
-			//bs.balQuery();
-			//bs.balFrozenQuery();
-			//bs.balUnFrozen();
+			//bs.balAdd();  //余额存入
+			//bs.balQuery();  //余额查询
+			//bs.balDraw();   //余额支取
+			//bs.balTransfer();  //余额转账
+			//bs.balFrozen();  //余额冻结
+			//bs.balFrozenQuery();   //余额冻结查询
+			//bs.balUnFrozen();  //余额解冻
+			bs.balReverse();  //余额冲正
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,11 +42,11 @@ public class BalStore {
 			AcctBalanceModel acctBalanceModel=new AcctBalanceModel();
 			acctBalanceModel.setBalanceTypeId((long) 1);
 			acctBalanceModel.setPaymentRuleId(null);
-			acctBalanceModel.setSubAcctId((long) 12);
-			acctBalanceModel.setAcctId((long) 12);
+			acctBalanceModel.setSubAcctId((long) 1242314);
+			acctBalanceModel.setAcctId((long) 1212);
 			acctBalanceModel.setEffDate(new Date());
 			acctBalanceModel.setExpDate(new Date());
-			acctBalanceModel.setBalance((long) 10000);
+			acctBalanceModel.setBalance((long) 5000);
 			acctBalanceModel.setReserveBalance((long) 0);
 			acctBalanceModel.setCycleUpper((long) 0);
 			acctBalanceModel.setCycleLower((long) 0);
@@ -51,18 +55,18 @@ public class BalStore {
 			acctBalanceModel.setCycleType("Y");
 			acctBalanceModel.setRemark("余额存入！");
 			acctBalanceModel.setNeedInvoiceAmount((long) 0);
-			acctBalanceModel.setSliceKey((long) 12);
+			acctBalanceModel.setSliceKey((long) 1242314);
 			acctBalanceModel.setCreateDate(new Date());
 			
 			//共享规则对象
 			BalanceShareRuleModel shareModel=new BalanceShareRuleModel();
-			shareModel.setObjectId((long) 12);
+			shareModel.setObjectId((long) 12421323);
 			shareModel.setObjectType("2");
 			shareModel.setShareRuleTypeId((long) 2);
 			shareModel.setShareRuleTypePri((long) 2);
 			shareModel.setUpperAmount((long) 0);
 			shareModel.setLowerAmount((long) 0);
-			shareModel.setSliceKey((long) 12);
+			shareModel.setSliceKey((long) 1242314);
 			IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 			resultMap = iAcctBalanceService.insertAcctBalance(acctBalanceModel, shareModel);
 			System.out.println("status:" + resultMap.get("status"));
@@ -79,21 +83,21 @@ public class BalStore {
 	 */
 	public void balQuery(){
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("objectId", 12);
+		model.put("objectId", 12421323);
 		model.put("balanceTypeId", 0);
-		model.put("objectType", 2);
+		model.put("objectType", 0);
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		Map<String, Object> map = iAcctBalanceService.queryBalance(model);
 		List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("rows");
 		for (Map<String, Object> mapResult : list) {
-			System.out.println(mapResult.get("acctBalanceId"));
-			System.out.println(mapResult.get("balanceTypeId"));
-			System.out.println(mapResult.get("balanceTypeName"));
-			System.out.println(mapResult.get("effDate"));
-			System.out.println(mapResult.get("expDate"));
-			System.out.println(mapResult.get("objectId"));
-			System.out.println(mapResult.get("balance"));
-			System.out.println(mapResult.get("frozenAmount"));
+			System.out.print(mapResult.get("acctBalanceId")+",");
+			System.out.print(mapResult.get("balanceTypeId")+",");
+			System.out.print(mapResult.get("balanceTypeName")+",");
+			System.out.print(mapResult.get("effDate")+",");
+			System.out.print(mapResult.get("expDate")+",");
+			System.out.print(mapResult.get("objectId")+",");
+			System.out.print(mapResult.get("balance")+",");
+			System.out.print(mapResult.get("frozenAmount")+",");
 			System.out.println(mapResult.get("acctId"));
 		}
 	}
@@ -105,10 +109,10 @@ public class BalStore {
 	 */
 	public void balDraw(){
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("acctId", 12);
-		model.put("drawAmount", 10);
-		model.put("objectId", 12);
-		model.put("acctBalanceIdArray", 1061426109);
+		model.put("acctId", 2982214);
+		model.put("drawAmount", 45891);
+		model.put("objectId", 9930078);
+		model.put("acctBalanceIdArray", 1000000653);
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		String drawHint = iAcctBalanceService.balanceDraw(model);
 		System.out.println("支取结果："+drawHint);
@@ -119,13 +123,13 @@ public class BalStore {
 	 */
 	public void balTransfer(){
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("origBalanceTypeId", 1);
-		map.put("acctBalanceId", 1061426109);
-		map.put("origAcctId", 12);
+		map.put("origBalanceTypeId", 998);
+		map.put("acctBalanceId", 1000005504);
+		map.put("origAcctId", 2985094);
 		map.put("amount", 10);
-		map.put("acctId", 11);
+		map.put("acctId", 2980114);
 		map.put("objectType", 1);
-		map.put("objectId", 11);
+		map.put("objectId", 9925229);
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		String hint = iAcctBalanceService.balanceTransfer(map);
 		System.out.println("转账结果："+hint);
@@ -155,13 +159,13 @@ public class BalStore {
 	public void balFrozenQuery(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("acctId", 12);
-		map.put("acctBalanceId", 1061426109);
+		map.put("acctBalanceId", 10614261091L);
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		Map<String, Object> resultMap = iAcctBalanceService.queryBalFrozen(map);
 		List<Object> resultList = (List<Object>) resultMap.get("rows");
 		for (int i = 0; i < resultList.size(); i++) {
 			Map<String, Object> mapR = (Map<String, Object>) resultList.get(i);
-			System.out.println(mapR.get("balanceFrozenId"));
+			System.out.print(mapR.get("balanceFrozenId")+"   ");
 			System.out.println(mapR.get("frozenAmount"));
 		}
 	}
@@ -172,7 +176,7 @@ public class BalStore {
 	 * @author ls
 	 */
 	public void balUnFrozen(){
-		String balFrozenId = "124342";
+		String balFrozenId = "1";
 		String []balFrozenIdArray = balFrozenId.split(",");
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		String hint = iAcctBalanceService.BalanceUnFrozen(balFrozenIdArray);
@@ -186,8 +190,8 @@ public class BalStore {
 	 */
 	public void balReverse(){
 		Map<String, Object> requestMap = new HashMap<String, Object>();
-		requestMap.put("operIncomeId", 12);
-		requestMap.put("sliceKey", 12);
+		requestMap.put("operIncomeId", 1111241591);
+		requestMap.put("sliceKey", 34231231);
 		IAcctBalanceService iAcctBalanceService = new AcctBalanceServiceImpl(true);
 		String hint = iAcctBalanceService.balanceReverse(requestMap);
 		System.out.println("冲正结果："+hint);

@@ -144,13 +144,14 @@ public class BalanceConfig {
      * 新增余额类型
      * @param balanceTypeId
      */
-    public void addBalanceType(long balanceTypeId){
-      SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
-      IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
-
-    	BalanceTypeModel type=iBalanceTypeMapper.selectTypeById(balanceTypeId);
+    public void addBalanceType(BalanceTypeModel type){
+      //SqlSession sqlSession = ((SqlSessionFactory)SpringUtil.getBean("sqlSessionFactory")).openSession();
+      /*IBalanceTypeMapper iBalanceTypeMapper=sqlSession.getMapper(IBalanceTypeMapper.class);//余额类型
+    	BalanceTypeModel type=iBalanceTypeMapper.selectTypeById(balanceTypeId);*/
+    	
     	for(SpecialPaymentModel model:this.specialPaymentList){
     		if(type!= null && type.getSpePaymentId()!=null&&type.getSpePaymentId().equals(model.getSpePaymentId())){
+    			model.setSpecialPaymentDescModel(model.getSpecialPaymentDescModel());
     			type.setSpecialPaymentModel(model);
     		}
     	}

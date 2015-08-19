@@ -45,10 +45,10 @@
 				AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
 			</if>
 			<if test="frozenState != null">
-				AND FROZEN_STATE = #{frozenState,jdbcType=BIGINT}
+				AND FROZEN_STATE = #{frozenState,jdbcType=VARCHAR} 
 			</if>
 			<if test="rows != null and page != null">
-		    	limit #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+		    	LIMIT #{page,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
 		    </if>
 		</where>
 	</select>
@@ -59,7 +59,7 @@
 		<where>
 			ACCT_BALANCE_ID = #{acctBalanceId,jdbcType=BIGINT}
 			<if test="frozenState != null">
-				AND FROZEN_STATE = #{frozenState,jdbcType=BIGINT}
+				AND FROZEN_STATE = #{frozenState,jdbcType=VARCHAR}
 			</if>
 			<if test="acctId != null">
 				AND ACCT_ID = #{acctId,jdbcType=BIGINT}
@@ -133,7 +133,7 @@
 				AND SLICE_KEY = #{sliceKey,jdbcType=BIGINT}
 			</if>
 			<if test="frozenState != null">
-				AND FROZEN_STATE = #{frozenState,jdbcType=BIGINT}
+				AND FROZEN_STATE = #{frozenState,jdbcType=VARCHAR}
 			</if>
 		</where>
 	</select>
